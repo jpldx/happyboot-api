@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysFacilityMapper">
+
+    <!-- 分页列表 -->
+    <select id="page" resultType="org.happykit.happyboot.sys.model.entity.SysFacilityDO">
+        select * from sys_facility
+        where is_deleted = 0
+        <if test="query.facilityName != null and query.facilityName !=''">
+            and facility_name like concat('%',#{query.facilityName},'%')
+        </if>
+        <if test="query.facilityPlatform != null and query.facilityPlatform !=''">
+            and facility_platform = #{query.facilityPlatform}
+        </if>
+        <if test="query.facilityType != null and query.facilityType !=''">
+            and facility_type = #{query.facilityType}
+        </if>
+        order by create_time desc
+    </select>
+
+    <!-- 功能参数查询 -->
+    <select id="getParam" resultType="org.happykit.happyboot.sys.model.form.SysFacilityParamForm">
+        SELECT
+        a.id facilityId,
+        b.set_from,
+        b.user_id,
+        b.facility_group_id,
+        c.id facilityParamId,
+        c.facility_param
+        FROM
+        sys_facility a
+        INNER JOIN sys_facility_param_rel b ON a.id = b.facility_id
+        INNER JOIN sys_facility_param c ON b.facility_param_id = c.id
+        WHERE
+        a.is_deleted = 0
+        AND a.id = #{id}
+        AND b.set_from = #{setFrom}
+        <if test="facilityGroupId != null and facilityGroupId != ''">
+            AND b.facility_group_id = #{facilityGroupId}
+        </if>
+        <if test="userId != null and userId != ''">
+            AND b.user_id = #{userId}
+        </if>
+        AND c.is_deleted = 0
+    </select>
+
+    <select id="getFacilityIdsByUserId" resultType="java.lang.String">
+        SELECT DISTINCT
+            e.id
+        FROM
+            sys_user a
+            INNER JOIN sys_facility_user_group_rel b ON a.id = b.user_id
+            INNER JOIN sys_facility_group c ON b.facility_group_id = c.id
+            INNER JOIN sys_facility_group_rel d ON c.id = d.facility_group_id
+            INNER JOIN sys_facility e ON d.facility_id = e.id
+        WHERE
+            a.is_deleted = 0
+        AND c.is_deleted = 0
+        AND e.is_deleted = 0
+        AND a.id = #{userId}
+    </select>
+
+</mapper>

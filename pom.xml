@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.happykit</groupId>
+    <artifactId>happyboot</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+
+    <modules>
+        <module>happyboot-common</module>
+<!--        <module>happyboot-generator</module>-->
+        <module>happyboot-service</module>
+        <module>happyboot-task</module>
+        <module>happyboot-web</module>
+        <module>happyboot-mq</module>
+        <module>happyboot-mq-consumer</module>
+        <module>happyboot-security</module>
+    </modules>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.6.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring-cloud-alibaba.version>2.2.0.RELEASE</spring-cloud-alibaba.version>
+        <spring-cloud.version>Hoxton.SR4</spring-cloud.version>
+        <org.mapstruct.version>1.3.1.Final</org.mapstruct.version>
+        <ltitframework.boot.version>3.0-SNAPSHOT</ltitframework.boot.version>
+        <jwt.version>3.10.3</jwt.version>
+        <!--        <geotools.version>22.0</geotools.version>-->
+    </properties>
+    <!--    <repositories>-->
+    <!--        <repository>-->
+    <!--            <id>osgeo</id>-->
+    <!--            <name>OSGeo Release Repository</name>-->
+    <!--            <url>https://repo.osgeo.org/repository/release/</url>-->
+    <!--            <snapshots><enabled>false</enabled></snapshots>-->
+    <!--            <releases><enabled>true</enabled></releases>-->
+    <!--        </repository>-->
+    <!--    </repositories>-->
+    <!--    <dependencies>-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.geotools</groupId>-->
+    <!--            <artifactId>gt-geojson</artifactId>-->
+    <!--            <version>${geotools.version}</version>-->
+    <!--        </dependency>-->
+    <!--    </dependencies>-->
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+</project>

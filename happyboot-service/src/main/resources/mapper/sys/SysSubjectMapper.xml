@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysSubjectMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.sys.model.entity.SysSubjectDO">
+        <id column="id" property="id"/>
+        <result column="subject_name" property="subjectName"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_deleted" property="deleted"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        subject_name,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        version,
+        is_deleted
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.id,
+        a.subject_name,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.version,
+        a.is_deleted
+    </sql>
+
+    <select id="selectSysObjsByUserId" resultMap="BaseResultMap">
+        select
+        DISTINCT
+        <include refid="Common_Column_List"/>
+        from sys_subject a
+        left join sys_ref_user_dept_obj b on a.id = b.obj_id
+        where a.is_deleted = 0 and b.user_id = #{userId}
+    </select>
+
+    <select id="selectSysObjsByPage" parameterType="org.happykit.happyboot.sys.model.query.SysSubjectPageQueryParam"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_subject
+        where is_deleted = 0
+        <if test="param.subjectName != null and param.subjectName !=''">
+            and subject_name like concat('%',#{param.subjectName},'%')
+        </if>
+    </select>
+
+    <select id="getNameById" resultType="java.lang.String">
+        select subject_name from sys_subject where is_deleted = 0 and id = #{id}
+    </select>
+
+</mapper>

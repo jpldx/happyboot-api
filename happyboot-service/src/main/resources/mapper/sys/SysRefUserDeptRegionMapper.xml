@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysRefUserDeptRegionMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.sys.model.entity.SysRefUserDeptRegionDO">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="region_id" property="regionId"/>
+        <result column="region_code" property="regionCode"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        user_id,
+        region_id,
+        region_code
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.id,
+        a.user_id,
+        a.region_id,
+        a.region_code
+    </sql>
+
+    <delete id="deleteByUserId">
+        delete from sys_ref_user_dept_region where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteByRegionId">
+        delete from sys_ref_user_dept_region where region_id = #{regionId}
+    </delete>
+
+    <select id="listRegionIdsByUserId" resultType="string">
+        SELECT
+            region_id
+        FROM
+            `sys_ref_user_dept_region`
+        WHERE
+            user_id = #{userId}
+    </select>
+
+</mapper>

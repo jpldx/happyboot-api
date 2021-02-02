@@ -1,0 +1,26 @@
+package ${package}.${moduleName}.model.entity;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.litong.ltitframework.boot.core.base.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @version 1.0 ${date}
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@TableName("${tableName}")
+public class ${className}DO extends BaseEntity {
+    #foreach ($column in $columns)
+        #if($column.supperClassColumn == 0)
+            /**
+             * $column.comments
+             */
+            private $column.attrType $column.attrname;
+        #end
+    #end
+}

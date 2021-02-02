@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysFileMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.sys.model.entity.SysFileDO">
+        <id column="id" property="id"/>
+        <result column="file_name" property="fileName"/>
+        <result column="file_alias_name" property="fileAliasName"/>
+        <result column="file_path" property="filePath"/>
+        <result column="mime" property="mime"/>
+        <result column="file_size" property="fileSize"/>
+        <result column="md5" property="md5"/>
+        <result column="sha1" property="sha1"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_deleted" property="deleted"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        file_name,
+        file_alias_name,
+        file_path,
+        mime,
+        file_size,
+        md5,
+        sha1,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        version,
+        is_deleted
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.id,
+        a.file_name,
+        a.file_alias_name,
+        a.file_path,
+        a.mime,
+        a.file_size,
+        a.md5,
+        a.sha1,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.version,
+        a.is_deleted
+    </sql>
+
+    <select id="selectBySha1" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_file
+        where is_deleted = 0 and sha1 = #{sha1}
+    </select>
+
+    <select id="page" resultMap="BaseResultMap">
+        select
+        <include refid="Common_Column_List"/>,
+        b.nickname createUserName
+        from sys_file a
+        left join sys_user b on a.create_by = b.id
+        where a.is_deleted = 0
+        <if test="query.fileName != null and query.fileName !=''">
+            and a.file_name like concat('%',#{query.fileName},'%')
+        </if>
+        <if test="query.createUserName != null and query.createUserName !=''">
+            and b.nickname like concat('%',#{query.createUserName},'%')
+        </if>
+        <if test="query.startTime != null">
+            and a.create_time &gt;= #{query.startTime}
+        </if>
+        <if test="query.endTime != null">
+            and a.create_time &lt;= #{query.endTime}
+        </if>
+        order by a.create_time desc
+    </select>
+
+</mapper>

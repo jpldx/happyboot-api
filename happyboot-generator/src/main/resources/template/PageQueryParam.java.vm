@@ -1,0 +1,17 @@
+package ${package}.${moduleName}.model.query;
+
+import com.litong.ltitframework.boot.core.page.PageQueryParam;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+/**
+ * ${comments}分页查询对象
+ *
+ * @author ${author}
+ * @version 1.0 ${date}
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class ${className}PageQueryParam extends PageQueryParam {
+
+}

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysRefRoleUserMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.sys.model.entity.SysRefRoleUserDO">
+        <id column="id" property="id"/>
+        <result column="role_id" property="roleId"/>
+        <result column="user_id" property="userId"/>
+        <result column="auth_type" property="authType"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        role_id,
+        user_id,
+        auth_type
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.id,
+        a.role_id,
+        a.user_id,
+        a.auth_type
+    </sql>
+
+    <select id="selectSysRefRoleUsersByUserId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_ref_role_user
+        where user_id = #{userId}
+    </select>
+
+    <select id="selectSysRefRoleUsersByRoleId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_ref_role_user
+        where role_id = #{roleId}
+    </select>
+
+    <delete id="deleteByUserId">
+        delete from sys_ref_role_user where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteByRoleId">
+        delete from sys_ref_role_user where role_id = #{roleId}
+    </delete>
+
+</mapper>

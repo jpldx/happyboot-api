@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysUpdateMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.sys.model.entity.SysUpdateDO">
+        <id column="update_id" property="updateId"/>
+        <result column="update_content" property="updateContent"/>
+        <result column="subject_id" property="subjectId"/>
+        <result column="blob_url" property="blobUrl"/>
+        <result column="blob_version" property="blobVersion"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_deleted" property="deleted"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        update_id,
+        update_content,
+        subject_id,
+        blob_url,
+        blob_version,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        version,
+        is_deleted
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.update_id,
+        a.update_content,
+        a.subject_id,
+        a.blob_url,
+        a.blob_version,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.version,
+        a.is_deleted
+    </sql>
+
+    <select id="selectSysUpdatesByPage" parameterType="org.happykit.happyboot.sys.model.query.SysUpdatePageQueryParam"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Common_Column_List"/>,
+        b.nickname createUserName
+        from sys_update a
+        left join sys_user b on a.create_by = b.id
+        where a.is_deleted = 0
+        <if test="param.blobVersion !=null and param.blobVersion!=''">
+            AND a.blob_version =#{param.blobVersion}
+        </if>
+    </select>
+
+</mapper>

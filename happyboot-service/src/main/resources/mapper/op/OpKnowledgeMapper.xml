@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.op.mapper.OpKnowledgeMapper">
+
+    <select id="page" resultType="org.happykit.happyboot.op.model.entity.OpKnowledgeDO">
+        select
+        *
+        from op_knowledge
+        where is_deleted = 0
+        <if test="query.label !=null and query.label!=''">
+            AND label =#{query.label}
+        </if>
+        <if test="query.title !=null and query.title!=''">
+            AND title like concat('%',#{query.title},'%')
+        </if>
+        <if test="query.content !=null and query.content!=''">
+            AND content like concat('%',#{query.content},'%')
+        </if>
+        <if test="query.startTime != null">
+            and pub_time &gt;= #{query.startTime}
+        </if>
+        <if test="query.endTime != null">
+            and pub_time &lt;= #{query.endTime}
+        </if>
+        order by pub_time desc
+    </select>
+
+</mapper>

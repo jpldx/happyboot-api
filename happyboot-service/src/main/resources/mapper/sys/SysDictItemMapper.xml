@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysDictItemMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.sys.model.entity.SysDictItemDO">
+        <id column="id" property="id"/>
+        <result column="dict_id" property="dictId"/>
+        <result column="item_text" property="itemText"/>
+        <result column="item_value" property="itemValue"/>
+        <result column="attr1" property="attr1"/>
+        <result column="attr2" property="attr2"/>
+        <result column="description" property="description"/>
+        <result column="status" property="status"/>
+        <result column="order_id" property="orderId"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_deleted" property="deleted"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        dict_id,
+        item_text,
+        item_value,
+        attr1,
+        attr2,
+        description,
+        status,
+        order_id,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        version,
+        is_deleted
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.id,
+        a.dict_id
+        a.item_text,
+        a.item_value,
+        a.attr1,
+        a.attr2,
+        a.description,
+        a.status,
+        a.order_id,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.version,
+        a.is_deleted
+    </sql>
+
+
+    <select id="selectByDictIdAndItemValue" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_dict_item
+        where is_deleted = 0 and dict_id = #{dictId} and item_value = #{itemValue}
+    </select>
+
+    <select id="selectSysDictItemsByDictId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_dict_item
+        where is_deleted = 0 and dict_id = #{dictId}
+    </select>
+
+    <select id="selectSysDictItemsByPage" parameterType="org.happykit.happyboot.sys.model.query.SysDictItemPageQueryParam"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_dict_item
+        where is_deleted = 0 and dict_id = #{param.dictId}
+        <if test="param.itemText != null and param.itemText != ''">
+            AND item_text like CONCAT('%', #{param.itemText}, '%')
+        </if>
+        <if test="param.itemValue != null and param.itemValue != ''">
+            AND item_value like CONCAT('%', #{param.itemValue}, '%')
+        </if>
+        order by order_id asc
+    </select>
+
+
+</mapper>

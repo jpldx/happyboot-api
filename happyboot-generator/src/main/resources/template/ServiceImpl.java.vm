@@ -1,0 +1,75 @@
+package ${package}.${moduleName}.service.impl;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import ${package}.${moduleName}.model.entity.${className}DO;
+import ${package}.${moduleName}.factory.${className}Factory;
+import ${package}.${moduleName}.model.form.${className}Form;
+import ${package}.${moduleName}.mapper.${className}Mapper;
+import ${package}.${moduleName}.model.query.${className}PageQueryParam;
+import ${package}.${moduleName}.service.${className}Service;
+import com.litong.ltitframework.boot.core.page.PageUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.groups.Default;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * ${comments} 服务实现类
+ *
+ * @author ${author}
+ * @version 1.0 ${date}
+ */
+@Validated(Default.class)
+@Service
+public class ${className}ServiceImpl extends ServiceImpl<${className}Mapper, ${className}DO> implements ${className}Service {
+
+    @Override
+    public IPage<${className}DO> list${className}sByPage(${className}PageQueryParam param) {
+        Page page = new PageUtils<${className}PageQueryParam>().page(param, ${className}DO.class);
+        return this.baseMapper.select${className}sByPage(page, param);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ${className}DO save${className}(${className}Form form) {
+            ${className}DO entity = ${className}Factory.INSTANCE.form2Do(form);
+
+        if (!save(entity)) {
+            throw new RuntimeException("保存失败");
+        }
+        return entity;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ${className}DO update${className}(${className}Form form) {
+            ${className}DO entity = ${className}Factory.INSTANCE.form2Do(form);
+
+        if (!updateById(entity)) {
+            throw new RuntimeException("保存失败");
+        }
+        return entity;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean delete${className}(Long id) {
+            ${className}DO ${classname} = getById(id);
+        if (${classname} ==null){
+            return false;
+        }
+        return removeById(id);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean delete${className}(Long... ids) {
+        List idList = Arrays.asList(ids);
+        return this.removeByIds(idList);
+    }
+}

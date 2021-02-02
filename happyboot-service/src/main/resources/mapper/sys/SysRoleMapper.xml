@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysRoleMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.sys.model.entity.SysRoleDO">
+        <id column="id" property="id"/>
+        <result column="role_name" property="roleName"/>
+        <result column="authority_name" property="authorityName"/>
+        <result column="role_type" property="roleType"/>
+        <result column="status" property="status"/>
+        <result column="is_sys" property="sys"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_deleted" property="deleted"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        role_name,
+        authority_name,
+        role_type,
+        status,
+        is_sys,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        version,
+        is_deleted
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.id,
+        a.role_name,
+        a.authority_name,
+        a.role_type,
+        a.status,
+        a.is_sys,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.version,
+        a.is_deleted
+    </sql>
+
+    <select id="selectByAuthorityName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_role
+        where is_deleted = 0 and authority_name = #{authorityName}
+    </select>
+
+    <select id="selectSysRolesByUserIdAndAuthType" resultMap="BaseResultMap">
+        select
+        <include refid="Common_Column_List"/>
+        from sys_role a
+        left join sys_ref_role_user b on a.id = b.role_id
+        where a.is_deleted = 0 and b.user_id = #{userId} and b.auth_type = #{authType}
+    </select>
+
+    <select id="selectSysRolesByPage" parameterType="org.happykit.happyboot.sys.model.query.SysRolePageQueryParam"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_role
+        where is_deleted = 0
+        <if test="param.roleName != null and param.roleName != ''">
+            AND role_name like CONCAT('%', #{param.roleName}, '%')
+        </if>
+        <if test="param.authorityName != null and param.authorityName != ''">
+            AND authority_name like CONCAT('%', #{param.authorityName}, '%')
+        </if>
+        <if test="param.status != null">
+            AND status = #{param.status}
+        </if>
+    </select>
+
+    <!--    <select id="listSysRoles" resultType="SysRoleDO">-->
+    <!--        SELECT-->
+    <!--            *-->
+    <!--        FROM-->
+    <!--            sys_role-->
+    <!--        WHERE-->
+    <!--            is_deleted = 0-->
+    <!--        AND STATUS = 1-->
+    <!--    </select>-->
+
+</mapper>

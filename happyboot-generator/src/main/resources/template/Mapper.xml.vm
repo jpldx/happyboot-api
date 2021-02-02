@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${package}.${moduleName}.mapper.${className}Mapper">
+    <resultMap id="BaseResultMap" type="${package}.${moduleName}.model.entity.${className}DO">
+        #foreach($column in $columns)
+            #if($column.columnName == $pk.columnName)
+                <id column="${column.columnName}" property="${column.attrname}"/>
+            #end
+            #if($column.columnName != $pk.columnName)
+                #if($column.supperClassColumn == 0)
+                    <result column="${column.columnName}" property="${column.attrname}"/>
+                #end
+            #end
+        #end
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_deleted" property="deleted"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+#foreach($column in $columns)
+        ${column.columnName}#if($foreach.hasNext),#end
+    #end
+    </sql>
+
+    <sql id="Common_Column_List">
+#foreach($column in $columns)
+        a.${column.columnName}#if($foreach.hasNext),#end
+    #end
+    </sql>
+
+    <select id="select${className}sByPage"
+            parameterType="${package}.${moduleName}.model.query.${className}PageQueryParam" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ${tableName}
+        where is_deleted = 0
+    </select>
+
+</mapper>

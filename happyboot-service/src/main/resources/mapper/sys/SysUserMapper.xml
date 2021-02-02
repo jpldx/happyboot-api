@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysUserMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.sys.model.entity.SysUserDO">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="phone_number" property="phoneNumber"/>
+        <result column="salt" property="salt"/>
+        <result column="password" property="password"/>
+        <result column="user_type" property="userType"/>
+        <result column="nickname" property="nickname"/>
+        <result column="head_pic" property="headPic"/>
+        <result column="last_login_time" property="lastLoginTime"/>
+        <result column="last_ip" property="lastIp"/>
+        <result column="status" property="status"/>
+        <result column="subject_id" property="subjectId"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_deleted" property="deleted"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        username,
+        phone_number,
+        salt,
+        password,
+        user_type,
+        nickname,
+        head_pic,
+        last_login_time,
+        last_ip,
+        status,
+        subject_id,
+        dept_id,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        version,
+        is_deleted
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.id,
+        a.username,
+        a.phone_number,
+        a.salt,
+        a.password,
+        a.user_type,
+        a.nickname,
+        a.head_pic,
+        a.last_login_time,
+        a.last_ip,
+        a.status,
+        a.subject_id,
+        a.dept_id,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.version,
+        a.is_deleted
+    </sql>
+
+    <select id="selectByUsername" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
+        where is_deleted = 0 and username = #{username}
+    </select>
+
+    <select id="selectSysUsersByPage" parameterType="org.happykit.happyboot.sys.model.query.SysUserPageQueryParam"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Common_Column_List"/>
+        from sys_user AS a
+        where is_deleted = 0
+        <if test="param.account != null and param.account != ''">
+            AND (a.username like CONCAT('%', #{param.account}, '%') or a.nickname like CONCAT('%', #{param.account},
+            '%'))
+        </if>
+        <if test="param.status != null">
+            AND a.status = #{param.status}
+        </if>
+        <if test="param.userType != null and param.userType != ''">
+            AND a.user_type = #{param.userType}
+        </if>
+    </select>
+
+    <update id="updatePassword" parameterType="org.happykit.happyboot.sys.model.entity.SysUserDO">
+        update sys_user set password = #{password}
+        where id = #{id}
+    </update>
+
+    <update id="updateLoginInfo" parameterType="org.happykit.happyboot.sys.model.entity.SysUserDO">
+        update sys_user set last_login_time = #{lastLoginTime}, last_ip = #{lastIp}
+        where id = #{id}
+    </update>
+
+
+    <select id="getMainAccountList" resultType="org.happykit.happyboot.sys.model.entity.SysUserDO">
+        SELECT
+            *
+        FROM
+            sys_user
+        WHERE
+            is_deleted = 0
+        AND user_type = 0
+        AND (nickname like concat('%',#{keyword},'%')
+        OR username like concat('%',#{keyword},'%'))
+        ORDER BY create_time desc
+    </select>
+
+    <select id="getNicknameById" resultType="java.lang.String">
+        select nickname from sys_user where id = #{id}
+    </select>
+
+</mapper>

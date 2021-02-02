@@ -1,0 +1,156 @@
+kind: pipeline
+name: default
+type: docker
+
+clone:
+  disable: true
+
+steps:
+  # git clone source
+  - name: git clone
+    image: alpine/git
+    pull: if-not-exists
+    volumes:
+      - name: sshkeys
+        path: /root/.ssh
+    commands:
+      - git clone $DRONE_GIT_SSH_URL .
+      - git checkout $DRONE_COMMIT
+
+  # build jar package
+  - name: build jar
+    pull: if-not-exists
+    image: maven:3-jdk-8
+    volumes:
+      - name: cache # The Volume's name
+        path: /root/.m2 # The path in the container
+    commands:
+      - mvn clean
+      - mvn package -DskipTests=true
+
+  # 可以关闭代码分析，提高构建效率
+  #  - name: code-analysis
+  #    pull: if-not-exists
+  #    image: aosapps/drone-sonar-plugin
+  #    settings:
+  #      sonar_host: http://10.10.0.14:9002
+  #      sonar_token: a06df3845eb2dfb07b319544ce03fbd2d866d7e5
+
+  # test env deployment
+  - name: build image > mq-consumer
+    pull: if-not-exists
+    image: plugins/docker
+    settings:
+      mirror: https://docker.mirrors.ustc.edu.cn
+      dockerfile: happyboot-mq-consumer/docker/test/Dockerfile
+      repo: 10.10.0.14:5000/happyboot/mq-consumer
+      registry: 10.10.0.14:5000
+      tags: ${DRONE_BUILD_NUMBER}
+      username: root
+      password: lt@123456
+      insecure: true
+
+  - name: build image > system-api
+    pull: if-not-exists
+    image: plugins/docker
+    settings:
+      mirror: https://docker.mirrors.ustc.edu.cn
+      dockerfile: happyboot-web/happyboot-web-admin/docker/test/Dockerfile
+      repo: 10.10.0.14:5000/happyboot/system-api
+      registry: 10.10.0.14:5000
+      tags: ${DRONE_BUILD_NUMBER}
+      username: root
+      password: lt@123456
+      insecure: true
+
+  #  - name: image：xxl-executor
+  #    pull: if-not-exists
+  #    image: plugins/docker
+  #    settings:
+  #      mirror: https://docker.mirrors.ustc.edu.cn
+  #      dockerfile: ltit-cloud-task/ltit-cloud-task-instance/docker/test/Dockerfile
+  #      repo: 10.10.0.14:5000/happyboot/xxl-executor
+  #      registry: 10.10.0.14:5000
+  #      tags: ${DRONE_BUILD_NUMBER}
+  #      username: root
+  #      password: lt@123456
+  #      insecure: true
+  - name: deploy container > mq-consumer
+    pull: if-not-exists
+    image: appleboy/drone-ssh
+    settings:
+      host: 10.10.0.27
+      username: root
+      password: lt@123456
+      port: 22
+      script:
+        - echo start update container
+        - echo login registry 10.10.0.14:5000
+        - docker login -u root -p lt@123456 10.10.0.14:5000
+        - docker pull 10.10.0.14:5000/happyboot/mq-consumer:${DRONE_BUILD_NUMBER}
+        - list=$(docker ps -a| grep happyboot-mq-consumer* | awk '{print $1}')
+        - test "$list" = "" && echo "none happyboot-mq-consumer containers running" || docker stop $list
+        - docker run -d --network over -p6631:8080  -v /etc/localtime:/etc/localtime:ro -e TZ=Asia/Shanghai --privileged=true --name=happyboot-mq-consumer-${DRONE_BUILD_NUMBER} 10.10.0.14:5000/happyboot/mq-consumer:${DRONE_BUILD_NUMBER}
+
+  - name: deploy container > system-api
+    pull: if-not-exists
+    image: appleboy/drone-ssh
+    settings:
+      host: 10.10.0.27
+      username: root
+      password: lt@123456
+      port: 22
+      script:
+        - echo start update container
+        - echo login registry 10.10.0.14:5000
+        - docker login -u root -p lt@123456 10.10.0.14:5000
+        - docker pull 10.10.0.14:5000/happyboot/system-api:${DRONE_BUILD_NUMBER}
+        - list=$(docker ps -a| grep happyboot-system-api* | awk '{print $1}')
+        - test "$list" = "" && echo "none happyboot-system-api containers running" || docker stop $list
+        - docker run -d --network over -p6630:8080 -v /data/happyboot/system-api/upload:/upload -v /data/happyboot/system-api/logs:/logs -v /etc/localtime:/etc/localtime:ro -e TZ=Asia/Shanghai --privileged=true --name=happyboot-system-api-${DRONE_BUILD_NUMBER} 10.10.0.14:5000/happyboot/system-api:${DRONE_BUILD_NUMBER}
+
+  #  - name: container：xxl-executor
+  #    pull: if-not-exists
+  #    image: appleboy/drone-ssh
+  #    settings:
+  #      host: 10.10.0.27
+  #      username: root
+  #      password: lt@123456
+  #      port: 22
+  #      script:
+#        - echo start update container
+#        - echo login registry 10.10.0.14:5000
+#        - docker login -u root -p lt@123456 10.10.0.14:5000
+#        - docker pull 10.10.0.14:5000/happyboot/xxl-executor:${DRONE_BUILD_NUMBER}
+#        - list=$(docker ps -a| grep happyboot-xxl-executor* | awk '{print $1}')
+#        - test "$list" = "" && echo "none happyboot-xxl-executor containers running" || docker stop $list
+#        - docker run -d --network over -p6632:8080 -p8888:8888 -v /data/happyboot/xxl-executor:/upload -v /etc/localtime:/etc/localtime:ro -e TZ=Asia/Shanghai --privileged=true --name=happyboot-xxl-executor-${DRONE_BUILD_NUMBER} 10.10.0.14:5000/happyboot/xxl-executor:${DRONE_BUILD_NUMBER}
+
+  # dingtalk notification
+  - name: dingtalk notification
+    pull: if-not-exists
+    image: guoxudongdocker/drone-dingtalk
+    settings:
+      token: 8d2d66e0fb4fcea484189f676333ce738e6e270d35630341dab320fc009eab9f
+      type: markdown
+      message_color: true
+      message_pic: true
+      sha_link: true
+    when:
+      status:
+        - failure
+        - success
+
+trigger:
+  branch:
+    - master
+  event:
+    - push
+
+volumes:
+  - name: cache
+    host:
+      path: /tmp/cache/maven
+  - name: sshkeys
+    host:
+      path: /root/.ssh

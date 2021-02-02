@@ -1,0 +1,26 @@
+package ${package}.${moduleName}.factory;
+
+import ${package}.${moduleName}.model.entity.${className}DO;
+import ${package}.${moduleName}.model.form.${className}Form;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+/**
+ * ${comments}对象转换工厂
+ *
+ * @author ${author}
+ * @version 1.0 ${date}
+ */
+@Mapper
+public interface ${className}Factory {
+
+        ${className}Factory INSTANCE = Mappers.getMapper(${className}Factory.class);
+
+    /**
+     * 表单转实体对象
+     *
+     * @param form
+     * @return
+     */
+        ${className}DO form2Do(${className}Form form);
+}

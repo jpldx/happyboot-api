@@ -1,0 +1,27 @@
+package ${package}.${moduleName}.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import ${package}.${moduleName}.model.entity.${className}DO;
+import ${package}.${moduleName}.model.query.${className}PageQueryParam;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+/**
+ * ${comments} Mapper接口
+ *
+ * @author ${author}
+ * @version 1.0 ${date}
+ */
+public interface ${className}Mapper extends BaseMapper<${className}DO> {
+    /**
+     * 分页查询
+     *
+     * @param page
+     * @param param
+     * @return
+     */
+    IPage<${className}DO> select${className}sByPage(Page page, @Param("param") ${className}PageQueryParam param);
+}

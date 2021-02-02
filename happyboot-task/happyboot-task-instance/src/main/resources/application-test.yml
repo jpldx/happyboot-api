@@ -1,0 +1,51 @@
+# web port
+server:
+    port: 8081
+# no web
+#spring.main.web-environment=false
+
+# log config
+logging:
+    config: classpath:logback.xml
+
+### xxl-job admin address list, such as "http://address" or "http://address01,http://address02"
+xxl:
+  job:
+    admin:
+      addresses: http://10.10.0.14:8081/xxl-job-admin
+    ### xxl-job, access token
+    accessToken:
+    ### xxl-job executor appname
+    executor:
+      appname: happyboot-job-executor
+      ### xxl-job executor registry-address: default use address to registry , otherwise use ip:port if address is null
+      address:
+      ### xxl-job executor server-info
+      ip: 10.10.0.27
+      port: 8888
+      ### xxl-job executor log-path
+      logpath: /data/applogs/xxl-job/jobhandler
+      ### xxl-job executor log-retention-days
+      logretentiondays: 30
+
+spring:
+  redis:
+    database: 3
+    host: redis-01
+    port: 6379
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1ms
+        min-idle: 0
+      shutdown-timeout: 100ms
+  datasource:
+    url: jdbc:mysql://mysql5.7-01:3306/db_happyboot?characterEncoding=UTF-8&useUnicode=true&useSSL=false&serverTimezone=GMT%2b8
+    username: root
+    password: lt@123456mysql
+
+# 配置slq打印日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

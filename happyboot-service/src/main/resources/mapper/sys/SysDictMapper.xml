@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysDictMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.sys.model.entity.SysDictDO">
+        <id column="id" property="id"/>
+        <result column="dict_name" property="dictName"/>
+        <result column="dict_code" property="dictCode"/>
+        <result column="description" property="description"/>
+        <result column="status" property="status"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_deleted" property="deleted"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        dict_name,
+        dict_code,
+        description,
+        status,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        version,
+        is_deleted
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.id,
+        a.dict_name,
+        a.dict_code,
+        a.description,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.version,
+        a.is_deleted
+    </sql>
+
+
+    <select id="selectByDictCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_dict
+        where is_deleted = 0 and dict_code = #{dictCode}
+    </select>
+
+    <select id="selectSysDictsByPage" parameterType="org.happykit.happyboot.sys.model.query.SysDictPageQueryParam"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_dict
+        where is_deleted = 0
+        <if test="param.dictName != null and param.dictName != ''">
+            AND dict_name like CONCAT('%', #{param.dictName}, '%')
+        </if>
+        <if test="param.dictCode != null and param.dictCode != ''">
+            AND dict_code like CONCAT('%', #{param.dictCode}, '%')
+        </if>
+    </select>
+
+    <select id="getTextByCodeAndValue" resultType="string">
+        SELECT
+            item_text
+        FROM
+            sys_dict_item
+        WHERE
+            is_deleted = 0
+        AND item_value = #{value}
+        AND dict_id = (
+            SELECT
+                id
+            FROM
+                sys_dict
+            WHERE
+                is_deleted = 0
+            AND dict_code = #{code})
+    </select>
+
+</mapper>

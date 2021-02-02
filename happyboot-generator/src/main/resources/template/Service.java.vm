@@ -1,0 +1,60 @@
+package ${package}.${moduleName}.service;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
+import ${package}.${moduleName}.model.entity.${className}DO;
+import ${package}.${moduleName}.model.form.${className}Form;
+import ${package}.${moduleName}.model.query.${className}PageQueryParam;
+
+import javax.validation.constraints.NotNull;
+import java.util.List;
+
+/**
+ * ${comments} 服务接口类
+ *
+ * @author ${author}
+ * @version 1.0 ${date}
+ */
+public interface ${className}Service extends IService<${className}DO> {
+
+    /**
+     * 分页查询
+     *
+     * @param param
+     * @return
+     */
+    IPage<${className}DO> list${className}sByPage(${className}PageQueryParam param);
+
+    /**
+     * 保存
+     *
+     * @param form
+     * @return
+     */
+        ${className}DO save${className}(${className}Form form);
+
+    /**
+     * 修改
+     *
+     * @param form
+     * @return
+     */
+        ${className}DO update${className}(${className}Form form);
+
+    /**
+     * 删除
+     *
+     * @param id
+     * @return
+     */
+    boolean delete${className}(@NotNull Long id);
+
+    /**
+     * 批量删除
+     *
+     * @param ids
+     * @return
+     */
+    boolean delete${className}(Long... ids);
+}
+

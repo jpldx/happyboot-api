@@ -1,0 +1,17 @@
+server:
+  port: 8025
+spring:
+  application:
+    name: happyboot-mq-consumer
+
+  rabbitmq:
+    host: 10.10.0.14
+    port: 5672
+    username: happyboot
+    password: happyboot
+    virtual-host: /happyboot
+
+  datasource:
+    url: jdbc:mysql://10.10.0.14:3306/db_happyboot?characterEncoding=UTF-8&useUnicode=true&useSSL=false&serverTimezone=GMT%2b8
+    username: root
+    password: lt@123456mysql

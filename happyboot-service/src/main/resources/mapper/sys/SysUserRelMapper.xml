@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysUserRelMapper">
+
+    <select id="getUserRelListByUserId" resultType="org.happykit.happyboot.sys.model.entity.SysUserDO">
+        select * from sys_user where is_deleted = 0
+        <choose>
+            <when test="userType == '0'.toString()">
+                and id in ( select sub_user_id from sys_user_rel where main_user_id = #{userId} )
+            </when>
+            <otherwise>
+                and id in ( select main_user_id from sys_user_rel where sub_user_id = #{userId} )
+            </otherwise>
+        </choose>
+    </select>
+
+    <delete id="delRel">
+        delete from sys_user_rel
+        <choose>
+            <when test="userType == '0'.toString()">
+                where main_user_id = #{userId}
+            </when>
+            <otherwise>
+                where sub_user_id = #{userId}
+            </otherwise>
+        </choose>
+    </delete>
+
+</mapper>

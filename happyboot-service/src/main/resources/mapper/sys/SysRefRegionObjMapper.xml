@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysRefRegionObjMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.sys.model.entity.SysRefRegionObjDO">
+        <id column="id" property="id"/>
+        <result column="obj_id" property="objId"/>
+        <result column="region_id" property="regionId"/>
+        <result column="region_code" property="regionCode"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        obj_id,
+        region_id,
+        region_code
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.id,
+        a.obj_id,
+        a.region_id,
+        a.region_code
+    </sql>
+
+    <delete id="deleteByObjId">
+         delete from sys_ref_region_obj where obj_id = #{objId}
+    </delete>
+
+</mapper>

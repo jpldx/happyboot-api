@@ -1,0 +1,105 @@
+package ${package}.${moduleName}.controller;
+
+import com.baomidou.mybatisplus.extension.api.R;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.litong.ltitframework.boot.core.base.BaseController;
+import com.litong.ltitframework.boot.core.validation.Update;
+import com.litong.ltitframework.boot.core.view.View;
+import ${package}.${moduleName}.model.form.${className}Form;
+import ${package}.${moduleName}.model.query.${className}PageQueryParam;
+import ${package}.${moduleName}.service.${className}Service;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+/**
+ * ${comments}控制器
+ *
+ * @author ${author}
+ * @version 1.0 ${date}
+ */
+@Validated
+@Slf4j
+@RestController
+@RequestMapping("${moduleName}/${pathName}")
+public class ${className}Controller extends BaseController {
+
+    private final ${className}Service ${classname}Service;
+
+    public ${className}Controller(${className}Service ${classname}Service) {
+        this.${classname}Service = ${classname}Service;
+    }
+
+    /**
+     * 列表
+     *
+     * @return
+     */
+    @PostMapping("/list")
+    @JsonView({View.SimpleView.class})
+    public R list() {
+        return success(${classname}Service.list());
+    }
+
+    /**
+     * 分页查询
+     *
+     * @param param
+     * @return
+     */
+    @PostMapping("/page")
+    @JsonView({View.SimpleView.class})
+    public R page(@RequestBody @Validated ${className}PageQueryParam param) {
+        return success(${classname}Service.list${className}sByPage(param));
+    }
+
+    /**
+     * 信息
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("/get")
+    @JsonView({View.SimpleView.class})
+    public R get(@NotNull Long id) {
+        return success(${classname}Service.getById(id));
+    }
+
+    /**
+     * 新增
+     *
+     * @param form
+     * @return
+     */
+    @PostMapping("/add")
+    @JsonView({View.SimpleView.class})
+    public R add(@RequestBody @Validated ${className}Form form) {
+        return success(${classname}Service.save${className}(form));
+    }
+
+    /**
+     * 编辑
+     *
+     * @param form
+     * @return
+     */
+    @PostMapping("/update")
+    @JsonView({View.SimpleView.class})
+    public R update(@RequestBody @Validated(Update.class) ${className}Form form) {
+        return success(${classname}Service.update${className}(form));
+    }
+
+    /**
+     * 删除
+     *
+     * @param ids
+     * @return
+     */
+    @DeleteMapping("/delete")
+    public R delete(@NotEmpty Long[] ids) {
+        return success(${classname}Service.delete${className}(ids));
+    }
+}

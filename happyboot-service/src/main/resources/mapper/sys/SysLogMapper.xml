@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysLogMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.sys.model.entity.SysLogDO">
+        <id column="id" property="id"/>
+        <result column="cost_time" property="costTime"/>
+        <result column="ip" property="ip"/>
+        <result column="request_param" property="requestParam"/>
+        <result column="request_type" property="requestType"/>
+        <result column="request_url" property="requestUrl"/>
+        <result column="method" property="method"/>
+        <result column="log_content" property="logContent"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_deleted" property="deleted"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        cost_time,
+        ip,
+        request_param,
+        request_type,
+        request_url,
+        method,
+        log_content,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        version,
+        is_deleted
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.id,
+        a.cost_time,
+        a.ip,
+        a.request_param,
+        a.request_type,
+        a.request_url,
+        a.method,
+        a.log_content,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.version,
+        a.is_deleted
+    </sql>
+
+    <select id="selectSysLogsByPage" parameterType="org.happykit.happyboot.sys.model.query.SysLogPageQueryParam"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_log
+        where is_deleted = 0
+    </select>
+
+</mapper>

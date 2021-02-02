@@ -1,0 +1,23 @@
+package ${package}.${moduleName}.model.form;
+
+import lombok.Data;
+
+import java.io.Serializable;
+
+/**
+ * ${comments}提交类
+ *
+ * @author ${author}
+ * @version 1.0 ${date}
+ */
+@Data
+public class ${className}Form implements Serializable {
+    #foreach ($column in $columns)
+        #if($column.supperClassColumn == 0)
+            /**
+             * $column.comments
+             */
+            private $column.attrType $column.attrname;
+        #end
+    #end
+}

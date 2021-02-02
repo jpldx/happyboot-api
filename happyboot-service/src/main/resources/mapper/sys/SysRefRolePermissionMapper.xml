@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysRefRolePermissionMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.sys.model.entity.SysRefRolePermissionDO">
+        <id column="id" property="id"/>
+        <result column="permission_id" property="permissionId"/>
+        <result column="role_id" property="roleId"/>
+        <result column="auth_type" property="authType"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        permission_id,
+        role_id,
+        auth_type
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.id,
+        a.permission_id,
+        a.role_id
+        a.auth_type
+    </sql>
+
+    <select id="selectSysRefRolePermissionsByPermissionId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_ref_role_permission
+        where permission_id = #{permissionId}
+    </select>
+
+    <select id="selectSysRefRolePermissionsByRoleId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_ref_role_permission
+        where role_id = #{roleId}
+    </select>
+
+    <delete id="deleteByPermissionId">
+        delete from sys_ref_role_permission where permission_id = #{permissionId}
+    </delete>
+
+    <delete id="deleteByRoleId">
+        delete from sys_ref_role_permission where role_id = #{roleId}
+    </delete>
+
+</mapper>

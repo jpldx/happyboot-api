@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysMsgMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.sys.model.entity.SysMsgDO">
+        <id column="id" property="id"/>
+        <result column="subject_id" property="subjectId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="overview" property="overview"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="sender_id" property="senderId"/>
+        <result column="sender" property="sender"/>
+        <result column="priority" property="priority"/>
+        <result column="msg_category" property="msgCategory"/>
+        <result column="msg_type" property="msgType"/>
+        <result column="send_status" property="sendStatus"/>
+        <result column="send_time" property="sendTime"/>
+        <result column="cancel_time" property="cancelTime"/>
+        <result column="user_ids" property="userIds"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="dept_code" property="deptCode"/>
+        <result column="is_lead_dept" property="isLeadDept"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_deleted" property="deleted"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        subject_id,
+        title,
+        content,
+        overview,
+        start_time,
+        end_time,
+        sender_id,
+        sender,
+        priority,
+        msg_category,
+        msg_type,
+        send_status,
+        send_time,
+        cancel_time,
+        is_deleted,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        user_ids,
+        dept_id,
+        dept_code,
+        is_lead_dept
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.id,
+        a.subject_id,
+        a.title,
+        a.content,
+        a.overview,
+        a.start_time,
+        a.end_time,
+        a.sender_id,
+        a.sender,
+        a.priority,
+        a.msg_category,
+        a.msg_type,
+        a.send_status,
+        a.send_time,
+        a.cancel_time,
+        a.is_deleted,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.user_ids,
+        a.dept_id,
+        a.dept_code,
+        a.is_lead_dept
+    </sql>
+
+    <select id="page" parameterType="org.happykit.happyboot.sys.model.query.SysMsgPageQueryParam"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_msg
+        where is_deleted = 0
+        <if test="param.title != null and param.title != ''">
+            and title like concat('%',#{param.title},'%')
+        </if>
+        <if test="param.startTime != null">
+            and send_time &gt;= #{param.startTime}
+        </if>
+        <if test="param.endTime != null">
+            and send_time &lt;= #{param.endTime}
+        </if>
+    </select>
+
+</mapper>

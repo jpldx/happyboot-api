@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.op.mapper.OpBannerMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.op.model.entity.OpBannerDO">
+        <id column="id" property="id"/>
+        <result column="subject_id" property="subjectId"/>
+        <result column="link_url" property="linkUrl"/>
+        <result column="image" property="image"/>
+        <result column="des" property="des"/>
+        <result column="enable" property="enable"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_deleted" property="deleted"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        subject_id,
+        link_url,
+        image,
+        des,
+        enable,
+        sort_order,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        version,
+        is_deleted
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.id,
+        a.subject_id,
+        a.link_url,
+        a.image,
+        a.des,
+        a.enable,
+        a.sort_order,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.version,
+        a.is_deleted
+    </sql>
+
+    <select id="page" parameterType="org.happykit.happyboot.op.model.query.OpBannerPageQuery" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from op_banner
+        where is_deleted = 0
+        <if test="query.enable !=null and query.enable!=''">
+            and enable = #{query.enable}
+        </if>
+        order by sort_order asc
+    </select>
+
+</mapper>

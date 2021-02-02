@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.happykit.happyboot.sys.mapper.SysMsgSendMapper">
+    <resultMap id="BaseResultMap" type="org.happykit.happyboot.sys.model.entity.SysMsgSendDO">
+        <id column="id" property="id"/>
+        <result column="msg_id" property="msgId"/>
+        <result column="user_id" property="userId"/>
+        <result column="read_flag" property="readFlag"/>
+        <result column="read_time" property="readTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="is_deleted" property="deleted"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        msg_id,
+        user_id,
+        read_flag,
+        read_time,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        is_deleted
+    </sql>
+
+    <sql id="Common_Column_List">
+        a.id,
+        a.msg_id,
+        a.user_id,
+        a.read_flag,
+        a.read_time,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.is_deleted
+    </sql>
+
+    <select id="queryUserMsgAlertList" resultType="org.happykit.happyboot.sys.model.entity.SysMsgDO">
+        SELECT
+        *
+        FROM
+        sys_msg
+        WHERE send_status = '1'
+        AND is_deleted = '0'
+        AND id IN ( SELECT msg_id FROM sys_msg_send WHERE read_flag = 0 AND is_deleted = 0 AND user_id = #{userId} )
+        <if test="headId != null and headId != ''">
+            and id > #{headId}
+        </if>
+        ORDER BY
+            send_time DESC
+        <if test="limits != -1">
+            LIMIT #{limits}
+        </if>
+    </select>
+
+    <update id="batchRead">
+        UPDATE sys_msg_send
+        SET read_flag = 1
+        WHERE
+            is_deleted = 0
+        AND read_flag = 0
+        AND user_id = #{userId}
+        AND msg_id &gt;= #{param.tailId}
+        AND msg_id &lt;= #{param.headId}
+    </update>
+
+    <select id="loadMore" resultType="org.happykit.happyboot.sys.model.entity.SysMsgDO">
+        SELECT
+            *
+        FROM
+            sys_msg
+        WHERE
+            send_status = '1'
+        AND is_deleted = '0'
+        AND id IN ( SELECT msg_id FROM sys_msg_send WHERE read_flag = 0 AND is_deleted = 0 AND user_id = #{userId} )
+        AND id &lt; #{tailId}
+        ORDER BY
+            send_time DESC
+        LIMIT 10
+    </select>
+
+    <select id="page" resultType="org.happykit.happyboot.sys.model.entity.SysMsgDO">
+        SELECT
+        a.*,b.read_flag readFlag
+        FROM
+        sys_msg a
+        INNER JOIN sys_msg_send b ON a.id = b.msg_id
+        WHERE a.send_status = '1'
+        AND a.is_deleted = '0'
+        AND b.is_deleted = 0
+        AND b.user_id = #{userId}
+        <if test="query.title !=null and query.title!=''">
+            AND a.title like concat('%',#{query.title},'%')
+        </if>
+        <if test="query.content !=null and query.content!=''">
+            AND a.content like concat('%',#{query.content},'%')
+        </if>
+        <if test="query.sender !=null and query.sender!=''">
+            AND a.sender like concat('%',#{query.sender},'%')
+        </if>
+        <if test="query.readFlag !=null and query.readFlag!=''">
+            AND b.read_flag = #{query.readFlag}
+        </if>
+        ORDER BY
+            a.send_time DESC
+    </select>
+
+    <update id="read">
+        UPDATE sys_msg_send
+        SET read_flag = 1
+        WHERE
+            is_deleted = 0
+        AND read_flag = 0
+        AND user_id = #{userId}
+        AND msg_id IN
+        <foreach collection="msgIds" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </update>
+
+</mapper>
