@@ -13,7 +13,7 @@ steps:
       - name: sshkeys
         path: /root/.ssh
     commands:
-      - git clone $DRONE_GIT_SSH_URL .
+      - git clone $DRONE_GIT_HTTP_URL .
       - git checkout $DRONE_COMMIT
 
   - name: build jar
