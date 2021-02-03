@@ -21,14 +21,14 @@ steps:
   #      - git clone $DRONE_GIT_SSH_URL .
   #      - git checkout $DRONE_COMMIT
   #
-  #  - name: build jar
-  #    pull: if-not-exists
-  #    image: maven:3-jdk-8
-  #    volumes:
-  #      - name: cache # The Volume's name
-  #        path: /root/.m2 # The path in the container
-  #    commands:
-  #      - mvn clean package -DskipTests=true
+  - name: build jar
+    pull: if-not-exists
+    image: maven:3-jdk-8
+    volumes:
+      - name: cache # The Volume's name
+        path: /root/.m2 # The path in the container
+    commands:
+      - mvn clean package -DskipTests=true
 
   # 可以关闭代码分析，提高构建效率
   #  - name: code-analysis
@@ -129,10 +129,10 @@ steps:
 
   - name: dingtalk
     pull: if-not-exists
-    image: lddsb/drone-dingtalk-message
+    image: guoxudongdocker/drone-dingtalk
     settings:
       token:
-        from_secret: DING_TOKEN
+        from_secret: DINGTALK_TOKEN
       type: markdown
       message_color: true
       message_pic: true
