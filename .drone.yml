@@ -6,12 +6,6 @@ clone:
   disable: true
 
 steps:
-#  - name: greeting
-  #    image: alpine
-  #    commands:
-  #      - echo $DRONE_GIT_SSH_URL
-  #      - echo $DRONE_GIT_HTTP_URL
-
   - name: git clone
     image: alpine/git
     pull: if-not-exists
@@ -21,15 +15,15 @@ steps:
     commands:
       - git clone $DRONE_GIT_HTTP_URL .
       - git checkout $DRONE_COMMIT
-  #
-  #  - name: build jar
-  #    pull: if-not-exists
-  #    image: maven:3-jdk-8
-  #    volumes:
-  #      - name: cache # The Volume's name
-  #        path: /root/.m2 # The path in the container
-  #    commands:
-  #      - mvn clean package -DskipTests=true
+
+  - name: build jar
+    pull: if-not-exists
+    image: maven:3-jdk-8
+    volumes:
+      - name: cache # The Volume's name
+        path: /root/.m2 # The path in the container
+    commands:
+      - mvn clean package -DskipTests=true
 
   # 可以关闭代码分析，提高构建效率
   #  - name: code-analysis
