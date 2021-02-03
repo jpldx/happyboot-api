@@ -2,11 +2,11 @@ kind: pipeline
 type: docker
 name: happyboot-api
 
-clone:
-  disable: true
+#clone:
+#  disable: true
 
 steps:
-#  - name: git clone
+  #  - name: git clone
   #    image: alpine/git
   #    pull: if-not-exists
   #    volumes:
