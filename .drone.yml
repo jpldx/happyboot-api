@@ -6,11 +6,11 @@ clone:
   disable: true
 
 steps:
-  - name: greeting
-    image: alpine
-    commands:
-      - echo $DRONE_GIT_SSH_URL
-      - echo $DRONE_GIT_HTTP_URL
+#  - name: greeting
+  #    image: alpine
+  #    commands:
+  #      - echo $DRONE_GIT_SSH_URL
+  #      - echo $DRONE_GIT_HTTP_URL
 
   - name: git clone
     image: alpine/git
@@ -19,7 +19,7 @@ steps:
       - name: sshkeys
         path: /root/.ssh
     commands:
-      - git clone $DRONE_GIT_SSH_URL .
+      - git clone $DRONE_GIT_HTTP_URL .
       - git checkout $DRONE_COMMIT
   #
   #  - name: build jar
