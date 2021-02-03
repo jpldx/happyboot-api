@@ -1,3 +1,4 @@
-FROM gmaslowski/jdk:8u172
-ADD happyboot-web-admin-1.0.0.jar backend-api.jar
-ENTRYPOINT ["java","-Dspring.profiles.active=aliyun","-Dserver.port=8080","-jar","/backend-api.jar"]
+FROM localhost:5000/jdk:8
+LABEL maintainer="979309838@qq.com"
+ADD happyboot-web-admin-1.0.0.jar /app.jar
+ENTRYPOINT ["java","-Dspring.profiles.active=aliyun","-Dserver.port=8080","-jar","/app.jar"]

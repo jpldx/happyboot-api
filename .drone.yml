@@ -46,18 +46,18 @@ steps:
   #      password: lt@123456
   #      insecure: true
 
-  #  - name: build image > system-api
-  #    pull: if-not-exists
-  #    image: plugins/docker
-  #    settings:
-  #      mirror: https://docker.mirrors.ustc.edu.cn
-  #      dockerfile: happyboot-web/happyboot-web-admin/docker/test/Dockerfile
-  #      repo: 10.10.0.14:5000/happyboot/system-api
-  #      registry: 10.10.0.14:5000
-  #      tags: ${DRONE_BUILD_NUMBER}
-  #      username: root
-  #      password: lt@123456
-  #      insecure: true
+  - name: build image > system-api
+    pull: if-not-exists
+    image: plugins/docker
+    settings:
+      mirror: https://docker.mirrors.ustc.edu.cn
+      dockerfile: happyboot-web/happyboot-web-admin/docker/aliyun/Dockerfile
+      repo: localhost:5000/happyboot/system-api
+      registry: localhost:5000
+      tags: ${DRONE_BUILD_NUMBER}
+      #      username: root
+      #      password: lt@123456
+      insecure: true
 
   #  - name: image：xxl-executor
   #    pull: if-not-exists
