@@ -9,17 +9,18 @@ steps:
   - name: greeting
     image: alpine
     commands:
-      - echo hello world
+      - echo $DRONE_GIT_SSH_URL
+      - echo $DRONE_GIT_HTTP_URL
 
-  #  - name: git clone
-  #    image: alpine/git
-  #    pull: if-not-exists
-  #    volumes:
-  #      - name: sshkeys
-  #        path: /root/.ssh
-  #    commands:
-  #      - git clone $DRONE_GIT_SSH_URL .
-  #      - git checkout $DRONE_COMMIT
+  - name: git clone
+    image: alpine/git
+    pull: if-not-exists
+    volumes:
+      - name: sshkeys
+        path: /root/.ssh
+    commands:
+      - git clone $DRONE_GIT_SSH_URL .
+      - git checkout $DRONE_COMMIT
   #
   #  - name: build jar
   #    pull: if-not-exists
