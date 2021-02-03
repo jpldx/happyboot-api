@@ -14,6 +14,7 @@ name: happyboot-api
 #    commands:
 #      - git clone $DRONE_GIT_HTTP_URL .
 #      - git checkout $DRONE_COMMIT
+###
 steps:
   - name: build jar
     pull: if-not-exists
