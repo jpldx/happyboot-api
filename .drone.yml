@@ -1,29 +1,34 @@
 kind: pipeline
-name: default
 type: docker
+name: default
 
 clone:
   disable: true
 
 steps:
-  - name: git clone
-    image: alpine/git
-    pull: if-not-exists
-    volumes:
-      - name: sshkeys
-        path: /root/.ssh
+  - name: greeting
+    image: alpine
     commands:
-      - git clone $DRONE_GIT_SSH_URL .
-      - git checkout $DRONE_COMMIT
+      - echo hello world
 
-  - name: build jar
-    pull: if-not-exists
-    image: maven:3-jdk-8
-    volumes:
-      - name: cache # The Volume's name
-        path: /root/.m2 # The path in the container
-    commands:
-      - mvn clean package -DskipTests=true
+  #  - name: git clone
+  #    image: alpine/git
+  #    pull: if-not-exists
+  #    volumes:
+  #      - name: sshkeys
+  #        path: /root/.ssh
+  #    commands:
+  #      - git clone $DRONE_GIT_SSH_URL .
+  #      - git checkout $DRONE_COMMIT
+  #
+  #  - name: build jar
+  #    pull: if-not-exists
+  #    image: maven:3-jdk-8
+  #    volumes:
+  #      - name: cache # The Volume's name
+  #        path: /root/.m2 # The path in the container
+  #    commands:
+  #      - mvn clean package -DskipTests=true
 
   # 可以关闭代码分析，提高构建效率
   #  - name: code-analysis
@@ -124,12 +129,13 @@ steps:
 
   - name: dingtalk
     pull: if-not-exists
-    image: guoxudongdocker/drone-dingtalk
+    image: lddsb/drone-dingtalk-message
     settings:
-      token: 96f5bf107962fe71c3a99c34d91ff7735c76c4ffcc3c7eeb0413551eaf59f511
+      token:
+        from_secret: DING_TOKEN
       type: markdown
       message_color: true
-      message_pic: false
+      message_pic: true
       sha_link: true
     when:
       status:
