@@ -1,20 +1,20 @@
 kind: pipeline
 type: docker
-name: default
+name: happyboot-api
 
-clone:
-  disable: true
+#clone:
+#  disable: true
 
 steps:
-  - name: git clone
-    image: alpine/git
-    pull: if-not-exists
-    volumes:
-      - name: sshkeys
-        path: /root/.ssh
-    commands:
-      - git clone $DRONE_GIT_HTTP_URL .
-      - git checkout $DRONE_COMMIT
+  #  - name: git clone
+  #    image: alpine/git
+  #    pull: if-not-exists
+  #    volumes:
+  #      - name: sshkeys
+  #        path: /root/.ssh
+  #    commands:
+  #      - git clone $DRONE_GIT_HTTP_URL .
+  #      - git checkout $DRONE_COMMIT
 
   - name: build jar
     pull: if-not-exists
