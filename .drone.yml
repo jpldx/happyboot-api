@@ -6,15 +6,15 @@ clone:
   disable: true
 
 steps:
-  - name: git clone
-    image: alpine/git
-    pull: if-not-exists
-    volumes:
-      - name: sshkeys
-        path: /root/.ssh
-    commands:
-      - git clone https://hub.fastgit.org/jpldx/happyboot-api.git .
-      - git checkout $DRONE_COMMIT
+#  - name: git clone
+  #    image: alpine/git
+  #    pull: if-not-exists
+  #    volumes:
+  #      - name: sshkeys
+  #        path: /root/.ssh
+  #    commands:
+  #      - git clone https://hub.fastgit.org/jpldx/happyboot-api.git .
+  #      - git checkout $DRONE_COMMIT
 
   - name: build jar
     pull: if-not-exists
@@ -50,7 +50,7 @@ steps:
     pull: if-not-exists
     image: plugins/docker
     settings:
-#      mirror: https://docker.mirrors.ustc.edu.cn
+      mirror: http://hub-mirror.c.163.com # 网易镜像源
       dockerfile: happyboot-web/happyboot-web-admin/docker/aliyun/Dockerfile
       repo: localhost:5000/happyboot/system-api
       registry: localhost:5000
