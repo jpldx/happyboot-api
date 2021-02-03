@@ -6,6 +6,11 @@ clone:
   disable: true
 
 steps:
+  - name: greeting
+    image: alpine
+    commands:
+      - ping github.com
+
   - name: git clone
     image: alpine/git
     pull: if-not-exists
