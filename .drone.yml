@@ -2,19 +2,19 @@ kind: pipeline
 type: docker
 name: happyboot-api
 
-#clone:
-#  disable: true
+clone:
+  disable: true
 
 steps:
-  #  - name: git clone
-  #    image: alpine/git
-  #    pull: if-not-exists
-  #    volumes:
-  #      - name: sshkeys
-  #        path: /root/.ssh
-  #    commands:
-  #      - git clone $DRONE_GIT_HTTP_URL .
-  #      - git checkout $DRONE_COMMIT
+  - name: git clone
+    image: alpine/git
+    pull: if-not-exists
+    volumes:
+      - name: sshkeys
+        path: /root/.ssh
+    commands:
+      - git clone $DRONE_GIT_SSH_URL .
+      - git checkout $DRONE_COMMIT
 
   - name: build jar
     pull: if-not-exists
@@ -123,20 +123,20 @@ steps:
 #        - docker run -d --network over -p6632:8080 -p8888:8888 -v /data/happyboot/xxl-executor:/upload -v /etc/localtime:/etc/localtime:ro -e TZ=Asia/Shanghai --privileged=true --name=happyboot-xxl-executor-${DRONE_BUILD_NUMBER} 10.10.0.14:5000/happyboot/xxl-executor:${DRONE_BUILD_NUMBER}
 
 ##
-  - name: dingtalk
-    pull: if-not-exists
-    image: guoxudongdocker/drone-dingtalk
-    settings:
-      token:
-        from_secret: DINGTALK_TOKEN
-      type: markdown
-      message_color: true
-      message_pic: true
-      sha_link: true
-    when:
-      status:
-        - failure
-        - success
+#  - name: dingtalk
+#    pull: if-not-exists
+#    image: guoxudongdocker/drone-dingtalk
+#    settings:
+#      token:
+#        from_secret: DINGTALK_TOKEN
+#      type: markdown
+#      message_color: true
+#      message_pic: true
+#      sha_link: true
+#    when:
+#      status:
+#        - failure
+#        - success
 
 trigger:
   branch:
