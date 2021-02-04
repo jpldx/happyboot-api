@@ -52,8 +52,8 @@ steps:
     settings:
       mirror: http://hub-mirror.c.163.com
       dockerfile: happyboot-web/happyboot-web-admin/docker/aliyun/Dockerfile
-      repo: www.jpldx.com:5000/happyboot/system-api
-      registry: www.jpldx.com:5000
+      repo: registry:5000/happyboot/system-api
+      registry: registry:5000
       tags: ${DRONE_BUILD_NUMBER}
       #      username: root
       #      password: lt@123456
