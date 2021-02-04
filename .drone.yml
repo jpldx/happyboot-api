@@ -16,7 +16,7 @@ steps:
   #      - git clone https://hub.fastgit.org/jpldx/happyboot-api.git .
   #      - git checkout $DRONE_COMMIT
 
-  - name: build jar
+  - name: maven packaging
     pull: if-not-exists
     image: maven:3-jdk-8
     volumes:
