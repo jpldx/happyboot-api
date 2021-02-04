@@ -16,7 +16,7 @@ steps:
   #      - git clone https://hub.fastgit.org/jpldx/happyboot-api.git .
   #      - git checkout $DRONE_COMMIT
 
-  - name: mvn packaging
+  - name: mvn package
     pull: if-not-exists
     image: maven:3-jdk-8
     volumes:
@@ -50,10 +50,10 @@ steps:
     pull: if-not-exists
     image: plugins/docker
     settings:
-      mirror: http://hub-mirror.c.163.com # 网易镜像源
+      mirror: http://hub-mirror.c.163.com
       dockerfile: happyboot-web/happyboot-web-admin/docker/aliyun/Dockerfile
-      repo: localhost:5000/happyboot/system-api
-      registry: localhost:5000
+      repo: 172.17.0.1:5000/happyboot/system-api
+      registry: 172.17.0.1:5000
       tags: ${DRONE_BUILD_NUMBER}
       #      username: root
       #      password: lt@123456
