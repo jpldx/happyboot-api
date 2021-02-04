@@ -46,14 +46,14 @@ steps:
   #      password: lt@123456
   #      insecure: true
 
-  - name: build image [system-api]
+  - name: docker build [system-api]
     pull: if-not-exists
     image: plugins/docker
     settings:
       mirror: http://hub-mirror.c.163.com
       dockerfile: happyboot-web/happyboot-web-admin/docker/aliyun/Dockerfile
-      repo: registry:5000/happyboot/system-api
-      registry: registry:5000
+      repo: 172.19.127.136:5000/happyboot/system-api
+      registry: 172.19.127.136:5000
       tags: ${DRONE_BUILD_NUMBER}
       #      username: root
       #      password: lt@123456
@@ -88,7 +88,7 @@ steps:
   #        - test "$list" = "" && echo "none happyboot-mq-consumer containers running" || docker stop $list
   #        - docker run -d --network over -p6631:8080  -v /etc/localtime:/etc/localtime:ro -e TZ=Asia/Shanghai --privileged=true --name=happyboot-mq-consumer-${DRONE_BUILD_NUMBER} 10.10.0.14:5000/happyboot/mq-consumer:${DRONE_BUILD_NUMBER}
 
-  #  - name: deploy container > system-api
+  #  - name: docker run [system-api]
   #    pull: if-not-exists
   #    image: appleboy/drone-ssh
   #    settings:
