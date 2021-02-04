@@ -53,7 +53,7 @@ steps:
       mirror: http://hub-mirror.c.163.com
       dockerfile: happyboot-web/happyboot-web-admin/docker/aliyun/Dockerfile
       repo:
-        from_secret: DOCKER_REGISTRY/happyboot/system-api
+        from_secret: $DOCKER_REGISTRY/happyboot/system-api
       registry:
         from_secret: DOCKER_REGISTRY
       tags: ${DRONE_BUILD_NUMBER}
