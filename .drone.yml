@@ -61,9 +61,23 @@ steps:
   #        from_secret: DOCKER_REGISTRY_PASSWORD
   #      insecure: true
 
-  - name: docker run [system-api]
-    pull: if-not-exists
-    image: appleboy/drone-ssh
+  #  - name: docker run [system-api]
+  #    pull: if-not-exists
+  #    image: appleboy/drone-ssh
+  #    settings:
+  #      host:
+  #        from_secret: SERVER_INNER_IP
+  #      username:
+  #        from_secret: SERVER_USERNAME
+  #      password:
+  #        from_secret: SERVER_PASSWORD
+  #      port:
+  #        from_secret: SERVER_SSH_PORT
+  #      script:
+  #        - cp docker-compose.yml /usr/local/docker/docker-compose/happyboot-api
+
+  - name: scp docker-compose.yml
+    image: appleboy/drone-scp
     settings:
       host:
         from_secret: SERVER_INNER_IP
@@ -73,11 +87,11 @@ steps:
         from_secret: SERVER_PASSWORD
       port:
         from_secret: SERVER_SSH_PORT
-      script:
-        - cp docker-compose.yml /usr/local/docker/docker-compose/happyboot-api
-          #  - name: image：xxl-executor
-          #    pull: if-not-exists
-        #    image: plugins/docker
+      target: /usr/local/docker/docker-compose/happyboot-api
+      source: docker-compose.yml
+        #  - name: image：xxl-executor
+        #    pull: if-not-exists
+      #    image: plugins/docker
   #    settings:
   #      mirror: https://docker.mirrors.ustc.edu.cn
   #      dockerfile: ltit-cloud-task/ltit-cloud-task-instance/docker/test/Dockerfile
