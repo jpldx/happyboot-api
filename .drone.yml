@@ -3,8 +3,8 @@ type: docker
 name: happyboot-api
 
 environment:
-#  SERVER_IP:
-  #    from_secret: server_ip
+  SERVER_IP:
+    from_secret: server_ip
   #  SERVER_USERNAME:
   #    from_secret: server_username
   #  SERVER_PASSWORD:
