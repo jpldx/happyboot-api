@@ -6,24 +6,24 @@ clone:
   disable: true
 
 steps:
-  - name: git clone
-    image: alpine/git
-    pull: if-not-exists
-    volumes:
-      - name: sshkeys
-        path: /root/.ssh
-    commands:
-      - git clone https://hub.fastgit.org/jpldx/happyboot-api.git .
-      - git checkout $DRONE_COMMIT
-
-  - name: mvn package
-    pull: if-not-exists
-    image: maven:3-jdk-8
-    volumes:
-      - name: cache # The Volume's name
-        path: /root/.m2 # The path in the container
-    commands:
-      - mvn clean package -DskipTests=true
+#  - name: git clone
+  #    image: alpine/git
+  #    pull: if-not-exists
+  #    volumes:
+  #      - name: sshkeys
+  #        path: /root/.ssh
+  #    commands:
+  #      - git clone https://hub.fastgit.org/jpldx/happyboot-api.git .
+  #      - git checkout $DRONE_COMMIT
+  #
+  #  - name: mvn package
+  #    pull: if-not-exists
+  #    image: maven:3-jdk-8
+  #    volumes:
+  #      - name: cache # The Volume's name
+  #        path: /root/.m2 # The path in the container
+  #    commands:
+  #      - mvn clean package -DskipTests=true
 
   # 可以关闭代码分析，提高构建效率
   #  - name: code-analysis
@@ -46,20 +46,20 @@ steps:
   #      password: lt@123456
   #      insecure: true
 
-  - name: docker build [system-api]
-    pull: if-not-exists
-    image: plugins/docker
-    settings:
-      mirror: http://hub-mirror.c.163.com
-      dockerfile: happyboot-web/happyboot-web-admin/docker/aliyun/Dockerfile
-      repo: 172.19.127.136:5000/happyboot/system-api
-      registry: 172.19.127.136:5000
-      tags: ${DRONE_BUILD_NUMBER}
-      username:
-        from_secret: DOCKER_REGISTRY_USERNAME
-      password:
-        from_secret: DOCKER_REGISTRY_PASSWORD
-      insecure: true
+  #  - name: docker build [system-api]
+  #    pull: if-not-exists
+  #    image: plugins/docker
+  #    settings:
+  #      mirror: http://hub-mirror.c.163.com
+  #      dockerfile: happyboot-web/happyboot-web-admin/docker/aliyun/Dockerfile
+  #      repo: 172.19.127.136:5000/happyboot/system-api
+  #      registry: 172.19.127.136:5000
+  #      tags: ${DRONE_BUILD_NUMBER}
+  #      username:
+  #        from_secret: DOCKER_REGISTRY_USERNAME
+  #      password:
+  #        from_secret: DOCKER_REGISTRY_PASSWORD
+  #      insecure: true
 
   - name: docker run [system-api]
     pull: if-not-exists
@@ -67,16 +67,17 @@ steps:
     settings:
       host:
         from_secret: SERVER_INNER_IP
-      username: aaa
-      #        from_secret: SERVER_USERNAME
+      username:
+        from_secret: SERVER_USERNAME
       password:
         from_secret: SERVER_PASSWORD
       port:
         from_secret: SERVER_SSH_PORT
       script:
-        - #  - name: image：xxl-executor
+        - cp docker-compose.yml /usr/local/docker/docker-compose/happyboot-api
+          #  - name: image：xxl-executor
           #    pull: if-not-exists
-          #    image: plugins/docker
+        #    image: plugins/docker
   #    settings:
   #      mirror: https://docker.mirrors.ustc.edu.cn
   #      dockerfile: ltit-cloud-task/ltit-cloud-task-instance/docker/test/Dockerfile
