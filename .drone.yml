@@ -46,20 +46,20 @@ steps:
   #      password: lt@123456
   #      insecure: true
 
-  #  - name: docker build [system-api]
-  #    pull: if-not-exists
-  #    image: plugins/docker
-  #    settings:
-  #      mirror: http://hub-mirror.c.163.com
-  #      dockerfile: happyboot-web/happyboot-web-admin/docker/aliyun/Dockerfile
-  #      repo: 172.19.127.136:5000/happyboot/system-api
-  #      registry: 172.19.127.136:5000
-  #      tags: ${DRONE_BUILD_NUMBER}
-  #      username:
-  #        from_secret: DOCKER_REGISTRY_USERNAME
-  #      password:
-  #        from_secret: DOCKER_REGISTRY_PASSWORD
-  #      insecure: true
+  - name: docker build [system]
+    pull: if-not-exists
+    image: plugins/docker
+    settings:
+      mirror: http://hub-mirror.c.163.com
+      dockerfile: happyboot-web/happyboot-web-admin/docker/aliyun/Dockerfile
+      repo: 172.19.127.136:5000/happyboot-api/system
+      registry: 172.19.127.136:5000
+      tags: ${DRONE_BUILD_NUMBER}
+      username:
+        from_secret: DOCKER_REGISTRY_USERNAME
+      password:
+        from_secret: DOCKER_REGISTRY_PASSWORD
+      insecure: true
 
   #  - name: docker run [system-api]
   #    pull: if-not-exists
