@@ -68,13 +68,13 @@ steps:
       host:
         from_secret: SERVER_INNER_IP
       username:
-        from_secret: SERVER_USERNAME
+        from_secret: sss
       password:
         from_secret: SERVER_PASSWORD
       port:
         from_secret: SERVER_SSH_PORT
       script:
-        - echo hahahahahah
+        -
 
   #  - name: image：xxl-executor
   #    pull: if-not-exists
