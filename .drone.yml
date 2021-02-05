@@ -2,8 +2,8 @@ kind: pipeline
 type: docker
 name: happyboot-api
 
-environment:
-  SERVER_WORKSPACE: /usr/local/docker/docker-compose/happyboot-api
+  #environment:
+  #  SERVER_WORKSPACE:
   #  SERVER_IP:
   #    from_secret: server_ip
   #  SERVER_USERNAME:
@@ -92,7 +92,7 @@ steps:
         from_secret: server_password
       port:
         from_secret: server_port
-      target: ${SERVER_WORKSPACE}
+      target: /usr/local/docker/docker-compose/happyboot-api
       source: docker-compose.yml
 
   - name: docker-compose up
@@ -108,7 +108,7 @@ steps:
       port:
         from_secret: server_port
       script:
-        - cd ${SERVER_WORKSPACE}
+        - cd /usr/local/docker/docker-compose/happyboot-api
         - echo DRONE_BUILD_NUMBER=${DRONE_BUILD_NUMBER} > .env
         - docker-compose --env-file .env up -d
 
