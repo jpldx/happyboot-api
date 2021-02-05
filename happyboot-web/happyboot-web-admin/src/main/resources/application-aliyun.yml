@@ -1,7 +1,5 @@
 server:
-  port: 8020
-  servlet:
-    context-path: /system
+  port: 8080
 
 spring:
   jackson:
