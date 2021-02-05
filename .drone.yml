@@ -3,7 +3,8 @@ type: docker
 name: happyboot-api
 
 environment:
-#  SERVER_IP:
+  SERVER_WORKSPACE: /usr/local/docker/docker-compose/happyboot-apix
+  #  SERVER_IP:
   #    from_secret: server_ip
   #  SERVER_USERNAME:
   #    from_secret: server_username
@@ -17,7 +18,6 @@ environment:
   #    from_secret: docker_registry_username
   #  DOCKER_REGISTRY_PASSWORD:
   #    from_secret: docker_registry_password
-  SERVER_WORKSPACE: /usr/local/docker/docker-compose/happyboot-api
 
 clone:
   disable: true
@@ -69,18 +69,16 @@ steps:
     environment:
       DOCKER_REGISTRY_ADDRESS:
         from_secret: docker_registry_address
-      DOCKER_REGISTRY_USERNAME:
-        from_secret: docker_registry_username
-      DOCKER_REGISTRY_PASSWORD:
-        from_secret: docker_registry_password
     settings:
       mirror: http://hub-mirror.c.163.com
       dockerfile: happyboot-web/happyboot-web-admin/docker/aliyun/Dockerfile
       repo: ${DOCKER_REGISTRY_ADDRESS}/happyboot-api/system
       registry: ${DOCKER_REGISTRY_ADDRESS}
       tags: ${DRONE_BUILD_NUMBER}
-      username: ${DOCKER_REGISTRY_USERNAME}
-      password: ${DOCKER_REGISTRY_PASSWORD}
+      username:
+        from_secret: docker_registry_username
+      password:
+        from_secret: docker_registry_password
       insecure: true
 
   - name: scp files [docker-compose.yml]
@@ -93,7 +91,7 @@ steps:
       password:
         from_secret: server_password
       port:
-        from_port: server_port
+        from_secret: server_port
       target: ${SERVER_WORKSPACE}
       source: docker-compose.yml
 
@@ -108,7 +106,7 @@ steps:
       password:
         from_secret: server_password
       port:
-        from_port: server_port
+        from_secret: server_port
       script:
         - cd ${SERVER_WORKSPACE}
         - echo DRONE_BUILD_NUMBER=${DRONE_BUILD_NUMBER} > .env
