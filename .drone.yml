@@ -75,7 +75,7 @@ steps:
   #        from_secret: SERVER_SSH_PORT
   #      script:
   #        - cp docker-compose.yml /usr/local/docker/docker-compose/happyboot-api
-
+###
   - name: scp docker-compose.yml
     image: appleboy/drone-scp
     settings:
