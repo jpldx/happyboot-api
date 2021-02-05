@@ -3,7 +3,7 @@ type: docker
 name: happyboot-api
 
 environment:
-  SERVER_WORKSPACE: /usr/local/docker/docker-compose/happyboot-apix
+  SERVER_WORKSPACE: /usr/local/docker/docker-compose/happyboot-api
   #  SERVER_IP:
   #    from_secret: server_ip
   #  SERVER_USERNAME:
