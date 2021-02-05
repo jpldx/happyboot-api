@@ -3,20 +3,20 @@ type: docker
 name: happyboot-api
 
 environment:
-  SERVER_IP:
-    from_secret: server-ip
-  SERVER_USERNAME:
-    from_secret: server_username
-  SERVER_PASSWORD:
-    from_secret: server_password
-  SERVER_PORT:
-    from_secret: server_port
-  DOCKER_REGISTRY_ADDRESS:
-    from_secret: docker_registry_address
-  DOCKER_REGISTRY_USERNAME:
-    from_secret: docker_registry_username
-  DOCKER_REGISTRY_PASSWORD:
-    from_secret: docker_registry_password
+#  SERVER_IP:
+  #    from_secret: server_ip
+  #  SERVER_USERNAME:
+  #    from_secret: server_username
+  #  SERVER_PASSWORD:
+  #    from_secret: server_password
+  #  SERVER_PORT:
+  #    from_secret: server_port
+  #  DOCKER_REGISTRY_ADDRESS:
+  #    from_secret: docker_registry_address
+  #  DOCKER_REGISTRY_USERNAME:
+  #    from_secret: docker_registry_username
+  #  DOCKER_REGISTRY_PASSWORD:
+  #    from_secret: docker_registry_password
   SERVER_WORKSPACE: /usr/local/docker/docker-compose/happyboot-api
 
 clone:
