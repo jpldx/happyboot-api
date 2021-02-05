@@ -6,15 +6,15 @@ clone:
   disable: true
 
 steps:
-#  - name: git clone
-  #    image: alpine/git
-  #    pull: if-not-exists
-  #    volumes:
-  #      - name: sshkeys
-  #        path: /root/.ssh
-  #    commands:
-  #      - git clone https://hub.fastgit.org/jpldx/happyboot-api.git .
-  #      - git checkout $DRONE_COMMIT
+  - name: git clone
+    image: alpine/git
+    pull: if-not-exists
+    volumes:
+      - name: sshkeys
+        path: /root/.ssh
+    commands:
+      - git clone https://hub.fastgit.org/jpldx/happyboot-api.git .
+      - git checkout $DRONE_COMMIT
   #
   #  - name: mvn package
   #    pull: if-not-exists
@@ -76,7 +76,7 @@ steps:
   #      script:
   #        - cp docker-compose.yml /usr/local/docker/docker-compose/happyboot-api
 ###
-  - name: scp docker-compose.yml
+  - name: scp files
     image: appleboy/drone-scp
     settings:
       host:
