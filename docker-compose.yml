@@ -1,1 +1,16 @@
 version: "3.9"
+services:
+  system-api:
+    image: 172.19.127.136:5000/happyboot-api/system:v${DRONE_BUILD_NUMBER}
+    container_name: happyboot-api-system-v${DRONE_BUILD_NUMBER}
+    network_mode: application
+    privileged: true
+    restart: unless-stopped
+    ports:
+      - "6630:8080"
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - /data/happyboot-api/upload:/upload
+      - /data/happyboot-api/system/logs:/logs
+      - /etc/localtime:/etc/localtime:ro
