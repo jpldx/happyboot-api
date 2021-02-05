@@ -20,6 +20,13 @@ spring:
         min-idle: 0
       shutdown-timeout: 100ms
 
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: admin
+    password: chenxudong0926
+  #    virtual-host: /happyboot
+
   datasource:
     url: jdbc:mysql://mysql5.7:3306/db_happyboot?characterEncoding=UTF-8&useUnicode=true&useSSL=false&serverTimezone=GMT%2b8
     username: root
