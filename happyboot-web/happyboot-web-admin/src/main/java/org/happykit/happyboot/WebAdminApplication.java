@@ -30,7 +30,7 @@ public class WebAdminApplication {
         String path = env.getProperty("server.servlet.context-path");
 
         log.info("\n*************************************************\n"
-                + "**** Happyboot Application start-up success! ****\n"
+                + "**** Happyboot System Api start-up success! ****\n"
                 + "**** Port:" + port + "\t\t\tContext-Path:" + path + " ****\n"
                 + "*************************************************\n");
     }

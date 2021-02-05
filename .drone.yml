@@ -60,6 +60,21 @@ steps:
         from_secret: docker_registry_password
       insecure: true
 
+  - name: docker push [consumer]
+    pull: if-not-exists
+    image: plugins/docker
+    settings:
+      mirror: http://hub-mirror.c.163.com
+      dockerfile: happyboot-mq-consumer/docker/aliyun/Dockerfile
+      repo: 172.19.127.136:5000/happyboot-api/consumer
+      registry: 172.19.127.136:5000
+      tags: ${DRONE_BUILD_NUMBER}
+      username:
+        from_secret: docker_registry_username
+      password:
+        from_secret: docker_registry_password
+      insecure: true
+
   - name: scp files [docker-compose.yml]
     image: appleboy/drone-scp
     settings:
@@ -141,39 +156,6 @@ steps:
   #      username: root
   #      password: lt@123456
   #      insecure: true
-  #  - name: deploy container > mq-consumer
-  #    pull: if-not-exists
-  #    image: appleboy/drone-ssh
-  #    settings:
-  #      host: 10.10.0.27
-  #      username: root
-  #      password: lt@123456
-  #      port: 22
-  #      script:
-  #        - echo start update container
-  #        - echo login registry 10.10.0.14:5000
-  #        - docker login -u root -p lt@123456 10.10.0.14:5000
-  #        - docker pull 10.10.0.14:5000/happyboot/mq-consumer:${DRONE_BUILD_NUMBER}
-  #        - list=$(docker ps -a| grep happyboot-mq-consumer* | awk '{print $1}')
-  #        - test "$list" = "" && echo "none happyboot-mq-consumer containers running" || docker stop $list
-  #        - docker run -d --network over -p6631:8080  -v /etc/localtime:/etc/localtime:ro -e TZ=Asia/Shanghai --privileged=true --name=happyboot-mq-consumer-${DRONE_BUILD_NUMBER} 10.10.0.14:5000/happyboot/mq-consumer:${DRONE_BUILD_NUMBER}
-
-  #  - name: docker run [system-api]
-  #    pull: if-not-exists
-  #    image: appleboy/drone-ssh
-  #    settings:
-  #      host: 10.10.0.27
-  #      username: root
-  #      password: lt@123456
-  #      port: 22
-  #      script:
-  #        - echo start update container
-  #        - echo login registry 10.10.0.14:5000
-  #        - docker login -u root -p lt@123456 10.10.0.14:5000
-  #        - docker pull 10.10.0.14:5000/happyboot/system-api:${DRONE_BUILD_NUMBER}
-  #        - list=$(docker ps -a| grep happyboot-system-api* | awk '{print $1}')
-  #        - test "$list" = "" && echo "none happyboot-system-api containers running" || docker stop $list
-  #        - docker run -d --network over -p6630:8080 -v /data/happyboot/system-api/upload:/upload -v /data/happyboot/system-api/logs:/logs -v /etc/localtime:/etc/localtime:ro -e TZ=Asia/Shanghai --privileged=true --name=happyboot-system-api-${DRONE_BUILD_NUMBER} 10.10.0.14:5000/happyboot/system-api:${DRONE_BUILD_NUMBER}
 
   #  - name: container：xxl-executor
   #    pull: if-not-exists
