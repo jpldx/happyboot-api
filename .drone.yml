@@ -3,8 +3,8 @@ type: docker
 name: happyboot-api
 
 environment:
-  SERVER_IP:
-    from_secret: server_ip
+#  SERVER_IP:
+  #    from_secret: server_ip
   #  SERVER_USERNAME:
   #    from_secret: server_username
   #  SERVER_PASSWORD:
@@ -66,6 +66,13 @@ steps:
   - name: docker push [system]
     pull: if-not-exists
     image: plugins/docker
+    environment:
+      DOCKER_REGISTRY_ADDRESS:
+        from_secret: docker_registry_address
+      DOCKER_REGISTRY_USERNAME:
+        from_secret: docker_registry_username
+      DOCKER_REGISTRY_PASSWORD:
+        from_secret: docker_registry_password
     settings:
       mirror: http://hub-mirror.c.163.com
       dockerfile: happyboot-web/happyboot-web-admin/docker/aliyun/Dockerfile
@@ -79,10 +86,14 @@ steps:
   - name: scp files [docker-compose.yml]
     image: appleboy/drone-scp
     settings:
-      host: ${SERVER_IP}
-      username: ${SERVER_USERNAME}
-      password: ${SERVER_PASSWORD}
-      port: ${SERVER_PORT}
+      host:
+        from_secret: server_ip
+      username:
+        from_secret: server_username
+      password:
+        from_secret: server_password
+      port:
+        from_port: server_port
       target: ${SERVER_WORKSPACE}
       source: docker-compose.yml
 
@@ -90,10 +101,14 @@ steps:
     pull: if-not-exists
     image: appleboy/drone-ssh
     settings:
-      host: ${SERVER_IP}
-      username: ${SERVER_USERNAME}
-      password: ${SERVER_PASSWORD}
-      port: ${SERVER_PORT}
+      host:
+        from_secret: server_ip
+      username:
+        from_secret: server_username
+      password:
+        from_secret: server_password
+      port:
+        from_port: server_port
       script:
         - cd ${SERVER_WORKSPACE}
         - echo DRONE_BUILD_NUMBER=${DRONE_BUILD_NUMBER} > .env
@@ -103,7 +118,8 @@ steps:
     pull: if-not-exists
     image: guoxudongdocker/drone-dingtalk
     settings:
-      token: ${DINGTALK_TOKEN}
+      token:
+        from_secret: dingtalk_token
       type: markdown
       message_color: true
       message_pic: true
