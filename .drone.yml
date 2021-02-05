@@ -2,9 +2,6 @@ kind: pipeline
 type: docker
 name: happyboot-api
 
-clone:
-  disable: true
-
 environment:
   SERVER_IP:
     from_secret: server_ip
@@ -21,6 +18,9 @@ environment:
     from_secret: docker_registry_username
   DOCKER_REGISTRY_PASSWORD:
     from_secret: docker_registry_password
+
+clone:
+  disable: true
 
 steps:
   - name: git clone
@@ -97,6 +97,7 @@ steps:
       script:
         - cd ${SERVER_WORKSPACE}
         - echo DRONE_BUILD_NUMBER=${DRONE_BUILD_NUMBER} > .env
+        - docker-compose --env-file .env up -d
 
   - name: dingtalk
     pull: if-not-exists
