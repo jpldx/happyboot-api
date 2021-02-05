@@ -11,13 +11,13 @@ environment:
     from_secret: server_password
   SERVER_PORT:
     from_secret: server_port
-  SERVER_WORKSPACE: /usr/local/docker/docker-compose/happyboot-api
   DOCKER_REGISTRY_ADDRESS:
     from_secret: docker_registry_address
   DOCKER_REGISTRY_USERNAME:
     from_secret: docker_registry_username
   DOCKER_REGISTRY_PASSWORD:
     from_secret: docker_registry_password
+  SERVER_WORKSPACE: /usr/local/docker/docker-compose/happyboot-api
 
 clone:
   disable: true
