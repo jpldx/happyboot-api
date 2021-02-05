@@ -5,6 +5,23 @@ name: happyboot-api
 clone:
   disable: true
 
+environment:
+  SERVER_IP:
+    from_secret: server_ip
+  SERVER_USERNAME:
+    from_secret: server_username
+  SERVER_PASSWORD:
+    from_secret: server_password
+  SERVER_PORT:
+    from_secret: server_port
+  SERVER_WORKSPACE: /usr/local/docker/docker-compose/happyboot-api
+  DOCKER_REGISTRY_ADDRESS:
+    from_secret: docker_registry_address
+  DOCKER_REGISTRY_USERNAME:
+    from_secret: docker_registry_username
+  DOCKER_REGISTRY_PASSWORD:
+    from_secret: docker_registry_password
+
 steps:
   - name: git clone
     image: alpine/git
@@ -46,50 +63,54 @@ steps:
   #      password: lt@123456
   #      insecure: true
 
-  - name: docker build push[system]
+  - name: docker push [system]
     pull: if-not-exists
     image: plugins/docker
     settings:
       mirror: http://hub-mirror.c.163.com
       dockerfile: happyboot-web/happyboot-web-admin/docker/aliyun/Dockerfile
-      repo: 172.19.127.136:5000/happyboot-api/system
-      registry: 172.19.127.136:5000
+      repo: ${DOCKER_REGISTRY_ADDRESS}/happyboot-api/system
+      registry: ${DOCKER_REGISTRY_ADDRESS}
       tags: ${DRONE_BUILD_NUMBER}
-      username:
-        from_secret: DOCKER_REGISTRY_USERNAME
-      password:
-        from_secret: DOCKER_REGISTRY_PASSWORD
+      username: ${DOCKER_REGISTRY_USERNAME}
+      password: ${DOCKER_REGISTRY_PASSWORD}
       insecure: true
 
   - name: scp files [docker-compose.yml]
     image: appleboy/drone-scp
     settings:
-      host:
-        from_secret: SERVER_INNER_IP
-      username:
-        from_secret: SERVER_USERNAME
-      password:
-        from_secret: SERVER_PASSWORD
-      port:
-        from_secret: SERVER_SSH_PORT
-      target: /usr/local/docker/docker-compose/happyboot-api
+      host: ${SERVER_IP}
+      username: ${SERVER_USERNAME}
+      password: ${SERVER_PASSWORD}
+      port: ${SERVER_PORT}
+      target: ${SERVER_WORKSPACE}
       source: docker-compose.yml
 
   - name: docker-compose up
     pull: if-not-exists
     image: appleboy/drone-ssh
     settings:
-      host:
-        from_secret: SERVER_INNER_IP
-      username:
-        from_secret: SERVER_USERNAME
-      password:
-        from_secret: SERVER_PASSWORD
-      port:
-        from_secret: SERVER_SSH_PORT
+      host: ${SERVER_IP}
+      username: ${SERVER_USERNAME}
+      password: ${SERVER_PASSWORD}
+      port: ${SERVER_PORT}
       script:
-        - cd /usr/local/docker/docker-compose/happyboot-api
+        - cd ${SERVER_WORKSPACE}
         - echo DRONE_BUILD_NUMBER=${DRONE_BUILD_NUMBER} > .env
+
+  - name: dingtalk
+    pull: if-not-exists
+    image: guoxudongdocker/drone-dingtalk
+    settings:
+      token: ${DINGTALK_TOKEN}
+      type: markdown
+      message_color: true
+      message_pic: true
+      sha_link: true
+    when:
+      status:
+        - failure
+        - success
         #        - docker-compose up -d
         #  - name: image：xxl-executor
         #    pull: if-not-exists
@@ -154,21 +175,7 @@ steps:
 #        - test "$list" = "" && echo "none happyboot-xxl-executor containers running" || docker stop $list
 #        - docker run -d --network over -p6632:8080 -p8888:8888 -v /data/happyboot/xxl-executor:/upload -v /etc/localtime:/etc/localtime:ro -e TZ=Asia/Shanghai --privileged=true --name=happyboot-xxl-executor-${DRONE_BUILD_NUMBER} 10.10.0.14:5000/happyboot/xxl-executor:${DRONE_BUILD_NUMBER}
 
-##
-#  - name: dingtalk
-#    pull: if-not-exists
-#    image: guoxudongdocker/drone-dingtalk
-#    settings:
-#      token:
-#        from_secret: DINGTALK_TOKEN
-#      type: markdown
-#      message_color: true
-#      message_pic: true
-#      sha_link: true
-#    when:
-#      status:
-#        - failure
-#        - success
+
 
 trigger:
   branch:
