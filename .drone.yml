@@ -61,20 +61,20 @@ steps:
         from_secret: DOCKER_REGISTRY_PASSWORD
       insecure: true
 
-      - name: docker run [system-api]
-        pull: if-not-exists
-        image: appleboy/drone-ssh
-        settings:
-          host:
-            from_secret: SERVER_INNER_IP
-          username:
-            from_secret: SERVER_USERNAME
-          password:
-            from_secret: SERVER_PASSWORD
-          port:
-            from_secret: SERVER_SSH_PORT
-          script:
-            - echo hahahahahah
+  - name: docker run [system-api]
+    pull: if-not-exists
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: SERVER_INNER_IP
+      username:
+        from_secret: SERVER_USERNAME
+      password:
+        from_secret: SERVER_PASSWORD
+      port:
+        from_secret: SERVER_SSH_PORT
+      script:
+        - echo hahahahahah
 
   #  - name: image：xxl-executor
   #    pull: if-not-exists
