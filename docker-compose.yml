@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   system-api:
-    image: 172.19.127.136:5000/happyboot-api/system:v${DRONE_BUILD_NUMBER}
+    image: localhost:5000/happyboot-api/system:v${DRONE_BUILD_NUMBER}
     container_name: happyboot-api-system-v${DRONE_BUILD_NUMBER}
     network_mode: application
     privileged: true
