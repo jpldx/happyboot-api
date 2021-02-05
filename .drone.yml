@@ -66,14 +66,14 @@ steps:
   - name: docker push [system]
     pull: if-not-exists
     image: plugins/docker
-    environment:
-      DOCKER_REGISTRY_ADDRESS:
-        from_secret: docker_registry_address
+    #    environment:
+    #      DOCKER_REGISTRY_ADDRESS:
+    #        from_secret: docker_registry_address
     settings:
       mirror: http://hub-mirror.c.163.com
       dockerfile: happyboot-web/happyboot-web-admin/docker/aliyun/Dockerfile
-      repo: ${DOCKER_REGISTRY_ADDRESS}/happyboot-api/system
-      registry: ${DOCKER_REGISTRY_ADDRESS}
+      repo: 172.19.127.136:5000/happyboot-api/system
+      registry: 172.19.127.136:5000
       tags: ${DRONE_BUILD_NUMBER}
       username:
         from_secret: docker_registry_username
