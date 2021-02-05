@@ -42,27 +42,6 @@ steps:
     commands:
       - mvn clean package -DskipTests=true
 
-  # 可以关闭代码分析，提高构建效率
-  #  - name: code-analysis
-  #    pull: if-not-exists
-  #    image: aosapps/drone-sonar-plugin
-  #    settings:
-  #      sonar_host: http://10.10.0.14:9002
-  #      sonar_token: a06df3845eb2dfb07b319544ce03fbd2d866d7e5
-
-  #  - name: build image > mq-consumer
-  #    pull: if-not-exists
-  #    image: plugins/docker
-  #    settings:
-  #      mirror: https://docker.mirrors.ustc.edu.cn
-  #      dockerfile: happyboot-mq-consumer/docker/test/Dockerfile
-  #      repo: 10.10.0.14:5000/happyboot/mq-consumer
-  #      registry: 10.10.0.14:5000
-  #      tags: ${DRONE_BUILD_NUMBER}
-  #      username: root
-  #      password: lt@123456
-  #      insecure: true
-
   - name: docker push [system]
     pull: if-not-exists
     image: plugins/docker
@@ -127,6 +106,28 @@ steps:
       status:
         - failure
         - success
+
+        # 可以关闭代码分析，提高构建效率
+        #  - name: code-analysis
+        #    pull: if-not-exists
+        #    image: aosapps/drone-sonar-plugin
+        #    settings:
+        #      sonar_host: http://10.10.0.14:9002
+        #      sonar_token: a06df3845eb2dfb07b319544ce03fbd2d866d7e5
+
+        #  - name: build image > mq-consumer
+        #    pull: if-not-exists
+        #    image: plugins/docker
+        #    settings:
+        #      mirror: https://docker.mirrors.ustc.edu.cn
+        #      dockerfile: happyboot-mq-consumer/docker/test/Dockerfile
+        #      repo: 10.10.0.14:5000/happyboot/mq-consumer
+        #      registry: 10.10.0.14:5000
+        #      tags: ${DRONE_BUILD_NUMBER}
+        #      username: root
+        #      password: lt@123456
+        #      insecure: true
+
         #        - docker-compose up -d
         #  - name: image：xxl-executor
         #    pull: if-not-exists

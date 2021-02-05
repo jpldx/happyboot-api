@@ -37,6 +37,6 @@ public class WebAdminApplication {
 
     @GetMapping("/")
     public String index() {
-        return ">>> Happyboot System API";
+        return "HappyBoot System Api";
     }
 }
