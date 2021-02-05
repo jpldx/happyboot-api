@@ -67,18 +67,16 @@ steps:
     settings:
       host:
         from_secret: SERVER_INNER_IP
-      username:
-        from_secret: sss
+      username: aaa
+      #        from_secret: SERVER_USERNAME
       password:
         from_secret: SERVER_PASSWORD
       port:
         from_secret: SERVER_SSH_PORT
       script:
-        -
-
-  #  - name: image：xxl-executor
-  #    pull: if-not-exists
-  #    image: plugins/docker
+        - #  - name: image：xxl-executor
+          #    pull: if-not-exists
+          #    image: plugins/docker
   #    settings:
   #      mirror: https://docker.mirrors.ustc.edu.cn
   #      dockerfile: ltit-cloud-task/ltit-cloud-task-instance/docker/test/Dockerfile
