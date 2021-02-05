@@ -20,12 +20,12 @@ public class SysDeptObjForm implements Serializable {
      * 主键id
      */
     @NotNull(message = "主键必须填", groups = Update.class)
-    private Long id;
+    private String id;
     /**
      * 父ID
      */
     @NotNull(message = "父ID必须填")
-    private Long parentId;
+    private String parentId;
     /**
      * 部门名称
      */

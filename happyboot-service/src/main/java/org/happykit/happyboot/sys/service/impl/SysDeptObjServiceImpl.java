@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.happykit.happyboot.constant.CommonConstant;
 import org.happykit.happyboot.constant.SysConstant;
+import org.happykit.happyboot.exception.SysException;
 import org.happykit.happyboot.sys.factory.SysDeptObjFactory;
 import org.happykit.happyboot.sys.mapper.SysDeptObjMapper;
 import org.happykit.happyboot.sys.model.entity.SysDeptObjDO;
@@ -90,9 +91,14 @@ public class SysDeptObjServiceImpl extends ServiceImpl<SysDeptObjMapper, SysDept
     public SysDeptObjDO saveSysDeptObj(SysDeptObjForm form) {
         SysDeptObjDO entity = SysDeptObjFactory.INSTANCE.form2Do(form);
 
-        SysDeptObjDO parentNode = this.getById(entity.getParentId());
+        String parentId = entity.getParentId();
+        // [重要]不能直接创建根节点部门，须通过创建主体进行操作
+        if (SysConstant.ROOT_PARENT_ID_STR.equals(parentId)) {
+            throw new SysException("操作无效");
+        }
+        SysDeptObjDO parentNode = this.getById(parentId);
         if (parentNode == null) {
-            throw new RuntimeException("未找到父节点");
+            throw new SysException("未找到父节点");
         }
         entity.setSubjectId(parentNode.getSubjectId());
 
