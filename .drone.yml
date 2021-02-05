@@ -89,7 +89,7 @@ steps:
         from_secret: SERVER_SSH_PORT
       script:
         - cd /usr/local/docker/docker-compose/happyboot-api
-        - echo == $DRONE_BUILD_NUMBER ===
+        - echo DRONE_BUILD_NUMBER=${DRONE_BUILD_NUMBER} > .env
         #        - docker-compose up -d
         #  - name: image：xxl-executor
         #    pull: if-not-exists
