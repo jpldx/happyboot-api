@@ -104,7 +104,7 @@ steps:
       script:
         - cd /usr/local/docker/docker-compose/happyboot-api
         - echo DRONE_BUILD_NUMBER=${DRONE_BUILD_NUMBER} > .env
-        - docker-compose stop
+        - docker-compose down
         - docker-compose --env-file .env up -d
 
   - name: dingtalk

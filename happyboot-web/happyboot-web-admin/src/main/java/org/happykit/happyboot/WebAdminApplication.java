@@ -30,13 +30,13 @@ public class WebAdminApplication {
         String path = env.getProperty("server.servlet.context-path");
 
         log.info("\n*************************************************\n"
-                + "**** Happyboot System Api start-up success! ****\n"
-                + "**** Port:" + port + "\t\t\tContext-Path:" + path + " ****\n"
+                + "**** happyboot-api start-up success! ****\n"
+                + "**** port:" + port + "\t\t\tcontext-path:" + path + " ****\n"
                 + "*************************************************\n");
     }
 
     @GetMapping("/")
     public String index() {
-        return "HappyBoot System Api";
+        return "happyboot-api start-up success!";
     }
 }

@@ -21,11 +21,11 @@ public class MqConsumerApplication {
     public static void main(String[] args) {
         SpringApplication.run(MqConsumerApplication.class, args);
 
-        log.info("Happyboot Consumer start-up success!");
+        log.info("happyboot-consumer start-up success!");
     }
 
     @GetMapping("/")
     public String index() {
-        return "Happyboot Consumer";
+        return "happyboot-consumer start-up success!";
     }
 }
