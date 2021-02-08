@@ -37,7 +37,6 @@ mybatis-plus:
     # 配置sql打印日志
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-# spring security authentication config
 token:
   # 默认为true，token将存入redis，并具有单点登录功能 设为false使用JWT交互
   redis: true
@@ -55,14 +54,12 @@ token:
   authorization: Authorization
   #  bearer: Bearer
 
-# captcha config
 # 需要验证码校验的接口路径 支持通配符 自动过滤拦截校验 无需开发人员再次校验
 captcha:
   # 图片验证码验证
   image:
     - /login # 登录接口
 
-# security ignored urls config
 ignored:
   urls:
     - /
