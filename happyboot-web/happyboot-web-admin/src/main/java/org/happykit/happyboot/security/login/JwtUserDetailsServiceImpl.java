@@ -1,6 +1,7 @@
 package org.happykit.happyboot.security.login;
 
 import org.happykit.happyboot.security.model.SecurityUserDetails;
+import org.happykit.happyboot.security.util.JwtUtils;
 import org.happykit.happyboot.sys.enums.AuthTypeEnum;
 import org.happykit.happyboot.sys.facade.SysAuthFacade;
 import org.happykit.happyboot.sys.model.entity.SysUserDO;
@@ -20,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -74,7 +77,13 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
         } else {
             permissions = sysAuthFacade.listVisibleApisByUserId(user.getId());
         }
-        String token = IdUtils.simpleUUID();
+
+        // 生成token
+        Map<String, String> payload = new HashMap<>(2);
+        payload.put("userid", user.getId());
+        payload.put("nickname", user.getNickname());
+        String token = JwtUtils.sign(payload);
+
         return new SecurityUserDetails(user.getId(),
                 user.getUsername(),
                 user.getPassword(),
@@ -85,5 +94,4 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
                 roles,
                 token);
     }
-
 }
