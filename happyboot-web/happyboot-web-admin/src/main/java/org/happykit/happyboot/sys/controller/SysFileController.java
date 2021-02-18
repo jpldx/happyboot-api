@@ -260,10 +260,17 @@ public class SysFileController extends BaseController {
     public ResponseEntity download(@PathVariable Long id) throws IOException {
         SysFileDO sysFile = sysFileService.getById(id);
         if (sysFile == null) {
-            return null;
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+//            throw new SysException("未找到相关记录");
+        }
+        File file = new File(sysFile.getFilePath());
+        if (!file.exists()) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+//            throw new SysException("未找到相关文件");
         }
         HttpHeaders headers = new HttpHeaders();
-        File file = new File(sysFile.getFilePath());
+        headers.set("FILE_NAME", sysFile.getFileName());
+        headers.set("Access-Control-Expose-Headers", "FILE_NAME");
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", sysFile.getFileAliasName());
         return new ResponseEntity(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);

@@ -7,6 +7,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -24,6 +25,8 @@ public class JwtUtils {
     private static final String SECRET = "#e*!71&Sf@j#aA";
     private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET);
     private static final String ISSUER = "979309838@qq.com";
+    // 过期时间(h)
+    private static final int EXPIRE_TIME = 24;
 
     /**
      * 生成 token
@@ -35,7 +38,11 @@ public class JwtUtils {
         JWTCreator.Builder builder = JWT.create();
         payload.forEach(builder::withClaim);
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, EXPIRE_TIME);
+
         return builder.withIssuer(ISSUER)
+                .withExpiresAt(calendar.getTime())
                 .withIssuedAt(new Date())
                 .sign(ALGORITHM);
     }
@@ -60,4 +67,6 @@ public class JwtUtils {
     public static DecodedJWT decode(String token) {
         return JWT.decode(token);
     }
+
+
 }
