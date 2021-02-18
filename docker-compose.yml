@@ -3,7 +3,7 @@ services:
   system-api:
     image: localhost:5000/happyboot-api/system:${DRONE_BUILD_NUMBER}
     container_name: happyboot-api-system-${DRONE_BUILD_NUMBER}
-    network_mode: application
+    network_mode: over
     privileged: true
     restart: unless-stopped
     ports:
@@ -18,7 +18,7 @@ services:
   consumer:
     image: localhost:5000/happyboot-api/consumer:${DRONE_BUILD_NUMBER}
     container_name: happyboot-api-consumer-${DRONE_BUILD_NUMBER}
-    network_mode: application
+    network_mode: over
     privileged: true
     restart: unless-stopped
     ports:
