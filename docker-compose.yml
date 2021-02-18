@@ -15,6 +15,7 @@ services:
       - /data/happyboot-api/system/logs:/logs
       - /etc/localtime:/etc/localtime:ro
 
+
   consumer:
     image: localhost:5000/happyboot-api/consumer:${DRONE_BUILD_NUMBER}
     container_name: happyboot-api-consumer-${DRONE_BUILD_NUMBER}
