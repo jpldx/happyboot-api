@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import org.happykit.happyboot.sys.extension.CustomArithmeticCaptcha;
 import org.happykit.happyboot.util.IdUtils;
 import org.happykit.happyboot.sys.model.dto.CaptchaDTO;
 import org.happykit.happyboot.sys.service.CaptchaService;
@@ -60,7 +61,8 @@ public class CaptchaServiceImpl implements CaptchaService {
         // dto.setId(uuid);
         // dto.setBase64ImgStr(base64ImgStr);
 
-        ArithmeticCaptcha captcha = new ArithmeticCaptcha(130, 48);
+//        ArithmeticCaptcha captcha = new ArithmeticCaptcha(130, 48);
+        CustomArithmeticCaptcha captcha = new CustomArithmeticCaptcha();
         captcha.setFont(Captcha.FONT_6);
         String captchaId = IdUtils.simpleUUID();
         String captchaCode = captcha.text();
