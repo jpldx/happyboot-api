@@ -30,7 +30,7 @@ steps:
       - name: sshkeys
         path: /root/.ssh
     commands:
-      - git clone https://hub.fastgit.org/jpldx/happyboot-api.git .
+      - git clone https://github.com.cnpmjs.org/jpldx/happyboot-api.git .
       - git checkout $DRONE_COMMIT
 
   - name: mvn package
