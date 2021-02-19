@@ -61,12 +61,20 @@ public class CustomArithmeticCaptcha extends ArithmeticCaptchaAbstract {
      */
     private boolean graphicsImage(char[] strs, OutputStream out) {
         try {
-            BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-            Graphics2D g2d = (Graphics2D) bi.getGraphics();
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = image.createGraphics();
+
+            // 增加下面代码使得背景透明
+            image = g2d.getDeviceConfiguration().createCompatibleImage(width, height, Transparency.TRANSLUCENT);
+            g2d.dispose();
+            g2d = image.createGraphics();
+
             // 设置背景
-            Color color = new Color(0, 0, 0, 0);
-            g2d.setColor(color);
-            g2d.fillRect(0, 0, width, height);
+//            g2d.setColor(Color.WHITE);
+//            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+//            g2d.setBackground(new Color(22,2,2,0));
+            g2d.drawRect(0, 0, width, height);
+
             // 抗锯齿
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             // 画干扰圆
@@ -82,7 +90,7 @@ public class CustomArithmeticCaptcha extends ArithmeticCaptchaAbstract {
                 g2d.drawString(String.valueOf(strs[i]), i * fW + fSp + 3, fY - 3);
             }
             g2d.dispose();
-            ImageIO.write(bi, "png", out);
+            ImageIO.write(image, "png", out);
             out.flush();
             return true;
         } catch (IOException e) {
