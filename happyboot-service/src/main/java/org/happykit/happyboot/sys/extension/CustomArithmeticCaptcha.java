@@ -64,7 +64,7 @@ public class CustomArithmeticCaptcha extends ArithmeticCaptchaAbstract {
             BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             Graphics2D g2d = (Graphics2D) bi.getGraphics();
             // 填充背景
-            Color color = new Color(1, false);
+            Color color = new Color(0, 0, 0, 0);
             g2d.setColor(color);
             g2d.fillRect(0, 0, width, height);
             // 抗锯齿
