@@ -64,7 +64,7 @@ public class CustomArithmeticCaptcha extends ArithmeticCaptchaAbstract {
             BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             Graphics2D g2d = image.createGraphics();
 
-            // 增加下面代码使得背景透明
+            // 背景透明
             image = g2d.getDeviceConfiguration().createCompatibleImage(width, height, Transparency.TRANSLUCENT);
             g2d.dispose();
             g2d = image.createGraphics();
@@ -72,7 +72,7 @@ public class CustomArithmeticCaptcha extends ArithmeticCaptchaAbstract {
             // 设置背景
 //            g2d.setColor(Color.WHITE);
 //            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-//            g2d.setBackground(new Color(22,2,2,0));
+            g2d.setColor(new Color(255, 255, 255, 0));
             g2d.drawRect(0, 0, width, height);
 
             // 抗锯齿
