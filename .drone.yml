@@ -17,21 +17,21 @@ name: happyboot-api
   #  DOCKER_REGISTRY_USERNAME:
   #    from_secret: docker_registry_username
   #  DOCKER_REGISTRY_PASSWORD:
-  #    from_secret: docker_registry_password
+#    from_secret: docker_registry_password
 
-clone:
-  disable: true
+#clone:
+#  disable: true
 
 steps:
-  - name: git clone
-    image: alpine/git
-    pull: if-not-exists
-    volumes:
-      - name: sshkeys
-        path: /root/.ssh
-    commands:
-      - git clone https://hub.fastgit.org/jpldx/happyboot-api.git .
-      - git checkout $DRONE_COMMIT
+  #  - name: git clone
+  #    image: alpine/git
+  #    pull: if-not-exists
+  #    volumes:
+  #      - name: sshkeys
+  #        path: /root/.ssh
+  #    commands:
+  #      - git clone https://hub.fastgit.org/jpldx/happyboot-api.git .
+  #      - git checkout $DRONE_COMMIT
 
   - name: mvn package
     pull: if-not-exists
