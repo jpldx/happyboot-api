@@ -1,6 +1,5 @@
 package org.happykit.happyboot.sys.extension;
 
-import com.wf.captcha.ArithmeticCaptcha;
 import com.wf.captcha.base.ArithmeticCaptchaAbstract;
 
 import javax.imageio.ImageIO;
@@ -10,6 +9,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
+ * 自定义算术验证码
+ *
  * @author chen.xudong
  * @version 1.0
  * @since 2021/2/19
@@ -64,14 +65,12 @@ public class CustomArithmeticCaptcha extends ArithmeticCaptchaAbstract {
             BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             Graphics2D g2d = image.createGraphics();
 
-            // 背景透明
+            // 设置透明背景
             image = g2d.getDeviceConfiguration().createCompatibleImage(width, height, Transparency.TRANSLUCENT);
             g2d.dispose();
             g2d = image.createGraphics();
 
             // 设置背景
-//            g2d.setColor(Color.WHITE);
-//            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
             g2d.setColor(new Color(255, 255, 255, 0));
             g2d.drawRect(0, 0, width, height);
 
