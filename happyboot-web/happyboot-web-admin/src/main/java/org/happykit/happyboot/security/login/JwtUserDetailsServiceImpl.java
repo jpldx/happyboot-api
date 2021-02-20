@@ -36,17 +36,10 @@ import java.util.concurrent.TimeUnit;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class JwtUserDetailsServiceImpl implements UserDetailsService {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtUserDetailsServiceImpl.class);
-
-    @Autowired
-    private StringRedisTemplate redisTemplate;
-
     @Autowired
     private SysUserService sysUserService;
-
     @Autowired
     private SysRoleService sysRoleService;
-
     @Autowired
     private SysAuthFacade sysAuthFacade;
 
@@ -54,14 +47,6 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (StringUtils.isBlank(username)) {
             throw new UsernameNotFoundException("用户名密码不符");
-        }
-
-        String flagKey = "loginFailFlag:" + username;
-        String value = redisTemplate.opsForValue().get(flagKey);
-        Long timeRest = redisTemplate.getExpire(flagKey, TimeUnit.MINUTES);
-        if (StringUtils.isNotBlank(value)) {
-            // 超过限制次数
-            throw new InternalAuthenticationServiceException("登录错误次数超过限制，请" + timeRest + "分钟后再试");
         }
 
         SysUserDO user = sysUserService.getByUsername(username);

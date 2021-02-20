@@ -35,7 +35,7 @@ public class AuthenticationFailureListener implements ApplicationListener<Authen
         String clientId = request.getHeader(tokenProperties.getClientId());
 
         // 缓存计数
-        String key = SecurityConstant.LOGIN_FAILED_LIMIT_TIMES + clientId;
+        String key = SecurityConstant.LOGIN_FAILED_LIMIT + clientId;
         redisTemplate.opsForValue().increment(key);
         redisTemplate.expire(key, tokenProperties.getLoginFailedLimitRecoverTime(), TimeUnit.MINUTES);
     }

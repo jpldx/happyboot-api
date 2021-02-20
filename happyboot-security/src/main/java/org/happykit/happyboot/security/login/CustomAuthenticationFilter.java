@@ -94,9 +94,9 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         try {
             AuthenticationBean authenticationBean = mapper.readValue(request.getInputStream(), AuthenticationBean.class);
 
-            // 判断账号是否登录限制
+            // 判断客户端是否登录限制
             if (isLoginFailedLimited(clientId)) {
-                throw new LoginFailedLimitException("客户端登录失败次数过多，请" + tokenProperties.getLoginFailedLimitRecoverTime() + "分钟后再试");
+                throw new LoginFailedLimitException("登录失败次数过多，请" + tokenProperties.getLoginFailedLimitRecoverTime() + "分钟后再试");
             }
 
             // 登录密码是否加密
@@ -185,7 +185,7 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
      * @return
      */
     public boolean isLoginFailedLimited(String clientId) {
-        String times = redisTemplate.opsForValue().get(SecurityConstant.LOGIN_FAILED_LIMIT_TIMES + clientId);
+        String times = redisTemplate.opsForValue().get(SecurityConstant.LOGIN_FAILED_LIMIT + clientId);
         return (times != null && Integer.parseInt(times) >= tokenProperties.getLoginFailedLimit());
     }
 
