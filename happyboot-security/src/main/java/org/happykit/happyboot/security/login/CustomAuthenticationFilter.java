@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.happykit.happyboot.security.constants.SecurityConstant;
-import org.happykit.happyboot.security.exceptions.LoginFailLimitException;
+import org.happykit.happyboot.security.exceptions.LoginFailedLimitException;
 import org.happykit.happyboot.security.model.AuthenticationBean;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.properties.TokenProperties;
@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -81,40 +80,35 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        // 必须以post方式提交
-        if (postOnly && !HttpMethod.POST.name().equals(request.getMethod())) {
-            throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+        // 提交方法校验
+        String requestMethod = request.getMethod();
+        String clientId = request.getHeader(tokenProperties.getClientId());
+        if (!HttpMethod.POST.name().equals(requestMethod)) {
+            throw new AuthenticationServiceException("Authentication method not supported：" + requestMethod);
         }
         UsernamePasswordAuthenticationToken authRequest = null;
-        if (request.getContentType().equalsIgnoreCase(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                || request.getContentType().equals(MediaType.APPLICATION_JSON_VALUE)) {
-            ObjectMapper mapper = new ObjectMapper();
-            // 允许对象忽略json中不存在的属性
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            try {
-                AuthenticationBean authenticationBean = mapper.readValue(request.getInputStream(), AuthenticationBean.class);
+        ObjectMapper mapper = new ObjectMapper();
+        // 允许对象忽略json中不存在的属性
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        try {
+            AuthenticationBean authenticationBean = mapper.readValue(request.getInputStream(), AuthenticationBean.class);
 
-                // 判断账号是否登录限制
-                boolean limitFlag = isBlocked(authenticationBean.getUsername());
-                if (limitFlag) {
-                    logger.info("登录错误次数超过限制");
-
-                    throw new AuthenticationServiceException("登录错误次数超过限制");
-                }
-
-                // 登录密码是否加密
-                if (tokenProperties.getLpe()) {
-                    String password = RSAUtils.decrypt(authenticationBean.getPassword(), tokenProperties.getLpeKey());
-                    authenticationBean.setPassword(password);
-                }
-
-                authRequest = new UsernamePasswordAuthenticationToken(authenticationBean.getUsername(), authenticationBean.getPassword(), null);
-            } catch (Exception e) {
-                throw new AuthenticationServiceException(e.getMessage());
+            // 判断账号是否登录限制
+            if (isLoginFailedLimited(clientId)) {
+                throw new LoginFailedLimitException("客户端登录失败次数过多，请" + tokenProperties.getLoginFailedLimitRecoverTime() + "分钟后再试");
             }
-        } else {
-            throw new AuthenticationServiceException("请求头类型不支持: " + request.getContentType());
+
+            // 登录密码是否加密
+            if (tokenProperties.getLpe()) {
+                String password = RSAUtils.decrypt(authenticationBean.getPassword(), tokenProperties.getLpeKey());
+                authenticationBean.setPassword(password);
+            }
+
+            authRequest = new UsernamePasswordAuthenticationToken(authenticationBean.getUsername(), authenticationBean.getPassword(), null);
+        } catch (Exception e) {
+            throw new AuthenticationServiceException(e.getMessage());
         }
+
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 
@@ -150,6 +144,10 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         redisTemplate.opsForValue().set(SecurityConstant.USER_TOKEN + username, token, tokenProperties.getTokenExpireTime(), TimeUnit.MINUTES);
         redisTemplate.opsForValue().set(SecurityConstant.TOKEN_PRE + token, new Gson().toJson(userDetails), tokenProperties.getTokenExpireTime(), TimeUnit.MINUTES);
 
+        // 删除登录失败缓存计数
+        // TODO
+//        redisTemplate.delete()
+
         // 更新登录信息
         Object loginInfo = userService.loginSuccess(userDetails, token, IpUtils.getIpAddress(request));
         ResponseUtils.out(response, R.ok(loginInfo));
@@ -166,11 +164,13 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
      */
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
-        if (e instanceof UsernameNotFoundException || e instanceof BadCredentialsException) {
+        if (e instanceof AuthenticationServiceException) {
+            ResponseUtils.out(response, R.failed(e.getMessage()));
+        } else if (e instanceof UsernameNotFoundException || e instanceof BadCredentialsException) {
             ResponseUtils.out(response, R.failed("用户名或密码错误"));
         } else if (e instanceof DisabledException) {
-            ResponseUtils.out(response, R.failed("账户被禁用，请联系管理员"));
-        } else if (e instanceof LoginFailLimitException) {
+            ResponseUtils.out(response, R.failed("账号被禁用，请联系管理员"));
+        } else if (e instanceof LoginFailedLimitException) {
             ResponseUtils.out(response, R.failed(e.getMessage()));
         } else {
             ResponseUtils.out(response, R.failed(e.getMessage()));
@@ -178,14 +178,15 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
     }
 
 
-    public boolean isBlocked(String username) {
-        // 登录错误的用户存储标识
-        String flagKey = SecurityConstant.LOGIN_FAIL_FLAG + username;
-        String value = redisTemplate.opsForValue().get(flagKey);
-        Long timeRest = redisTemplate.getExpire(flagKey, TimeUnit.MINUTES);
-        // 超过限制次数
-        return StringUtils.isNotBlank(value);
+    /**
+     * 判断客户端是否登录失败限制
+     *
+     * @param clientId 客户端id
+     * @return
+     */
+    public boolean isLoginFailedLimited(String clientId) {
+        String times = redisTemplate.opsForValue().get(SecurityConstant.LOGIN_FAILED_LIMIT_TIMES + clientId);
+        return (times != null && Integer.parseInt(times) >= tokenProperties.getLoginFailedLimit());
     }
-
 
 }

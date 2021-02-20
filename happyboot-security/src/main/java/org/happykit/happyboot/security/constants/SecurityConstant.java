@@ -26,12 +26,12 @@ public class SecurityConstant {
     /**
      * 登录错误限制前缀
      */
-    public static final String LOGIN_TIME_LIMIT = "loginTimeLimit:";
+    public static final String LOGIN_FAILED_LIMIT_TIMES = "login_failed_limit_times:";
 
     /**
      *
      */
-    public static final String LOGIN_FAIL_FLAG = "loginFailFlag:";
+    public static final String LOGIN_FAILED_LIMIT_FLAG = "login_failed_limit_flag:";
 
 
 }

@@ -38,14 +38,14 @@ public class TokenProperties {
     private Integer saveLoginTime = 7;
 
     /**
-     * 限制用户登陆错误次数（次）
+     * 客户端登录失败限制（次）
      */
-    private Integer loginTimeLimit = 10;
+    private Integer loginFailedLimit = 5;
 
     /**
-     * 错误超过次数后多少分钟后才能继续登录（分钟）
+     * 客户端登录失败限制恢复时间（分钟）
      */
-    private Integer loginAfterTime = 10;
+    private Integer loginFailedLimitRecoverTime = 10;
 
 //	/**
 //	 * 密钥
