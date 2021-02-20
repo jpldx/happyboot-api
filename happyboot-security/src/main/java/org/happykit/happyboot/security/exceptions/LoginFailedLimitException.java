@@ -19,4 +19,5 @@ public class LoginFailedLimitException extends AuthenticationException {
     public LoginFailedLimitException(String msg, Throwable t) {
         super(msg, t);
     }
+
 }
