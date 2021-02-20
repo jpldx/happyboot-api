@@ -38,10 +38,11 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * 自定义json登录 默认的用户名/密码提取就是通过request中的getParameter来提取的,改用json方式
+ * 用户认证
  *
- * @author shaoqiang
- * @version 1.0 2020/3/9
+ * @author chen.xudong
+ * @version 1.0
+ * @since 2020/3/9
  */
 public class CustomAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -144,8 +145,7 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         redisTemplate.opsForValue().set(SecurityConstant.USER_TOKEN + username, token, tokenProperties.getTokenExpireTime(), TimeUnit.MINUTES);
         redisTemplate.opsForValue().set(SecurityConstant.TOKEN_PRE + token, new Gson().toJson(userDetails), tokenProperties.getTokenExpireTime(), TimeUnit.MINUTES);
 
-        // 删除登录失败缓存计数
-        // TODO
+        // TODO 删除登录失败缓存计数
 //        redisTemplate.delete()
 
         // 更新登录信息
