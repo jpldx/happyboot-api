@@ -8,7 +8,7 @@ import org.happykit.happyboot.security.permission.MyFilterSecurityInterceptor;
 import org.happykit.happyboot.security.permission.RestAccessDeniedHandler;
 import org.happykit.happyboot.security.properties.IgnoredUrlsProperties;
 import org.happykit.happyboot.security.properties.TokenProperties;
-import org.happykit.happyboot.security.validate.ImageValidateFilter;
+import org.happykit.happyboot.security.validate.CaptchaValidateFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private MyFilterSecurityInterceptor myFilterSecurityInterceptor;
 
     @Autowired
-    private ImageValidateFilter imageValidateFilter;
+    private CaptchaValidateFilter captchaValidateFilter;
 
     @Autowired
     private SecurityClientIdFilter securityClientIdFilter;
@@ -107,7 +107,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(securityClientIdFilter, UsernamePasswordAuthenticationFilter.class)
                 // 图形验证码过滤器
-                .addFilterBefore(imageValidateFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(captchaValidateFilter, UsernamePasswordAuthenticationFilter.class)
                 // 添加自定义权限过滤器
                 .addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class)
                 // 添加自定义权限过滤器
