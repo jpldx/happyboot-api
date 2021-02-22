@@ -3,9 +3,6 @@ package org.happykit.happyboot.log.model;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-
 /**
  * 日志对象
  *
