@@ -25,7 +25,7 @@ import javax.annotation.Resource;
 @Service
 public class LogServiceImpl implements LogService {
 
-    private static final Logger logger = LoggerFactory.getLogger(LogServiceImpl.class);
+//    private static final Logger logger = LoggerFactory.getLogger(LogServiceImpl.class);
 
     private static final String SYS_LOG_COLLECTION_NAME = "sys_logs";
     private static final String BIZ_LOG_COLLECTION_NAME = "biz_logs";
