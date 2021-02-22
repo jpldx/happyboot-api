@@ -1,14 +1,14 @@
 package org.happykit.happyboot.log.aspect;
 
 import com.google.gson.Gson;
-import org.happykit.happyboot.log.model.Log;
-import org.happykit.happyboot.log.service.LogService;
-import org.happykit.happyboot.util.DateUtils;
-import org.happykit.happyboot.util.IpUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.happykit.happyboot.log.model.Log;
+import org.happykit.happyboot.log.service.LogService;
+import org.happykit.happyboot.util.DateUtils;
+import org.happykit.happyboot.util.IpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -21,7 +21,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
 
 /**
  * 日志注解切面
@@ -33,7 +32,7 @@ import java.time.LocalDateTime;
  */
 @Aspect
 @Component
-@Profile({"dev", "test"})
+//@Profile({"dev", "test"})
 public class LogAspect {
 	private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 	/**
@@ -43,8 +42,6 @@ public class LogAspect {
 
 	@Resource
 	private LogService logService;
-	@Resource
-	private MongoTemplate mongoTemplate;
 
 	/**
 	 * 以自定义 @WebLog 注解为切点
@@ -69,19 +66,19 @@ public class LogAspect {
 		String methodDescription = getAspectLogDescription(joinPoint);
 
 		// 打印请求相关参数
-		logger.info("========================================== Start ==========================================");
-		// 打印请求 url
-		logger.info("URL            : {}", request.getRequestURL().toString());
-		// 打印描述信息
-		logger.info("Description    : {}", methodDescription);
-		// 打印 Http method
-		logger.info("HTTP Method    : {}", request.getMethod());
-		// 打印调用 controller 的全路径以及执行方法
-		logger.info("Class Method   : {}.{}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
-		// 打印请求的 IP
-		logger.info("IP             : {}", request.getRemoteAddr());
-		// 打印请求入参
-		logger.info("Request Args   : {}", new Gson().toJson(joinPoint.getArgs()));
+//		logger.info("========================================== Start ==========================================");
+//		// 打印请求 url
+//		logger.info("URL            : {}", request.getRequestURL().toString());
+//		// 打印描述信息
+//		logger.info("Description    : {}", methodDescription);
+//		// 打印 Http method
+//		logger.info("HTTP Method    : {}", request.getMethod());
+//		// 打印调用 controller 的全路径以及执行方法
+//		logger.info("Class Method   : {}.{}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
+//		// 打印请求的 IP
+//		logger.info("IP             : {}", request.getRemoteAddr());
+//		// 打印请求入参
+//		logger.info("Request Args   : {}", new Gson().toJson(joinPoint.getArgs()));
 	}
 
 	/**
@@ -92,7 +89,7 @@ public class LogAspect {
 	@After("webLog()")
 	public void doAfter() throws Throwable {
 		// 接口结束后换行，方便分割查看
-		logger.info("=========================================== End ===========================================" + LINE_SEPARATOR);
+//		logger.info("=========================================== End ===========================================" + LINE_SEPARATOR);
 	}
 
 	/**
@@ -107,9 +104,9 @@ public class LogAspect {
 		long startTime = System.currentTimeMillis();
 		Object result = proceedingJoinPoint.proceed();
 		// 打印出参
-		logger.info("Response Args  : {}", new Gson().toJson(result));
-		// 执行耗时
-		logger.info("Time-Consuming : {} ms", System.currentTimeMillis() - startTime);
+//		logger.info("Response Args  : {}", new Gson().toJson(result));
+//		// 执行耗时
+//		logger.info("Time-Consuming : {} ms", System.currentTimeMillis() - startTime);
 
 		saveLog(proceedingJoinPoint, result, startTime);
 		return result;
