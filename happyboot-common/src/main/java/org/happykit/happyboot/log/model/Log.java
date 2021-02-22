@@ -18,7 +18,7 @@ public class Log {
      */
     private String url;
     /**
-     * 日志描述信息
+     * 描述信息
      */
     private String description;
     /**
@@ -30,7 +30,7 @@ public class Log {
      */
     private String classMethod;
     /**
-     * 来源IP
+     * 请求来源ip
      */
     private String ip;
     /**
@@ -38,11 +38,11 @@ public class Log {
      */
     private String requestArgs;
     /**
-     * 响应结果
+     * 响应参数
      */
     private String responseArgs;
     /**
-     * 耗时
+     * 请求耗时
      */
     private Long costTime;
     /**
