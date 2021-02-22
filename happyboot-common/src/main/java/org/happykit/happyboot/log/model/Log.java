@@ -1,96 +1,55 @@
 package org.happykit.happyboot.log.model;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
-import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
- * @author shaoqiang
- * @version 1.0 2020/7/8
+ * 日志对象
+ *
+ * @author chen.xudong
+ * @version 1.0
+ * @since 2020/6/9
  */
 @Data
-public class Log implements Serializable {
+@Accessors(fluent = true)
+public class Log {
     /**
-     * 标题
+     * 请求路径
      */
-    private String title;
+    private String url;
     /**
-     * 请求URI
+     * 日志描述信息
      */
-    private String requestUri;
-
+    private String description;
     /**
-     * 操作方式
+     * 请求方法
      */
-    private String requestMethod;
-
+    private String httpMethod;
+    /**
+     * 请求class
+     */
+    private String classMethod;
+    /**
+     * 来源IP
+     */
+    private String ip;
     /**
      * 请求参数
      */
-    private String requestParams;
-
+    private String requestArgs;
     /**
-     * 类名
+     * 响应结果
      */
-    private String className;
+    private String responseArgs;
     /**
-     * 方法名
+     * 耗时
      */
-    private String methodName;
-
+    private Long costTime;
     /**
-     * 操作说明
+     * 创建时间
      */
-    private String operation;
-
-    /**
-     * 操作IP地址
-     */
-    private String remoteAddr;
-
-    /**
-     * 请求服务器地址
-     */
-    private String serverAddr;
-
-    /**
-     * 是否异常
-     */
-    private boolean exception;
-
-    /**
-     * 异常信息
-     */
-    private String exceptionName;
-
-    /**
-     * 异常信息
-     */
-    private String exceptionInfo;
-
-    /**
-     * 用户代理
-     */
-    private String userAgent;
-
-    /**
-     * 设备名称/操作系统
-     */
-    private String deviceName;
-
-    /**
-     * 浏览器名称
-     */
-    private String browserName;
-
-    /**
-     * 执行时间
-     */
-    private Long executeTime;
-
-    /**
-     * 服务名称
-     */
-    private String serviceName;
-
+    private String createTime;
 }

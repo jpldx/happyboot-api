@@ -5,7 +5,7 @@ server:
 
 spring:
   application:
-    name: happyboot-system-api
+    name: happyboot-api-sys
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -24,6 +24,13 @@ spring:
         max-wait: -1ms
         min-idle: 0
       shutdown-timeout: 100ms
+  data:
+    mongodb:
+      port: 27017
+      database: logs
+      host: 101.132.132.97
+  #     username:
+  #     password:
 
   rabbitmq:
     host: 10.10.0.14

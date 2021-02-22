@@ -1,9 +1,9 @@
 package org.happykit.happyboot.log.aspect;
 
 import com.google.gson.Gson;
-import org.happykit.happyboot.log.annotation.WebLog;
-import org.happykit.happyboot.log.model.WebLogDTO;
-import org.happykit.happyboot.log.service.WebLogService;
+import org.happykit.happyboot.log.model.Log;
+import org.happykit.happyboot.log.service.LogService;
+import org.happykit.happyboot.util.DateUtils;
 import org.happykit.happyboot.util.IpUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,6 +12,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -20,30 +21,35 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 
 /**
- * web日志，切面处理类
+ * 日志注解切面
  *
- * @author shaoqiang
- * @version 1.0 2020/6/4
+ * @author chen.xudong
+ * @version 1.0
+ * @see org.happykit.happyboot.log.annotation.Log
+ * @since 2020/6/4
  */
 @Aspect
 @Component
 @Profile({"dev", "test"})
-public class WebLogAspect {
-	private static final Logger logger = LoggerFactory.getLogger(WebLogAspect.class);
+public class LogAspect {
+	private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 	/**
 	 * 换行符
 	 */
 	private static final String LINE_SEPARATOR = System.lineSeparator();
 
 	@Resource
-	private WebLogService webLogService;
+	private LogService logService;
+	@Resource
+	private MongoTemplate mongoTemplate;
 
 	/**
 	 * 以自定义 @WebLog 注解为切点
 	 */
-	@Pointcut("@annotation(org.happykit.happyboot.log.annotation.WebLog)")
+	@Pointcut("@annotation(org.happykit.happyboot.log.annotation.Log)")
 	public void webLog() {
 	}
 
@@ -113,7 +119,7 @@ public class WebLogAspect {
 		MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 		Method method = signature.getMethod();
 
-		WebLog webLog = method.getAnnotation(WebLog.class);
+		org.happykit.happyboot.log.annotation.Log log = method.getAnnotation(org.happykit.happyboot.log.annotation.Log.class);
 		// 获取请求的类名
 		String className = joinPoint.getTarget().getClass().getName();
 		// 获取请求的方法名
@@ -127,17 +133,18 @@ public class WebLogAspect {
 		String ip = IpUtils.getIpAddress(request);
 		long costTime = System.currentTimeMillis() - startTime;
 
-		WebLogDTO dto = new WebLogDTO()
+		Log dto = new Log()
 				.url(request.getRequestURL().toString())
-				.description(webLog.description())
+				.description(log.des())
 				.httpMethod(request.getMethod())
 				.classMethod(className + "." + methodName)
 				.ip(ip)
 				.requestArgs(new Gson().toJson(joinPoint.getArgs()))
 				.responseArgs(new Gson().toJson(result))
-				.costTime(costTime);
+				.costTime(costTime)
+				.createTime(DateUtils.now());
 
-		webLogService.saveWebLog(dto);
+		logService.saveLog(dto, log.type());
 	}
 
 	/**
@@ -159,12 +166,11 @@ public class WebLogAspect {
 			if (method.getName().equals(methodName)) {
 				Class[] clazzs = method.getParameterTypes();
 				if (clazzs.length == arguments.length) {
-					description.append(method.getAnnotation(WebLog.class).description());
+					description.append(method.getAnnotation(org.happykit.happyboot.log.annotation.Log.class).des());
 					break;
 				}
 			}
 		}
 		return description.toString();
 	}
-
 }

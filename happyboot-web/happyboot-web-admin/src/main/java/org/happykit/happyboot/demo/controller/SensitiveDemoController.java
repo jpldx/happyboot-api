@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import org.happykit.happyboot.base.BaseController;
 import org.happykit.happyboot.desensitize.annotation.Sensitive;
 import org.happykit.happyboot.desensitize.enums.SensitiveTypeEnum;
-import org.happykit.happyboot.log.annotation.WebLog;
+import org.happykit.happyboot.log.annotation.Log;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -27,7 +27,7 @@ import java.util.List;
 @RequestMapping("/demo/sensitive")
 public class SensitiveDemoController extends BaseController {
 
-    @WebLog
+    @Log
     @GetMapping("/list")
     public R list() {
         List<DemoData> list = new ArrayList<>();

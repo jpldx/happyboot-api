@@ -20,6 +20,14 @@ spring:
         min-idle: 0
       shutdown-timeout: 100ms
 
+  data:
+    mongodb:
+      port: 27017
+      database: logs
+      host: mongodb
+  #     username:
+  #     password:
+
   rabbitmq:
     host: rabbitmq
     port: 5672

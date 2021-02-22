@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.gson.Gson;
 import org.happykit.happyboot.base.BaseController;
-import org.happykit.happyboot.log.annotation.WebLog;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.properties.TokenProperties;
@@ -94,7 +94,6 @@ public class SysUserController extends BaseController {
      *
      * @return
      */
-    @WebLog
     @GetMapping({"/list"})
     @JsonView({View.SecurityView.class})
     public R list() {
@@ -102,12 +101,12 @@ public class SysUserController extends BaseController {
     }
 
     /**
-     * 分页查询
+     * 分页列表
      *
      * @param param
      * @return
      */
-    @WebLog
+    @Log(des = "用户分页列表")
     @GetMapping("/page")
     @JsonView({View.SimpleView.class})
     public R page(@Validated SysUserPageQueryParam param) {
@@ -115,7 +114,7 @@ public class SysUserController extends BaseController {
     }
 
     /**
-     * 信息
+     * 查询
      *
      * @param id
      * @return
@@ -162,7 +161,7 @@ public class SysUserController extends BaseController {
     }
 
     /**
-     * 编辑
+     * 更新
      *
      * @param form
      * @return
