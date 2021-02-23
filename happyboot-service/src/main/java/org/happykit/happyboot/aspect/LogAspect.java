@@ -1,5 +1,7 @@
 package org.happykit.happyboot.aspect;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
@@ -115,7 +117,7 @@ public class LogAspect {
 		return result;
 	}
 
-	private void saveLog(ProceedingJoinPoint joinPoint, Object result, long startTime) {
+	private void saveLog(ProceedingJoinPoint joinPoint, Object result, long startTime) throws JsonProcessingException {
 		MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 		Method method = signature.getMethod();
 
@@ -142,14 +144,15 @@ public class LogAspect {
 
 		SecurityUserDetails loginUser = securityUtils.getCurrentUserDetails();
 
+		ObjectMapper om = new ObjectMapper();
 		Log entity = new Log();
 		entity.setDescription(log.value())
 				.setRequestUri(requestUri)
 				.setRequestMethod(request.getMethod())
 				.setRequestClass(className + "." + methodName)
 				.setRequestIp(ip)
-				.setRequestArgs(new Gson().toJson(joinPoint.getArgs()))
-				.setResponseArgs(new Gson().toJson(result))
+				.setRequestArgs(om.writeValueAsString(joinPoint.getArgs()))
+				.setResponseArgs(om.writeValueAsString(result))
 				.setRequestUser(loginUser != null ? loginUser.getUsername() : null)
 				.setRequestTime(DateUtils.now())
 				.setCostTime(costTime);
