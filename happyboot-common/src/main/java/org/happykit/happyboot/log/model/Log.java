@@ -1,6 +1,5 @@
 package org.happykit.happyboot.log.model;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -18,6 +17,8 @@ import java.io.Serializable;
 @Setter
 @Accessors(chain = true)
 public class Log implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     /**
      * 请求资源路径
      */
