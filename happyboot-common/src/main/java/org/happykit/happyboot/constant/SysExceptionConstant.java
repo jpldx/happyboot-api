@@ -5,6 +5,7 @@ package org.happykit.happyboot.constant;
  *
  * @author chen.xudong
  * @date 2020/6/16
+ * @see org.happykit.happyboot.exception.SysException
  */
 public interface SysExceptionConstant {
     /**
@@ -32,5 +33,9 @@ public interface SysExceptionConstant {
     /**
      * 参数异常
      */
-    String PARAM_ERROR = "非法的传参";
+    String PARAM_ERROR = "非法传参";
+    /**
+     * 不支持异常
+     */
+    String UNSUPPORTED_PARAM_TYPE = "不支持的参数类型";
 }

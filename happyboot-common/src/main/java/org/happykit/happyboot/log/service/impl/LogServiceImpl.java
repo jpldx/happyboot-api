@@ -2,6 +2,7 @@ package org.happykit.happyboot.log.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.happykit.happyboot.log.annotation.LogType;
 import org.happykit.happyboot.log.model.Log;
 import org.happykit.happyboot.log.model.LogPageQuery;
@@ -41,12 +42,14 @@ public class LogServiceImpl implements LogService {
     public Page<Log> selectPageList(LogPageQuery query, LogType logType) {
         Long pageNo = query.getPageNo();
         Long pageSize = query.getPageSize();
+        String username = query.getUsername();
 
         Query q = new Query();
-        Criteria criteria = new Criteria();
         q.skip(pageSize * (pageNo - 1));
         q.limit(pageSize.intValue());
-//        q.addCriteria(Criteria.where("requestUser").(query.getUsername()));
+        if (StringUtils.isNotBlank(username)) {
+            q.addCriteria(Criteria.where("requestUser").is(query.getUsername()));
+        }
 
         List<Log> list = mongoTemplate.find(q, Log.class, logType.getCollectName());
         Page<Log> page = new Page<>();

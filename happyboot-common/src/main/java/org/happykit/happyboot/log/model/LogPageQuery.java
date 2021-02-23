@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.happykit.happyboot.page.PageQuery;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 日志分页查询对象
  *
@@ -16,7 +18,13 @@ import org.happykit.happyboot.page.PageQuery;
 @EqualsAndHashCode(callSuper = true)
 public class LogPageQuery extends PageQuery {
     /**
+     * 日志类型
+     */
+    @NotBlank(message = "类型不能为空")
+    private String type;
+    /**
      * 用户名
      */
     private String username;
+
 }
