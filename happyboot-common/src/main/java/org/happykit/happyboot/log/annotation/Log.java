@@ -22,9 +22,9 @@ public @interface Log {
     LogType type() default LogType.SYS;
 
     /**
-     * 描述信息
+     * 日志描述
      *
      * @return
      */
-    String des() default "";
+    String value() default "";
 }

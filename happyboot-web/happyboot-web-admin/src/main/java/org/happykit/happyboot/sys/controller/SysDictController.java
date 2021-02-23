@@ -3,6 +3,7 @@ package org.happykit.happyboot.sys.controller;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.happykit.happyboot.base.BaseController;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.sys.facade.SysDictFacade;
 import org.happykit.happyboot.sys.model.dto.DictSelectDTO;
 import org.happykit.happyboot.sys.model.form.SysDictForm;
@@ -44,6 +45,7 @@ public class SysDictController extends BaseController {
      *
      * @return
      */
+    @Log("字典-列表")
     // @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/list")
     @JsonView({View.SimpleView.class})
@@ -57,6 +59,7 @@ public class SysDictController extends BaseController {
      * @param param
      * @return
      */
+    @Log("字典-分页列表")
     // @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/page")
     @JsonView({View.SimpleView.class})
@@ -70,6 +73,7 @@ public class SysDictController extends BaseController {
      * @param id
      * @return
      */
+    @Log("字典-查询")
     @GetMapping("/get")
     @JsonView({View.SimpleView.class})
     public R get(@NotNull Long id) {
@@ -82,6 +86,7 @@ public class SysDictController extends BaseController {
      * @param form
      * @return
      */
+    @Log("字典-新增")
     // @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
     @JsonView({View.SimpleView.class})
@@ -95,6 +100,7 @@ public class SysDictController extends BaseController {
      * @param form
      * @return
      */
+    @Log("字典-编辑")
     // @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/update")
     @JsonView({View.SimpleView.class})
@@ -108,6 +114,7 @@ public class SysDictController extends BaseController {
      * @param ids
      * @return
      */
+    @Log("字典-删除")
     // @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete")
     public R delete(@NotEmpty Long[] ids) {
@@ -119,6 +126,7 @@ public class SysDictController extends BaseController {
      *
      * @return
      */
+    @Log("字典-通过code查询列表")
     @PostMapping("/queryByDictCode")
     public R queryByDictCode(@RequestBody @Validated DictSelectQueryParam param) {
         return success(sysDictFacade.listDictSelect(param.getDictCode()));
@@ -130,6 +138,7 @@ public class SysDictController extends BaseController {
      * @param dictCode 字典code
      * @return
      */
+    @Log("字典-通过code查询列表")
     @GetMapping("/dictItems/{dictCode}")
     public R dictItems(@NotBlank @PathVariable(name = "dictCode") String dictCode) {
         return success(sysDictFacade.listDictSelect(dictCode));
@@ -142,6 +151,7 @@ public class SysDictController extends BaseController {
      * @param dictCodes 字典codes
      * @return
      */
+    @Log("字典-通过多个code查询列表")
     @GetMapping("/dictItemsMap/{dictCodes}")
     public R dictItemsMap(@NotBlank @PathVariable(name = "dictCodes") String dictCodes) {
         String[] dictCodeArr = dictCodes.split(",");

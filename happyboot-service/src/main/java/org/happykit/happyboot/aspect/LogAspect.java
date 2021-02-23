@@ -143,7 +143,7 @@ public class LogAspect {
 		SecurityUserDetails loginUser = securityUtils.getCurrentUserDetails();
 
 		Log entity = new Log();
-		entity.setDescription(log.des())
+		entity.setDescription(log.value())
 				.setRequestUri(requestUri)
 				.setRequestMethod(request.getMethod())
 				.setRequestClass(className + "." + methodName)
@@ -176,7 +176,7 @@ public class LogAspect {
 			if (method.getName().equals(methodName)) {
 				Class[] clazzs = method.getParameterTypes();
 				if (clazzs.length == arguments.length) {
-					description.append(method.getAnnotation(org.happykit.happyboot.log.annotation.Log.class).des());
+					description.append(method.getAnnotation(org.happykit.happyboot.log.annotation.Log.class).value());
 					break;
 				}
 			}

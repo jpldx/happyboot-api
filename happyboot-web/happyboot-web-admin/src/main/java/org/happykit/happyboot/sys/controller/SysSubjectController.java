@@ -3,6 +3,7 @@ package org.happykit.happyboot.sys.controller;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.happykit.happyboot.base.BaseController;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.sys.facade.SysSubjectFacade;
 import org.happykit.happyboot.sys.model.form.SysSubjectForm;
 import org.happykit.happyboot.sys.model.query.SysSubjectPageQueryParam;
@@ -42,6 +43,7 @@ public class SysSubjectController extends BaseController {
      *
      * @return
      */
+    @Log("主体-列表")
     @GetMapping("/list")
     @JsonView({View.SimpleView.class})
     public R list() {
@@ -54,6 +56,7 @@ public class SysSubjectController extends BaseController {
      * @param param
      * @return
      */
+    @Log("主体-分页列表")
     @GetMapping("/page")
     @JsonView({View.SimpleView.class})
     public R page(@Validated SysSubjectPageQueryParam param) {
@@ -66,6 +69,7 @@ public class SysSubjectController extends BaseController {
      * @param id
      * @return
      */
+    @Log("主体-查询")
     @GetMapping("/get")
     @JsonView({View.SimpleView.class})
     public R get(@NotBlank String id) {
@@ -78,6 +82,7 @@ public class SysSubjectController extends BaseController {
      * @param form
      * @return
      */
+    @Log("主体-新增")
     @PostMapping("/add")
     @JsonView({View.SimpleView.class})
     public R add(@RequestBody @Validated SysSubjectForm form) {
@@ -90,6 +95,7 @@ public class SysSubjectController extends BaseController {
      * @param form
      * @return
      */
+    @Log("主体-更新")
     @PostMapping("/update")
     @JsonView({View.SimpleView.class})
     public R update(@RequestBody @Validated(Update.class) SysSubjectForm form) {
@@ -103,6 +109,7 @@ public class SysSubjectController extends BaseController {
      * @param ids
      * @return
      */
+    @Log("主体-删除")
     @DeleteMapping("/delete")
     public R delete(@NotEmpty String[] ids) {
         return success(sysSubjectService.deleteSysObj(ids));

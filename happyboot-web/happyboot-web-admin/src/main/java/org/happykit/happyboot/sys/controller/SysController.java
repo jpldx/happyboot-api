@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import org.happykit.happyboot.base.BaseController;
 import org.happykit.happyboot.constant.CacheConstant;
 import lombok.extern.slf4j.Slf4j;
+import org.happykit.happyboot.log.annotation.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.annotation.Validated;
@@ -33,6 +34,7 @@ public class SysController extends BaseController {
      *
      * @return
      */
+    @Log("系统-清除缓存")
     @GetMapping("/clearCache")
     public R clearCache() {
         // 清除字典缓存

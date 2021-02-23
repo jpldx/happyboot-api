@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.happykit.happyboot.base.BaseController;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.sys.model.entity.SysFacilityGroupDO;
 import org.happykit.happyboot.sys.model.form.SysFacilityGroupForm;
 import org.happykit.happyboot.sys.model.form.SysFacilityGroupRelForm;
@@ -59,6 +60,7 @@ public class SysFacilityGroupController extends BaseController {
 	 *
 	 * @return
 	 */
+	@Log("功能组-列表")
 	@GetMapping("/list")
 	@JsonView({View.SimpleView.class})
 	public R list() {
@@ -72,6 +74,7 @@ public class SysFacilityGroupController extends BaseController {
 	 * @param query
 	 * @return
 	 */
+	@Log("功能组-分页列表")
 	@GetMapping("/page")
 	@JsonView({View.SimpleView.class})
 	public R page(@Valid SysFacilityGroupPageQueryParam query) {
@@ -84,6 +87,7 @@ public class SysFacilityGroupController extends BaseController {
 	 * @param id
 	 * @return
 	 */
+	@Log("功能组-查询")
 	@GetMapping("/get")
 	@JsonView({View.SimpleView.class})
 	public R get(@NotBlank String id) {
@@ -98,6 +102,7 @@ public class SysFacilityGroupController extends BaseController {
 	 * @param form
 	 * @return
 	 */
+	@Log("功能组-新增")
 	@PostMapping("/add")
 	public R add(@RequestBody @Valid SysFacilityGroupForm form) {
 		SysFacilityGroupDO entity = new SysFacilityGroupDO();
@@ -113,6 +118,7 @@ public class SysFacilityGroupController extends BaseController {
 	 * @param form
 	 * @return
 	 */
+	@Log("功能组-更新")
 	@PutMapping("/update")
 	public R update(@RequestBody @Validated(Update.class) SysFacilityGroupForm form) {
 		SysFacilityGroupDO dbRecord = sysFacilityGroupService.getById(form.getId());
@@ -127,6 +133,7 @@ public class SysFacilityGroupController extends BaseController {
 	 * @param ids
 	 * @return
 	 */
+	@Log("功能组-删除")
 	@DeleteMapping("/delete")
 	public R delete(@NotEmpty String[] ids) {
 		return success(sysFacilityGroupService.removeByIds(Arrays.asList(ids)));
@@ -138,6 +145,7 @@ public class SysFacilityGroupController extends BaseController {
 	 *
 	 * @return
 	 */
+	@Log("功能组-查询用户功能组关联")
 	@GetMapping("/queryFacilityGroupByUser")
 	public R queryFacilityGroupByUser(@NotBlank @RequestParam String userId) {
 		return success(sysFacilityGroupService.queryFacilityGroupByUser(userId));
@@ -148,6 +156,7 @@ public class SysFacilityGroupController extends BaseController {
 	 *
 	 * @return
 	 */
+	@Log("功能组-查询功能组功能关联")
 	@GetMapping("/queryFacilityByGroup")
 	public R queryFacilityByGroup(@NotBlank @RequestParam String facilityGroupId) {
 		List<SysFacilityVO> list = sysFacilityGroupService.queryFacilityByGroup(facilityGroupId);
@@ -171,6 +180,7 @@ public class SysFacilityGroupController extends BaseController {
 	 *
 	 * @return
 	 */
+	@Log("功能组-新增功能组功能关联")
 	@PostMapping("/saveFacilityGroupRel")
 	public R saveFacilityGroupRel(@RequestBody @Validated SysFacilityGroupRelForm form) {
 		return success(sysFacilityGroupRelService.saveFacilityGroupRel(form));

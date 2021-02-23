@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.happykit.happyboot.annotation.CheckPermission;
 import org.happykit.happyboot.base.BaseController;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.sys.model.form.SysUpdateForm;
 import org.happykit.happyboot.sys.model.query.SysUpdatePageQueryParam;
 import org.happykit.happyboot.sys.service.SysUpdateService;
@@ -39,6 +40,7 @@ public class SysUpdateController extends BaseController {
      * @param param
      * @return
      */
+    @Log("App更新-分页列表")
     @GetMapping("/page")
     @JsonView({View.SimpleView.class})
     public R page(SysUpdatePageQueryParam param) {
@@ -51,6 +53,7 @@ public class SysUpdateController extends BaseController {
      * @param form
      * @return
      */
+    @Log("App更新-新增")
     @PostMapping("/add")
     @JsonView({View.SimpleView.class})
     @CheckPermission
@@ -65,6 +68,7 @@ public class SysUpdateController extends BaseController {
      * @param ids
      * @return
      */
+    @Log("App更新-删除")
     @DeleteMapping("/delete")
     @CheckPermission
     public R delete(@NotEmpty String[] ids) {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.happykit.happyboot.annotation.CheckPermission;
 import org.happykit.happyboot.base.BaseController;
 import org.happykit.happyboot.constant.SysExceptionConstant;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.mq.constants.MqConstant;
 import org.happykit.happyboot.mq.enums.MsgPlatformEnum;
 import org.happykit.happyboot.mq.model.Message;
@@ -50,6 +51,7 @@ public class SysMsgController extends BaseController {
      * @param query
      * @return
      */
+    @Log("消息管理-分页列表")
     @JsonView(value = {View.SimpleView.class})
     @GetMapping(value = "/page")
     public R page(SysMsgPageQueryParam query) {
@@ -63,6 +65,7 @@ public class SysMsgController extends BaseController {
      * @param form
      * @return
      */
+    @Log("消息管理-新增")
     @CheckPermission
     @PostMapping(value = "/add")
     public R add(@Valid @RequestBody SysMsgForm form) {
@@ -75,6 +78,7 @@ public class SysMsgController extends BaseController {
      * @param form
      * @return
      */
+    @Log("消息管理-更新")
     @CheckPermission
     @PutMapping(value = "/update")
     public R update(@Valid @RequestBody SysMsgForm form) {
@@ -87,6 +91,7 @@ public class SysMsgController extends BaseController {
      * @param id
      * @return
      */
+    @Log("消息管理-发送")
     @CheckPermission
     @GetMapping(value = "/sendMsg")
     public R sendMsg(@NotBlank @RequestParam(name = "id") String id) {
@@ -99,6 +104,7 @@ public class SysMsgController extends BaseController {
      * @param id
      * @return
      */
+    @Log("消息管理-撤销")
     @CheckPermission
     @GetMapping(value = "/cancelMsg")
     public R cancelMsg(@NotBlank @RequestParam(name = "id") String id) {
@@ -111,6 +117,7 @@ public class SysMsgController extends BaseController {
      * @param id
      * @return
      */
+    @Log("消息管理-删除")
     @CheckPermission
     @DeleteMapping(value = "/delete")
     public R delete(@NotBlank @RequestParam(name = "id") String id) {
@@ -123,6 +130,7 @@ public class SysMsgController extends BaseController {
      * @param ids
      * @return
      */
+    @Log("消息管理-批量删除")
     @CheckPermission
     @DeleteMapping(value = "/deleteBatch")
     public R deleteBatch(@NotBlank @RequestParam(name = "ids") String ids) {
@@ -135,6 +143,7 @@ public class SysMsgController extends BaseController {
      * @param id
      * @return
      */
+    @Log("消息管理-查询")
     @GetMapping("/get")
     @JsonView({View.SimpleView.class})
     public R get(@NotBlank @RequestParam(name = "id") String id) {

@@ -94,6 +94,7 @@ public class SysUserController extends BaseController {
      *
      * @return
      */
+    @Log("用户-列表")
     @GetMapping({"/list"})
     @JsonView({View.SecurityView.class})
     public R list() {
@@ -106,7 +107,7 @@ public class SysUserController extends BaseController {
      * @param param
      * @return
      */
-    @Log(des = "用户分页列表")
+    @Log("用户-分页列表")
     @GetMapping("/page")
     @JsonView({View.SimpleView.class})
     public R page(@Validated SysUserPageQueryParam param) {
@@ -119,6 +120,7 @@ public class SysUserController extends BaseController {
      * @param id
      * @return
      */
+    @Log("用户-查询")
     @GetMapping("/get")
     @JsonView({View.SimpleView.class})
     public R get(@NotNull Long id) {
@@ -154,6 +156,7 @@ public class SysUserController extends BaseController {
      * @param form
      * @return
      */
+    @Log("用户-新增")
     @PostMapping("/add")
     @JsonView({View.SimpleView.class})
     public R add(@RequestBody @Validated SysUserForm form) {
@@ -166,6 +169,7 @@ public class SysUserController extends BaseController {
      * @param form
      * @return
      */
+    @Log("用户-更新")
     @PostMapping("/update")
     @JsonView({View.SimpleView.class})
     public R update(@RequestBody @Validated(Update.class) SysUserForm form) {
@@ -178,6 +182,7 @@ public class SysUserController extends BaseController {
      * @param form
      * @return
      */
+    @Log("用户-更新状态")
     @PostMapping("/updateStatus")
     public R updateStatus(@RequestBody @Validated SysUserStatusForm form) {
         return success(sysUserService.updateSysUserStatus(form));
@@ -189,6 +194,7 @@ public class SysUserController extends BaseController {
      * @param form
      * @return
      */
+    @Log("用户-更新密码")
     @PostMapping(value = "/updatePwd")
     public R updatePwd(@RequestBody @Validated SysUserPwdForm form) {
         return success(sysUserService.updateSysUserPwd(form));
@@ -200,6 +206,7 @@ public class SysUserController extends BaseController {
      * @param ids
      * @return
      */
+    @Log("用户-删除")
     @DeleteMapping("/delete")
     public R delete(@NotEmpty String[] ids) {
         return success(sysUserFacade.deleteSysUser(ids));
@@ -258,6 +265,7 @@ public class SysUserController extends BaseController {
      * @param form
      * @return
      */
+    @Log("用户-新增角色关联")
     @PostMapping("/saveUserRole")
     public R saveUserRole(@RequestBody @Validated SysRefUserRoleForm form) {
         return success(sysUserFacade.saveUserRole(form));
@@ -269,6 +277,7 @@ public class SysUserController extends BaseController {
      * @param form
      * @return
      */
+    @Log("用户-新增区域关联")
     @PostMapping("/saveUserDeptRegion")
     public R saveUserDeptRegion(@RequestBody @Validated SysRefUserDeptRegionForm form) {
         return success(sysUserFacade.saveUserDeptRegion(form));
@@ -280,6 +289,7 @@ public class SysUserController extends BaseController {
      * @param form
      * @return
      */
+    @Log("用户-新增部门关联")
     @PostMapping("/saveUserDeptObj")
     public R saveUserDeptObj(@RequestBody @Validated SysRefUserDeptObjForm form) {
         return success(sysUserFacade.saveUserDeptObj(form));
@@ -291,6 +301,7 @@ public class SysUserController extends BaseController {
      * @param form
      * @return
      */
+    @Log("用户-新增功能组关联")
     @PostMapping("/saveUserFacilityGroupRel")
     public R saveUserFacilityGroupRel(@RequestBody @Validated SysFacilityUserGroupRelForm form) {
         return success(sysUserFacade.saveUserFacilityGroupRel(form));
@@ -302,6 +313,7 @@ public class SysUserController extends BaseController {
      * @param keyword 搜索关键词
      * @return
      */
+    @Log("用户-查询主账号列表")
     @GetMapping("/queryMainAccountList")
     public R queryMainAccountList(@NotBlank(message = "关键词不能为空") @RequestParam(name = "keyword") String keyword) {
         List<SysUserDO> metaList = sysUserService.getMainAccountList(keyword);
@@ -323,6 +335,7 @@ public class SysUserController extends BaseController {
 //        return R.ok(loginUser);
 //    }
 
+    @Log("用户-查询当前登录用户信息")
     @GetMapping("/userinfo")
     public R usercache() {
         return R.ok(sysSecurityUtils.getCurrentUserDetails());
@@ -333,6 +346,7 @@ public class SysUserController extends BaseController {
      *
      * @return
      */
+    @Log("用户登录-查询主账号关联账号列表")
     @GetMapping("/userlist")
     public R userlist() {
         SecurityUserDetails loginUser = sysSecurityUtils.getCurrentUserDetails();
@@ -372,6 +386,7 @@ public class SysUserController extends BaseController {
      * @param userId 用户id
      * @return
      */
+    @Log("用户-查询用户部门id")
     @GetMapping("/queryDeptId")
     public R queryDeptId(@NotBlank String userId) {
         SysUserDO dbRecord = sysUserService.getById(userId);
@@ -385,6 +400,7 @@ public class SysUserController extends BaseController {
      * @param form
      * @return
      */
+    @Log("用户登录-用户选择账号登录")
     @PostMapping("/selectLogin")
     public R selectLogin(HttpServletRequest request, @RequestBody @Validated SysUserIdForm form) {
         SysUserDO selectedUser = sysUserService.getById(form.getUserId());

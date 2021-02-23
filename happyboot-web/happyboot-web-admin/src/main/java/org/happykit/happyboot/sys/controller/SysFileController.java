@@ -5,6 +5,7 @@ import org.happykit.happyboot.base.BaseController;
 import org.happykit.happyboot.constant.FileConstant;
 import org.happykit.happyboot.exception.BusinessException;
 import org.happykit.happyboot.exception.SysException;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.sys.model.entity.SysFileDO;
 import org.happykit.happyboot.sys.model.query.SysFilePageQueryParam;
 import org.happykit.happyboot.sys.service.SysConfigService;
@@ -68,6 +69,7 @@ public class SysFileController extends BaseController {
      * @param query
      * @return
      */
+    @Log("文件-分页列表")
     @GetMapping("/page")
     @ResponseBody
     public R page(@Valid SysFilePageQueryParam query) {
@@ -81,6 +83,7 @@ public class SysFileController extends BaseController {
      * @return
      * @throws IOException
      */
+    @Log("文件-上传")
     @PostMapping("/uploadFile")
     @ResponseBody
     public R uploadFile(@RequestParam(value = "file") MultipartFile file) throws IOException {
@@ -160,6 +163,7 @@ public class SysFileController extends BaseController {
      * @return
      * @throws IOException
      */
+    @Log("文件-批量上传")
     @Transactional
     @PostMapping("/uploadFiles")
     @ResponseBody
@@ -256,6 +260,7 @@ public class SysFileController extends BaseController {
      * @return
      * @throws IOException
      */
+    @Log("文件-下载")
     @GetMapping("/download/{id}")
     public ResponseEntity download(@PathVariable Long id) throws IOException {
         SysFileDO sysFile = sysFileService.getById(id);
@@ -283,6 +288,7 @@ public class SysFileController extends BaseController {
      * @return
      * @throws IOException
      */
+    @Log("图片-上传")
     @PostMapping("/uploadImg")
     @ResponseBody
     public R uploadImg(@RequestParam(value = "file") MultipartFile file) throws IOException {
@@ -362,6 +368,7 @@ public class SysFileController extends BaseController {
      * @return
      * @throws IOException
      */
+    @Log("图片-批量上传")
     @Transactional
     @PostMapping("/uploadImgs")
     @ResponseBody
@@ -458,6 +465,7 @@ public class SysFileController extends BaseController {
      * @return
      * @throws IOException
      */
+    @Log("图片-查看")
     @GetMapping("/img/{id}")
     public ResponseEntity img(@PathVariable Long id) throws IOException {
         SysFileDO sysFile = sysFileService.getById(id);
@@ -479,6 +487,7 @@ public class SysFileController extends BaseController {
      * @return
      * @throws IOException
      */
+    @Log("图片-预览")
     @GetMapping("/view/{id}")
     public ResponseEntity view(@PathVariable Long id) {
         SysFileDO sysFile = sysFileService.getById(id);
@@ -509,6 +518,7 @@ public class SysFileController extends BaseController {
      * @return
      * @throws Exception
      */
+    @Log("图片-缩略图预览")
     @GetMapping(value = "/thumbnail/{id}")
     public ResponseEntity thumbnail(
             @PathVariable Long id, @RequestParam(value = "width", defaultValue = "148") Integer width, @RequestParam(value = "height", defaultValue = "148") Integer height) {

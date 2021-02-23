@@ -3,6 +3,7 @@ package org.happykit.happyboot.sys.controller;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.happykit.happyboot.base.BaseController;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.model.model.ModifyNodeModel;
 import org.happykit.happyboot.sys.facade.SysPermissionFacade;
 import org.happykit.happyboot.sys.model.form.SysMenuForm;
@@ -48,6 +49,7 @@ public class SysPermissionController extends BaseController {
      * @param types
      * @return
      */
+    @Log("权限-查询权限树")
     @GetMapping("/tree")
     public R tree(@NotBlank String module, String[] neTypes, String[] types) {
         return success(sysPermissionService.tree(module, neTypes, types));
@@ -59,6 +61,7 @@ public class SysPermissionController extends BaseController {
      * @param id
      * @return
      */
+    @Log("权限-查询")
     @GetMapping("/get")
     @JsonView({View.SimpleView.class})
     public R get(@NotNull Long id) {
@@ -71,6 +74,7 @@ public class SysPermissionController extends BaseController {
      * @param form
      * @return
      */
+    @Log("权限-新增")
     @PostMapping("/menu/add")
     @JsonView({View.SimpleView.class})
     public R addMenu(@RequestBody @Validated(Add.class) SysMenuForm form) {
@@ -83,6 +87,7 @@ public class SysPermissionController extends BaseController {
      * @param form
      * @return
      */
+    @Log("权限-更新")
     @PostMapping("/menu/update")
     @JsonView({View.SimpleView.class})
     public R updateMenu(@RequestBody @Validated(Update.class) SysMenuForm form) {
@@ -95,6 +100,7 @@ public class SysPermissionController extends BaseController {
      * @param ids
      * @return
      */
+    @Log("权限-删除")
     @DeleteMapping("/delete")
     public R delete(@NotEmpty String[] ids) {
         return success(sysPermissionFacade.deleteSysPermission(ids));
@@ -106,6 +112,7 @@ public class SysPermissionController extends BaseController {
      * @param form
      * @return
      */
+    @Log("权限-变更节点")
     @PostMapping("/modifyNode")
     public R modifyNode(@RequestBody @Validated ModifyNodeModel form) {
         return success(sysPermissionService.updateNode(form));
@@ -121,6 +128,7 @@ public class SysPermissionController extends BaseController {
      * @param types
      * @return
      */
+    @Log("权限-查询角色权限列表")
     @GetMapping("/queryIdsByRoleIdAndTypeAndModule")
     public R queryIdsByRoleIdAndTypeAndModule(@NotNull String roleId, @NotBlank String authType, @NotBlank String module,
                                               String[] neTypes, String[] types) {

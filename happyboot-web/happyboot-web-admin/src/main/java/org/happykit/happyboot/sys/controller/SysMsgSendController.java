@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.happykit.happyboot.base.BaseController;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.sys.model.entity.SysMsgDO;
 import org.happykit.happyboot.sys.model.query.SysMsgSendPageQueryParam;
 import org.happykit.happyboot.sys.model.vo.MsgBatchReadVO;
@@ -44,6 +45,7 @@ public class SysMsgSendController extends BaseController {
      * @param query
      * @return
      */
+    @Log("我的消息-分页列表")
     @JsonView(value = {View.SimpleView.class})
     @GetMapping("/page")
     public R page(SysMsgSendPageQueryParam query) {
@@ -57,6 +59,7 @@ public class SysMsgSendController extends BaseController {
      * @param ids 消息ids
      * @return
      */
+    @Log("我的消息-已读")
     @GetMapping("/read")
     public R read(@NotBlank @RequestParam(name = "ids") String ids) {
         return success(sysMsgSendService.read(ids));
@@ -68,6 +71,7 @@ public class SysMsgSendController extends BaseController {
      * @param param
      * @return
      */
+    @Log("我的消息-批量已读")
     @PostMapping("/batchRead")
     public R batchRead(@Valid @RequestBody MsgBatchReadVO param) {
         return success(sysMsgSendService.batchRead(param));
@@ -80,6 +84,7 @@ public class SysMsgSendController extends BaseController {
      * @param headId     栈顶消息id（默认""）
      * @return
      */
+    @Log("消息铃铛-分页列表")
     @JsonView(value = {View.SimpleView.class})
     @GetMapping("/queryUserMsgAlert")
     public R queryUserMsgAlert(
@@ -106,6 +111,7 @@ public class SysMsgSendController extends BaseController {
      * @param tailId 栈尾消息id
      * @return
      */
+    @Log("消息铃铛-加载更多")
     @JsonView(value = {View.SimpleView.class})
     @GetMapping("/loadMore")
     public R loadMore(@RequestParam(name = "tailId", defaultValue = "") String tailId) {

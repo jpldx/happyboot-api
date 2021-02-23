@@ -3,6 +3,7 @@ package org.happykit.happyboot.sys.controller;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.happykit.happyboot.base.BaseController;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.sys.model.form.SysConfigForm;
 import org.happykit.happyboot.sys.model.query.SysConfigPageQueryParam;
 import org.happykit.happyboot.sys.service.SysConfigService;
@@ -53,6 +54,7 @@ public class SysConfigController extends BaseController {
      * @param query
      * @return
      */
+    @Log("系统配置-分页列表")
     @GetMapping("/page")
     @JsonView({View.SimpleView.class})
     public R page(@Valid SysConfigPageQueryParam query) {
@@ -65,6 +67,7 @@ public class SysConfigController extends BaseController {
      * @param id
      * @return
      */
+    @Log("系统配置-查询")
     @GetMapping("/get")
     @JsonView({View.SimpleView.class})
     public R get(@NotBlank String id) {
@@ -77,6 +80,7 @@ public class SysConfigController extends BaseController {
      * @param form
      * @return
      */
+    @Log("系统配置-新增")
     @PostMapping("/add")
 //	@JsonView({View.SimpleView.class})
     public R add(@RequestBody @Valid SysConfigForm form) {
@@ -89,6 +93,7 @@ public class SysConfigController extends BaseController {
      * @param form
      * @return
      */
+    @Log("系统配置-更新")
     @PutMapping("/update")
 //	@JsonView({View.SimpleView.class})
     public R update(@RequestBody @Validated(Update.class) SysConfigForm form) {
@@ -101,6 +106,7 @@ public class SysConfigController extends BaseController {
      * @param ids
      * @return
      */
+    @Log("系统配置-删除")
     @DeleteMapping("/delete")
     public R delete(@NotEmpty String[] ids) {
         return success(sysConfigService.removeByIds(Arrays.asList(ids)));

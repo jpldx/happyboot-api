@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import lombok.extern.slf4j.Slf4j;
 import org.happykit.happyboot.base.BaseController;
 import org.happykit.happyboot.constant.SysExceptionConstant;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.log.annotation.LogType;
 import org.happykit.happyboot.log.model.LogPageQuery;
 import org.happykit.happyboot.log.service.LogService;
@@ -34,6 +35,7 @@ public class SysLogController extends BaseController {
      * @param query
      * @return
      */
+    @Log("日志-分页列表")
     @GetMapping("/page")
     public R page(@Validated LogPageQuery query) {
         String type = query.getType();

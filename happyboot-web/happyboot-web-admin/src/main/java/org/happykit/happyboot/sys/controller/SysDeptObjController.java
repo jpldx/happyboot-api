@@ -3,6 +3,7 @@ package org.happykit.happyboot.sys.controller;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.happykit.happyboot.base.BaseController;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.sys.model.form.SysDeptObjForm;
 import org.happykit.happyboot.sys.model.form.SysDeptObjModifyNodeForm;
 import org.happykit.happyboot.sys.model.query.SysDeptObjQueryParam;
@@ -41,6 +42,7 @@ public class SysDeptObjController extends BaseController {
      *
      * @return
      */
+    @Log("部门-查询部门树")
     @GetMapping("/tree")
     public R tree() {
         return success(sysDeptObjService.tree());
@@ -51,6 +53,7 @@ public class SysDeptObjController extends BaseController {
      *
      * @return
      */
+    @Log("部门-异步查询部门树")
     @GetMapping("/queryTreeByParentId")
     public R queryTreeByParentId(@NotNull Long parentId) {
         return success(sysDeptObjService.tree(parentId));
@@ -61,6 +64,7 @@ public class SysDeptObjController extends BaseController {
      *
      * @return
      */
+    @Log("部门-列表")
     @GetMapping("/list")
     @JsonView({View.SimpleView.class})
     public R list(SysDeptObjQueryParam param) {
@@ -73,6 +77,7 @@ public class SysDeptObjController extends BaseController {
      * @param id
      * @return
      */
+    @Log("部门-查询")
     @GetMapping("/get")
     @JsonView({View.SimpleView.class})
     public R get(@NotNull Long id) {
@@ -85,6 +90,7 @@ public class SysDeptObjController extends BaseController {
      * @param form
      * @return
      */
+    @Log("部门-新增")
     @PostMapping("/add")
     @JsonView({View.SimpleView.class})
     public R add(@RequestBody @Validated SysDeptObjForm form) {
@@ -97,6 +103,7 @@ public class SysDeptObjController extends BaseController {
      * @param form
      * @return
      */
+    @Log("部门-更新")
     @PostMapping("/update")
     @JsonView({View.SimpleView.class})
     public R update(@RequestBody @Validated(Update.class) SysDeptObjForm form) {
@@ -109,6 +116,7 @@ public class SysDeptObjController extends BaseController {
      * @param form
      * @return
      */
+    @Log("部门-变更节点")
     @PostMapping("/modifyNode")
     public R modifyNode(@RequestBody @Validated SysDeptObjModifyNodeForm form) {
         return success(sysDeptObjService.updateSysDeptObjNode(form));
@@ -120,6 +128,7 @@ public class SysDeptObjController extends BaseController {
      * @param ids
      * @return
      */
+    @Log("部门-删除")
     @DeleteMapping("/delete")
     public R delete(@NotEmpty Long[] ids) {
         return success(sysDeptObjService.deleteSysDeptObj(ids));
@@ -131,6 +140,7 @@ public class SysDeptObjController extends BaseController {
      * @param userId
      * @return
      */
+    @Log("部门-查询用户部门id列表")
     @GetMapping("/queryIdsByUserId")
     public R queryIdsByUserId(@NotNull String userId) {
         Set<String> ids = sysDeptObjService.listSysDeptObjsByUserId(userId).stream().map(m -> m.getId().toString())

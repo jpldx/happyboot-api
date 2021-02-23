@@ -3,6 +3,7 @@ package org.happykit.happyboot.sys.controller;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.happykit.happyboot.base.BaseController;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.sys.model.form.SysDictItemForm;
 import org.happykit.happyboot.sys.model.query.SysDictItemPageQueryParam;
 import org.happykit.happyboot.sys.service.SysDictItemService;
@@ -38,6 +39,7 @@ public class SysDictItemController extends BaseController {
      *
      * @return
      */
+    @Log("字典值-列表")
 //	@PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/list")
     @JsonView({View.SimpleView.class})
@@ -51,6 +53,7 @@ public class SysDictItemController extends BaseController {
      * @param param
      * @return
      */
+    @Log("字典值-分页列表")
 //	@PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/page")
     @JsonView({View.SimpleView.class})
@@ -64,6 +67,7 @@ public class SysDictItemController extends BaseController {
      * @param id
      * @return
      */
+    @Log("字典值-查询")
     @GetMapping("/get")
     @JsonView({View.SimpleView.class})
     public R get(@NotNull Long id) {
@@ -76,6 +80,7 @@ public class SysDictItemController extends BaseController {
      * @param form
      * @return
      */
+    @Log("字典值-新增")
 //	@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
     @JsonView({View.SimpleView.class})
@@ -89,6 +94,7 @@ public class SysDictItemController extends BaseController {
      * @param form
      * @return
      */
+    @Log("字典值-更新")
 //	@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/update")
     @JsonView({View.SimpleView.class})
@@ -102,6 +108,7 @@ public class SysDictItemController extends BaseController {
      * @param ids
      * @return
      */
+    @Log("字典值-删除")
 //	@PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete")
     public R delete(@NotEmpty Long[] ids) {

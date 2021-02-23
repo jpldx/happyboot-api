@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.happykit.happyboot.base.BaseController;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.sys.model.entity.SysFacilityDO;
 import org.happykit.happyboot.sys.model.form.SysFacilityForm;
 import org.happykit.happyboot.sys.model.form.SysFacilityParamForm;
@@ -57,6 +58,7 @@ public class SysFacilityController extends BaseController {
      * @param query
      * @return
      */
+    @Log("功能-分页列表")
     @GetMapping("/page")
     @JsonView({View.SimpleView.class})
     public R page(@Valid SysFacilityPageQueryParam query) {
@@ -69,6 +71,7 @@ public class SysFacilityController extends BaseController {
      * @param id
      * @return
      */
+    @Log("功能-查询")
     @GetMapping("/get")
     @JsonView({View.SimpleView.class})
     public R get(@NotBlank String id) {
@@ -83,6 +86,7 @@ public class SysFacilityController extends BaseController {
      * @param form
      * @return
      */
+    @Log("功能-新增")
     @PostMapping("/add")
     public R add(@RequestBody @Valid SysFacilityForm form) {
         SysFacilityDO entity = new SysFacilityDO();
@@ -96,6 +100,7 @@ public class SysFacilityController extends BaseController {
      * @param form
      * @return
      */
+    @Log("功能-更新")
     @PutMapping("/update")
     public R update(@RequestBody @Validated(Update.class) SysFacilityForm form) {
         SysFacilityDO dbRecord = sysFacilityService.getById(form.getId());
@@ -110,6 +115,7 @@ public class SysFacilityController extends BaseController {
      * @param ids
      * @return
      */
+    @Log("功能-删除")
     @DeleteMapping("/delete")
     public R delete(@NotEmpty String[] ids) {
         return success(sysFacilityService.removeByIds(Arrays.asList(ids)));
@@ -124,6 +130,7 @@ public class SysFacilityController extends BaseController {
      * @param userId          用户ID
      * @return
      */
+    @Log("功能-查询功能参数")
     @GetMapping("/getParam")
     public R getParam(@NotBlank @RequestParam(name = "id") String id,
                       @NotBlank(message = "功能定义不能为空") @RequestParam(name = "setFrom", required = false, defaultValue = "sys") String setFrom,
@@ -139,6 +146,7 @@ public class SysFacilityController extends BaseController {
      * @param
      * @return
      */
+    @Log("功能-设置功能参数")
     @PostMapping("/setParam")
     public R param(@RequestBody @Valid SysFacilityParamForm form) {
         return success(sysFacilityService.setParam(form));
@@ -150,6 +158,7 @@ public class SysFacilityController extends BaseController {
      * @param facilityParamId 功能参数ID
      * @return
      */
+    @Log("功能-删除功能参数")
     @DeleteMapping("/deleteParam")
     public R param(@NotBlank @RequestParam(name = "facilityParamId") String facilityParamId) {
         return success(sysFacilityService.deleteParam(facilityParamId));
@@ -161,6 +170,7 @@ public class SysFacilityController extends BaseController {
      * @param userId 用户ID
      * @return
      */
+    @Log("功能-查询用户功能组关联")
     @GetMapping("/queryFacilityByUser")
     public R queryFacilityByUser(@NotBlank String userId) {
         List<SysFacilityVO> list = sysFacilityService.getFacilityByUser(userId);

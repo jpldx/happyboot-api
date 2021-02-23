@@ -3,6 +3,7 @@ package org.happykit.happyboot.sys.controller;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.happykit.happyboot.base.BaseController;
+import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.sys.facade.SysRoleFacade;
 import org.happykit.happyboot.sys.model.form.SysRefRolePermissionForm;
 import org.happykit.happyboot.sys.model.form.SysRefRoleUserForm;
@@ -46,6 +47,7 @@ public class SysRoleController extends BaseController {
      *
      * @return
      */
+    @Log("角色-列表")
     @GetMapping("/list")
     @JsonView({View.SimpleView.class})
     public R list() {
@@ -58,6 +60,7 @@ public class SysRoleController extends BaseController {
      * @param param
      * @return
      */
+    @Log("角色-分页列表")
     @GetMapping("/page")
     @JsonView({View.SimpleView.class})
     public R page(@Validated SysRolePageQueryParam param) {
@@ -70,6 +73,7 @@ public class SysRoleController extends BaseController {
      * @param id
      * @return
      */
+    @Log("角色-查询")
     @GetMapping("/get")
     @JsonView({View.SimpleView.class})
     public R get(@NotNull Long id) {
@@ -82,6 +86,7 @@ public class SysRoleController extends BaseController {
      * @param form
      * @return
      */
+    @Log("角色-新增")
     @PostMapping("/add")
     @JsonView({View.SimpleView.class})
     public R add(@RequestBody @Validated SysRoleForm form) {
@@ -94,6 +99,7 @@ public class SysRoleController extends BaseController {
      * @param form
      * @return
      */
+    @Log("角色-更新")
     @PostMapping("/update")
     @JsonView({View.SimpleView.class})
     public R update(@RequestBody @Validated(Update.class) SysRoleForm form) {
@@ -106,6 +112,7 @@ public class SysRoleController extends BaseController {
      * @param ids
      * @return
      */
+    @Log("角色-删除")
     @DeleteMapping("/delete")
     public R delete(@NotEmpty String[] ids) {
         return success(sysRoleFacade.deleteSysRole(ids));
@@ -118,6 +125,7 @@ public class SysRoleController extends BaseController {
      * @param authType
      * @return
      */
+    @Log("角色-查询用户角色列表")
     @GetMapping("/queryRolesByUserIdAndAuthType")
     public R queryRolesByUserIdAndType(@NotNull String userId, @NotBlank String authType) {
         return success(sysRoleService.listSysRolesByUserIdAndAuthType(userId, authType));
@@ -130,6 +138,7 @@ public class SysRoleController extends BaseController {
      * @param authType
      * @return
      */
+    @Log("角色-查询用户角色id列表")
     @GetMapping("/queryIdsByUserIdAndAuthType")
     public R queryIdsByUserIdAndType(@NotNull String userId, @NotBlank String authType) {
         Set<String> ids = sysRoleService.listSysRolesByUserIdAndAuthType(userId, authType).stream()
@@ -143,6 +152,7 @@ public class SysRoleController extends BaseController {
      * @param form
      * @return
      */
+    @Log("角色-新增菜单关联")
     @PostMapping("/saveRolePermission")
     public R saveRolePermission(@RequestBody @Validated SysRefRolePermissionForm form) {
         return success(sysRoleFacade.saveRolePermission(form));
@@ -154,6 +164,7 @@ public class SysRoleController extends BaseController {
      * @param form
      * @return
      */
+    @Log("角色-新增用户关联")
     @PostMapping("/saveRoleUser")
     public R saveRoleUser(@RequestBody @Validated SysRefRoleUserForm form) {
         return success(sysRoleFacade.saveRoleUser(form));
