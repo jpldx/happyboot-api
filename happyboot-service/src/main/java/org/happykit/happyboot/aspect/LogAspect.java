@@ -165,16 +165,16 @@ public class LogAspect {
 
 		ObjectMapper om = new ObjectMapper();
 		Log entity = new Log()
-				.description(log.value())
-				.requestUri(requestUri)
-				.requestMethod(request.getMethod())
-				.requestClass(className + "." + methodName)
-				.requestIp(ip)
-				.requestArgs(om.writeValueAsString(requestArgs))
-				.responseArgs(om.writeValueAsString(result))
-				.requestUser(loginUser != null ? loginUser.getUsername() : null)
-				.requestTime(DateUtils.now())
-				.costTime(costTime);
+				.setDescription(log.value())
+				.setRequestUri(requestUri)
+				.setRequestMethod(request.getMethod())
+				.setRequestClass(className + "." + methodName)
+				.setRequestIp(ip)
+				.setRequestArgs(om.writeValueAsString(requestArgs))
+				.setResponseArgs(om.writeValueAsString(result))
+				.setRequestUser(loginUser != null ? loginUser.getUsername() : null)
+				.setRequestTime(DateUtils.now())
+				.setCostTime(costTime);
 
 		logService.saveLog(entity, log.type());
 	}
