@@ -7,17 +7,13 @@ import org.happykit.happyboot.log.annotation.LogType;
 import org.happykit.happyboot.log.model.Log;
 import org.happykit.happyboot.log.model.LogPageQuery;
 import org.happykit.happyboot.log.service.LogService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.keyvalue.core.SpelSortAccessor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,7 +48,7 @@ public class LogServiceImpl implements LogService {
         if (StringUtils.isNotBlank(username)) {
             q.addCriteria(Criteria.where("requestUser").is(query.getUsername()));
         }
-        long total = mongoTemplate.count(new Query(), collectName);
+        long total = mongoTemplate.count(q, collectName);
 
         q.skip(pageSize * (pageNo - 1));
         q.limit(pageSize.intValue());
