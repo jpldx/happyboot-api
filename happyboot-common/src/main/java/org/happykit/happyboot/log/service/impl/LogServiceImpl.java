@@ -43,6 +43,7 @@ public class LogServiceImpl implements LogService {
         Long pageNo = query.getPageNo();
         Long pageSize = query.getPageSize();
         String username = query.getUsername();
+        String collectName = logType.getCollectName();
 
         Query q = new Query();
         q.skip(pageSize * (pageNo - 1));
@@ -51,10 +52,12 @@ public class LogServiceImpl implements LogService {
             q.addCriteria(Criteria.where("requestUser").is(query.getUsername()));
         }
 
-        List<Log> list = mongoTemplate.find(q, Log.class, logType.getCollectName());
+        List<Log> list = mongoTemplate.find(q, Log.class, collectName);
+        long total = mongoTemplate.count(new Query(), collectName);
         Page<Log> page = new Page<>();
         page.setCurrent(pageNo);
         page.setSize(pageSize);
+        page.setTotal(total);
         page.setRecords(list);
         return page;
     }
