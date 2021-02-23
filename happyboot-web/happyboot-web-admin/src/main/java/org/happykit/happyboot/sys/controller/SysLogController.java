@@ -35,7 +35,6 @@ public class SysLogController extends BaseController {
      * @param query
      * @return
      */
-    @Log("日志-分页列表")
     @GetMapping("/page")
     public R page(@Validated LogPageQuery query) {
         String type = query.getType();

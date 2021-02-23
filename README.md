@@ -1,2 +1,2 @@
-# HappyBoot SpringBoot Api Service
-HappyBoot SpringBoot 接口服务
+# 框架简介
+happyboot-api
