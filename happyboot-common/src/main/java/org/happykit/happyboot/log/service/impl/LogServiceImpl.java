@@ -49,15 +49,16 @@ public class LogServiceImpl implements LogService {
         String collectName = logType.getCollectName();
 
         Query q = new Query();
-        q.skip(pageSize * (pageNo - 1));
-        q.limit(pageSize.intValue());
         if (StringUtils.isNotBlank(username)) {
             q.addCriteria(Criteria.where("requestUser").is(query.getUsername()));
         }
-        q.with(Sort.by(Sort.Order.desc("requestTime")));
+        long total = mongoTemplate.count(new Query(), collectName);
 
+        q.skip(pageSize * (pageNo - 1));
+        q.limit(pageSize.intValue());
+        q.with(Sort.by(Sort.Order.desc("requestTime")));
         List<Log> list = mongoTemplate.find(q, Log.class, collectName);
-        long total = mongoTemplate.count(q, collectName);
+
         Page<Log> page = new Page<>();
         page.setCurrent(pageNo);
         page.setSize(pageSize);
