@@ -46,7 +46,7 @@ public class Log implements Serializable {
     /**
      * 响应参数
      */
-    private String responseArgs;
+//    private String responseArgs;
     /**
      * 请求用户
      */

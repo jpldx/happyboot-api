@@ -171,7 +171,7 @@ public class LogAspect {
 				.setRequestClass(className + "." + methodName)
 				.setRequestIp(ip)
 				.setRequestArgs(om.writeValueAsString(requestArgs))
-				.setResponseArgs(om.writeValueAsString(result))
+//				.setResponseArgs(om.writeValueAsString(result))
 				.setRequestUser(loginUser != null ? loginUser.getUsername() : null)
 				.setRequestTime(DateUtils.now())
 				.setCostTime(costTime);
