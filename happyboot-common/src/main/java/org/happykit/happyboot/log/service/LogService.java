@@ -4,6 +4,9 @@ package org.happykit.happyboot.log.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.happykit.happyboot.log.annotation.LogType;
 import org.happykit.happyboot.log.model.Log;
+import org.happykit.happyboot.log.model.LogPageQuery;
+
+import java.util.List;
 
 /**
  * 日志
@@ -21,5 +24,12 @@ public interface LogService {
      */
     void saveLog(Log log, LogType logType);
 
-    Page<Log> pageList(int pageNo, int pageSize);
+    /**
+     * 分页列表
+     *
+     * @param query   查询对象
+     * @param logType 日志类型
+     * @return
+     */
+    Page<Log> selectPageList(LogPageQuery query, LogType logType);
 }

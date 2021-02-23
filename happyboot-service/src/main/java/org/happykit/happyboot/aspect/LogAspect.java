@@ -1,18 +1,19 @@
-package org.happykit.happyboot.log.aspect;
+package org.happykit.happyboot.aspect;
 
 import com.google.gson.Gson;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.happykit.happyboot.log.model.Log;
 import org.happykit.happyboot.log.service.LogService;
+import org.happykit.happyboot.security.model.SecurityUserDetails;
+import org.happykit.happyboot.security.util.SecurityUtils;
 import org.happykit.happyboot.util.DateUtils;
 import org.happykit.happyboot.util.IpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -40,6 +41,8 @@ public class LogAspect {
 	 */
 	private static final String LINE_SEPARATOR = System.lineSeparator();
 
+	@Resource
+	private SecurityUtils securityUtils;
 	@Resource
 	private LogService logService;
 
@@ -130,18 +133,28 @@ public class LogAspect {
 		String ip = IpUtils.getIpAddress(request);
 		long costTime = System.currentTimeMillis() - startTime;
 
-		Log dto = new Log()
-				.url(request.getRequestURL().toString())
-				.description(log.des())
-				.httpMethod(request.getMethod())
-				.classMethod(className + "." + methodName)
-				.ip(ip)
-				.requestArgs(new Gson().toJson(joinPoint.getArgs()))
-				.responseArgs(new Gson().toJson(result))
-				.costTime(costTime)
-				.createTime(DateUtils.now());
+		// 获取请求资源路径
+		String requestUri = request.getRequestURI();
+		String contextPath = request.getContextPath();
+		if (StringUtils.isNotBlank(contextPath)) {
+			requestUri = requestUri.replaceFirst(contextPath, "");
+		}
 
-		logService.saveLog(dto, log.type());
+		SecurityUserDetails loginUser = securityUtils.getCurrentUserDetails();
+
+		Log entity = new Log();
+		entity.setDescription(log.des())
+				.setRequestUri(requestUri)
+				.setRequestMethod(request.getMethod())
+				.setRequestClass(className + "." + methodName)
+				.setRequestIp(ip)
+				.setRequestArgs(new Gson().toJson(joinPoint.getArgs()))
+				.setResponseArgs(new Gson().toJson(result))
+				.setRequestUser(loginUser != null ? loginUser.getUsername() : null)
+				.setRequestTime(DateUtils.now())
+				.setCostTime(costTime);
+
+		logService.saveLog(entity, log.type());
 	}
 
 	/**

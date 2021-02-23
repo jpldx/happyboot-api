@@ -1,7 +1,11 @@
 package org.happykit.happyboot.log.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 /**
  * 日志对象
@@ -10,29 +14,30 @@ import lombok.experimental.Accessors;
  * @version 1.0
  * @since 2020/6/9
  */
-@Data
-@Accessors(fluent = true)
-public class Log {
+@Getter
+@Setter
+@Accessors(chain = true)
+public class Log implements Serializable {
     /**
-     * 请求路径
+     * 请求资源路径
      */
-    private String url;
+    private String requestUri;
     /**
-     * 描述信息
+     * 日志描述信息
      */
     private String description;
     /**
      * 请求方法
      */
-    private String httpMethod;
+    private String requestMethod;
     /**
-     * 请求class
+     * 请求类.方法
      */
-    private String classMethod;
+    private String requestClass;
     /**
-     * 请求来源ip
+     * 请求ip
      */
-    private String ip;
+    private String requestIp;
     /**
      * 请求参数
      */
@@ -42,11 +47,15 @@ public class Log {
      */
     private String responseArgs;
     /**
-     * 请求耗时
+     * 请求用户
+     */
+    private String requestUser;
+    /**
+     * 请求时间
+     */
+    private String requestTime;
+    /**
+     * 请求耗时(ms)
      */
     private Long costTime;
-    /**
-     * 创建时间
-     */
-    private String createTime;
 }
