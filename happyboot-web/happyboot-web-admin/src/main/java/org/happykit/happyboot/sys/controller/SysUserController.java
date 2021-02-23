@@ -400,7 +400,7 @@ public class SysUserController extends BaseController {
      * @param form
      * @return
      */
-//    @Log("用户登录-用户选择账号登录")
+    @Log("用户登录-用户选择账号登录")
     @PostMapping("/selectLogin")
     public R selectLogin(HttpServletRequest request, @RequestBody @Validated SysUserIdForm form) {
         SysUserDO selectedUser = sysUserService.getById(form.getUserId());

@@ -3,6 +3,7 @@ package org.happykit.happyboot.aspect;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -20,10 +21,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 日志注解切面
@@ -64,11 +72,11 @@ public class LogAspect {
 	@Before("webLog()")
 	public void doBefore(JoinPoint joinPoint) throws Throwable {
 		// 开始打印请求日志
-		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		HttpServletRequest request = attributes.getRequest();
+//		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+//		HttpServletRequest request = attributes.getRequest();
 
 		// 获取 @WebLog 注解的描述信息
-		String methodDescription = getAspectLogDescription(joinPoint);
+//		String methodDescription = getAspectLogDescription(joinPoint);
 
 		// 打印请求相关参数
 //		logger.info("========================================== Start ==========================================");
@@ -135,6 +143,17 @@ public class LogAspect {
 		String ip = IpUtils.getIpAddress(request);
 		long costTime = System.currentTimeMillis() - startTime;
 
+		// 请求参数
+		Object[] args = joinPoint.getArgs();
+		// 过滤不能序列化的请求参数
+		Stream<Object> stream = ArrayUtils.isEmpty(args) ? Stream.empty() : Arrays.stream(args);
+		List<Object> requestArgs = stream
+				.filter(arg -> (!(arg instanceof ServletRequest)
+						&& !(arg instanceof ServletResponse)
+						&& !(arg instanceof MultipartFile)
+						&& !(arg instanceof MultipartFile[])))
+				.collect(Collectors.toList());
+
 		// 获取请求资源路径
 		String requestUri = request.getRequestURI();
 		String contextPath = request.getContextPath();
@@ -151,7 +170,7 @@ public class LogAspect {
 				.setRequestMethod(request.getMethod())
 				.setRequestClass(className + "." + methodName)
 				.setRequestIp(ip)
-				.setRequestArgs(om.writeValueAsString(joinPoint.getArgs()))
+				.setRequestArgs(om.writeValueAsString(requestArgs))
 				.setResponseArgs(om.writeValueAsString(result))
 				.setRequestUser(loginUser != null ? loginUser.getUsername() : null)
 				.setRequestTime(DateUtils.now())
