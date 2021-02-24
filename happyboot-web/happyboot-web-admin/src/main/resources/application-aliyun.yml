@@ -42,7 +42,6 @@ spring:
 
 mybatis-plus:
   configuration:
-    # 配置sql打印日志
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 token:
