@@ -140,8 +140,6 @@ public class LogAspect {
 		// 从获取RequestAttributes中获取HttpServletRequest的信息
 		HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
 
-		// 设置IP地址
-		String ip = IpUtils.getIpAddress(request);
 		long costTime = System.currentTimeMillis() - startTime;
 
 		// 请求参数
@@ -170,7 +168,7 @@ public class LogAspect {
 				.setRequestUri(requestUri)
 				.setRequestMethod(request.getMethod())
 				.setRequestClass(className + "." + methodName)
-				.setRequestIp(ip)
+				.setRequestIp(IpUtils.getIpAddress(request))
 				.setRequestArgs(om.writeValueAsString(requestArgs))
 //				.setResponseArgs(om.writeValueAsString(result)) // TODO 响应参数过大，暂不存
 				.setRequestUser(loginUser != null ? loginUser.getUsername() : SecurityConstant.ANONYMOUS_USER)

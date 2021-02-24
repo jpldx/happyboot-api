@@ -4,11 +4,14 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import org.happykit.happyboot.log.model.Log;
+import org.happykit.happyboot.log.service.LogService;
 import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.exceptions.LoginFailedLimitException;
 import org.happykit.happyboot.security.model.AuthenticationBean;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.properties.TokenProperties;
+import org.happykit.happyboot.util.DateUtils;
 import org.happykit.happyboot.util.IpUtils;
 import org.happykit.happyboot.util.RSAUtils;
 import org.happykit.happyboot.util.ResponseUtils;
@@ -56,6 +59,8 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
     private StringRedisTemplate redisTemplate;
     @Autowired
     private TokenProperties tokenProperties;
+    @Autowired
+    private LogService logService;
 
     public CustomAuthenticationFilter() {
         super(new AntPathRequestMatcher("/login", "POST"));
@@ -150,6 +155,24 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
 
         // 更新登录信息
         Object loginInfo = userService.loginSuccess(userDetails, token, IpUtils.getIpAddress(request));
+
+        // 日志记录
+//        ObjectMapper om = new ObjectMapper();
+//        Log entity = new Log()
+//                .setDescription("用户登录")
+//                .setRequestUri("/login")
+//                .setRequestMethod(request.getMethod())
+//                .setRequestClass("security.login")
+////                .setRequestIp(ip)
+//                .setRequestArgs(om.writeValueAsString(requestArgs))
+//                // TODO 响应参数过大，暂不存
+////				.setResponseArgs(om.writeValueAsString(result))
+//                .setRequestUser()
+//                .setRequestTime(DateUtils.now())
+//                .setCostTime(costTime);
+//
+//        logService.saveLog(entity, log.type());
+
         ResponseUtils.out(response, R.ok(loginInfo));
     }
 
