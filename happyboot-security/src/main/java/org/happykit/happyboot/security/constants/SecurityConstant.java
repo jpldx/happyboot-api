@@ -22,4 +22,9 @@ public class SecurityConstant {
      * 登录失败限制
      */
     public static final String LOGIN_FAILED_LIMIT = "login_failed_limit:";
+
+    /**
+     * 匿名用户（未认证用户）
+     */
+    public static final String ANONYMOUS_USER = "anonymous";
 }

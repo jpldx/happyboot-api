@@ -11,6 +11,7 @@ import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.happykit.happyboot.log.model.Log;
 import org.happykit.happyboot.log.service.LogService;
+import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.util.SecurityUtils;
 import org.happykit.happyboot.util.DateUtils;
@@ -171,8 +172,8 @@ public class LogAspect {
 				.setRequestClass(className + "." + methodName)
 				.setRequestIp(ip)
 				.setRequestArgs(om.writeValueAsString(requestArgs))
-//				.setResponseArgs(om.writeValueAsString(result))
-				.setRequestUser(loginUser != null ? loginUser.getUsername() : null)
+//				.setResponseArgs(om.writeValueAsString(result)) // TODO 响应参数过大，暂不存
+				.setRequestUser(loginUser != null ? loginUser.getUsername() : SecurityConstant.ANONYMOUS_USER)
 				.setRequestTime(DateUtils.now())
 				.setCostTime(costTime);
 
