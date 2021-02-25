@@ -1,21 +1,19 @@
 package org.happykit.happyboot.sys.service.impl;
 
-import java.awt.*;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
+import com.wf.captcha.base.Captcha;
 import org.happykit.happyboot.sys.extension.CustomArithmeticCaptcha;
-import org.happykit.happyboot.util.IdUtils;
 import org.happykit.happyboot.sys.model.dto.CaptchaDTO;
 import org.happykit.happyboot.sys.service.CaptchaService;
+import org.happykit.happyboot.util.IdUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.google.code.kaptcha.impl.DefaultKaptcha;
-import com.wf.captcha.ArithmeticCaptcha;
-import com.wf.captcha.base.Captcha;
+import java.awt.*;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author shaoqiang
@@ -32,14 +30,10 @@ public class CaptchaServiceImpl implements CaptchaService {
      * 验证码有效时间为3分钟
      */
     private static int CAPTCHA_EXPIRES = 3 * 60;
-    private final DefaultKaptcha defaultKaptcha;
 
-    private final RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    RedisTemplate<String, String> redisTemplate;
 
-    public CaptchaServiceImpl(DefaultKaptcha defaultKaptcha, RedisTemplate<String, String> redisTemplate) {
-        this.defaultKaptcha = defaultKaptcha;
-        this.redisTemplate = redisTemplate;
-    }
 
     @Override
     public CaptchaDTO generateCaptcha() throws IOException, FontFormatException {
