@@ -2,7 +2,6 @@ package org.happykit.happyboot.aspect;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
@@ -10,10 +9,10 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.happykit.happyboot.log.model.Log;
-import org.happykit.happyboot.log.service.LogService;
 import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.util.SecurityUtils;
+import org.happykit.happyboot.sys.service.SysLogService;
 import org.happykit.happyboot.util.DateUtils;
 import org.happykit.happyboot.util.IpUtils;
 import org.slf4j.Logger;
@@ -21,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -55,7 +53,7 @@ public class LogAspect {
 	@Resource
 	private SecurityUtils securityUtils;
 	@Resource
-	private LogService logService;
+	private SysLogService sysLogService;
 
 	/**
 	 * 以自定义 @WebLog 注解为切点
@@ -127,20 +125,22 @@ public class LogAspect {
 	}
 
 	private void saveLog(ProceedingJoinPoint joinPoint, Object result, long startTime) throws JsonProcessingException {
+		// 请求耗时
+		long costTime = System.currentTimeMillis() - startTime;
+
 		MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 		Method method = signature.getMethod();
 
 		org.happykit.happyboot.log.annotation.Log log = method.getAnnotation(org.happykit.happyboot.log.annotation.Log.class);
-		// 获取请求的类名
+		// 请求的类名
 		String className = joinPoint.getTarget().getClass().getName();
-		// 获取请求的方法名
+		// 请求方法名
 		String methodName = signature.getName();
 
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 		// 从获取RequestAttributes中获取HttpServletRequest的信息
 		HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
 
-		long costTime = System.currentTimeMillis() - startTime;
 
 		// 请求参数
 		Object[] args = joinPoint.getArgs();
@@ -153,13 +153,14 @@ public class LogAspect {
 						&& !(arg instanceof MultipartFile[])))
 				.collect(Collectors.toList());
 
-		// 获取请求资源路径
+		// 请求资源路径
 		String requestUri = request.getRequestURI();
 		String contextPath = request.getContextPath();
 		if (StringUtils.isNotBlank(contextPath)) {
 			requestUri = requestUri.replaceFirst(contextPath, "");
 		}
 
+		// 请求用户
 		SecurityUserDetails loginUser = securityUtils.getCurrentUserDetails();
 
 		ObjectMapper om = new ObjectMapper();
@@ -175,7 +176,7 @@ public class LogAspect {
 				.setRequestTime(DateUtils.now())
 				.setCostTime(costTime);
 
-		logService.saveLog(entity, log.type());
+		sysLogService.saveLog(entity, log.type());
 	}
 
 	/**

@@ -34,7 +34,7 @@ public class JwtUtils {
      * @param payload 负载信息
      * @return
      */
-    public static String sign(Map<String, String> payload) {
+    public static String create(Map<String, String> payload) {
         JWTCreator.Builder builder = JWT.create();
         payload.forEach(builder::withClaim);
 

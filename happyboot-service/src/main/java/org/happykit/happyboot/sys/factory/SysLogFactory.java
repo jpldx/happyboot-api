@@ -2,7 +2,7 @@ package org.happykit.happyboot.sys.factory;
 
 
 import org.happykit.happyboot.sys.model.entity.SysLogDO;
-import org.happykit.happyboot.sys.model.form.SysLogForm;
+import org.happykit.happyboot.sys.model.form.SysLogForm1;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -23,5 +23,5 @@ public interface SysLogFactory {
      * @param form
      * @return
      */
-    SysLogDO form2Do(SysLogForm form);
+    SysLogDO form2Do(SysLogForm1 form);
 }

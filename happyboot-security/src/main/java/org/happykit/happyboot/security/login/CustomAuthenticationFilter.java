@@ -4,18 +4,15 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import org.happykit.happyboot.log.model.Log;
-import org.happykit.happyboot.log.service.LogService;
+import org.apache.commons.lang3.StringUtils;
 import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.exceptions.LoginFailedLimitException;
 import org.happykit.happyboot.security.model.AuthenticationBean;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.properties.TokenProperties;
-import org.happykit.happyboot.util.DateUtils;
 import org.happykit.happyboot.util.IpUtils;
 import org.happykit.happyboot.util.RSAUtils;
 import org.happykit.happyboot.util.ResponseUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +56,6 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
     private StringRedisTemplate redisTemplate;
     @Autowired
     private TokenProperties tokenProperties;
-    @Autowired
-    private LogService logService;
 
     public CustomAuthenticationFilter() {
         super(new AntPathRequestMatcher("/login", "POST"));

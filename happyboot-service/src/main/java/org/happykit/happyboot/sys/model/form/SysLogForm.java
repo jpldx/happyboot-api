@@ -2,42 +2,19 @@ package org.happykit.happyboot.sys.model.form;
 
 import lombok.Data;
 
-import java.io.Serializable;
+import javax.validation.constraints.NotBlank;
 
 /**
- * 提交类
- *
- * @author shaoqiang
- * @version 1.0 2020/04/01
+ * @author chen.xudong
+ * @version 1.0
+ * @since 2021/2/25
  */
 @Data
-public class SysLogForm implements Serializable {
+public class SysLogForm {
+
     /**
-     *
+     * 日志类型（sys/系统日志 biz/业务日志）
      */
-    private Long costTime;
-    /**
-     *
-     */
-    private String ip;
-    /**
-     *
-     */
-    private String requestParam;
-    /**
-     *
-     */
-    private String requestType;
-    /**
-     *
-     */
-    private String requestUrl;
-    /**
-     *
-     */
-    private String method;
-    /**
-     *
-     */
-    private String logContent;
+    @NotBlank(message = "类型不能为空")
+    private String type;
 }

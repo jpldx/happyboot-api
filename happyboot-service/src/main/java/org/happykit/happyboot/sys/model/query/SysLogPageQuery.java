@@ -1,4 +1,4 @@
-package org.happykit.happyboot.log.model;
+package org.happykit.happyboot.sys.model.query;
 
 
 import lombok.Data;
@@ -16,12 +16,13 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class LogPageQuery extends PageQuery {
+public class SysLogPageQuery extends PageQuery {
     /**
-     * 日志类型
+     * 日志类型（sys/系统日志 biz/业务日志）
      */
     @NotBlank(message = "类型不能为空")
     private String type;
+
     /**
      * 用户名
      */

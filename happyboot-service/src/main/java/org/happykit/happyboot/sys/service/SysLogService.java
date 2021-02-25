@@ -1,22 +1,40 @@
 package org.happykit.happyboot.sys.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
-import org.happykit.happyboot.sys.model.entity.SysLogDO;
-import org.happykit.happyboot.sys.model.query.SysLogPageQueryParam;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.happykit.happyboot.log.annotation.LogType;
+import org.happykit.happyboot.log.model.Log;
+import org.happykit.happyboot.sys.model.query.SysLogPageQuery;
 
 /**
- * 系统日志 服务接口类
+ * 日志
  *
- * @author shaoqiang
- * @version 1.0 2020/3/4
+ * @author chen.xudong
+ * @version 1.0
+ * @since 2020/6/9
  */
-public interface SysLogService extends IService<SysLogDO> {
+public interface SysLogService {
     /**
-     * 分页查询
+     * 保存日志
      *
-     * @param param
+     * @param log     日志对象
+     * @param logType 日志类型
+     */
+    void saveLog(Log log, LogType logType);
+
+    /**
+     * 分页列表
+     *
+     * @param query   查询对象
+     * @param logType 日志类型
      * @return
      */
-    IPage<SysLogDO> listSysLogsByPage(SysLogPageQueryParam param);
+    Page<Log> selectPageList(SysLogPageQuery query, LogType logType);
+
+    /**
+     * 清空日志
+     *
+     * @param logType 日志类型
+     */
+    void clear(LogType logType);
 }
