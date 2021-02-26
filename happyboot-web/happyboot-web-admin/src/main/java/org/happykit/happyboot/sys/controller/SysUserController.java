@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 @Validated
 @Slf4j
 @RestController
-@RequestMapping("sys/user")
+@RequestMapping("/sys/user")
 public class SysUserController extends BaseController {
 
     private final SysUserService sysUserService;
