@@ -16,14 +16,14 @@
         <dependency>
             <groupId>org.happykit</groupId>
             <artifactId>happyboot-common</artifactId>
-            <version>${project.version}</version>
+            <version>${happyboot.version}</version>
         </dependency>
 
         <!-- common-service -->
         <dependency>
             <groupId>org.happykit</groupId>
             <artifactId>happyboot-common-service</artifactId>
-            <version>${project.version}</version>
+            <version>${happyboot.version}</version>
         </dependency>
 
         <!-- spring security -->

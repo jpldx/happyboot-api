@@ -171,8 +171,6 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
                 .setUsername(username)
                 .setIp(ip)
                 .setIpAddress(locationService.getAddressByIp(ip))
-                // mq consumer 处理
-//              .setIpAddress()
                 .setLoginTime(DateUtils.now())
                 .setPlatform(AppPlatformEnum.PC.name())
                 .setToken(token)

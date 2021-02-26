@@ -21,6 +21,9 @@ import org.happykit.happyboot.sys.service.SysUserRelService;
 import org.happykit.happyboot.sys.service.SysUserService;
 import org.happykit.happyboot.sys.util.SysSecurityUtils;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -217,7 +220,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
 
     @Override
     public Page<LoginLogCollection> queryLoginLogPageList(SysLoginLogPageQuery query) {
-//        loginLogRepository.find
+        Sort sort = Sort.by(Sort.Order.desc("loginTime"));
+        Pageable pageable = PageRequest.of(query.getPageNo().intValue(), query.getPageSize().intValue());
+
+//        loginLogRepository.findAll()
         return null;
     }
 }

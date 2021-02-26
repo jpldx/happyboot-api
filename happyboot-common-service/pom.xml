@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.happykit</groupId>
             <artifactId>happyboot-common</artifactId>
-            <version>${project.version}</version>
+            <version>${happyboot.version}</version>
         </dependency>
 
         <!-- lombok -->
