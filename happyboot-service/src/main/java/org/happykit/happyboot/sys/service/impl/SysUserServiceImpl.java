@@ -3,8 +3,10 @@ package org.happykit.happyboot.sys.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.happykit.happyboot.constant.SysConstant;
 import org.happykit.happyboot.exception.SysException;
+import org.happykit.happyboot.log.model.Log;
 import org.happykit.happyboot.page.PageUtils;
 import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.login.repository.LoginLogRepository;
@@ -21,9 +23,13 @@ import org.happykit.happyboot.sys.service.SysUserRelService;
 import org.happykit.happyboot.sys.service.SysUserService;
 import org.happykit.happyboot.sys.util.SysSecurityUtils;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,15 +53,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
     private final SysSecurityUtils sysSecurityUtils;
     private final SysUserRelService sysUserRelService;
     private final LoginLogRepository loginLogRepository;
+    private final MongoTemplate mongoTemplate;
 
     public SysUserServiceImpl(PasswordEncoder passwordEncoder,
                               SysSecurityUtils sysSecurityUtils,
                               SysUserRelService sysUserRelService,
-                              LoginLogRepository loginLogRepository) {
+                              LoginLogRepository loginLogRepository,
+                              MongoTemplate mongoTemplate) {
         this.passwordEncoder = passwordEncoder;
         this.sysSecurityUtils = sysSecurityUtils;
         this.sysUserRelService = sysUserRelService;
         this.loginLogRepository = loginLogRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @Override
@@ -220,10 +229,22 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
 
     @Override
     public Page<LoginLogCollection> queryLoginLogPageList(SysLoginLogPageQuery query) {
-        Sort sort = Sort.by(Sort.Order.desc("loginTime"));
-        Pageable pageable = PageRequest.of(query.getPageNo().intValue(), query.getPageSize().intValue());
+        Long pageNo = query.getPageNo();
+        Long pageSize = query.getPageSize();
 
-//        loginLogRepository.findAll()
-        return null;
+        Query q = new Query();
+        q.addCriteria(Criteria.where("userId").is(query.getUserId()));
+
+        long total = mongoTemplate.count(q, LoginLogCollection.class);
+
+        Pageable pageable = PageRequest.of(pageNo.intValue() - 1, query.getPageSize().intValue(), Sort.by(Sort.Order.desc("loginTime")));
+        List<LoginLogCollection> list = mongoTemplate.find(q.with(pageable), LoginLogCollection.class);
+
+        Page<LoginLogCollection> page = new Page<>();
+        page.setCurrent(pageNo);
+        page.setSize(pageSize);
+        page.setTotal(total);
+        page.setRecords(list);
+        return page;
     }
 }

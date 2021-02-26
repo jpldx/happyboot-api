@@ -161,13 +161,15 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
         // TODO 删除登录失败缓存计数
 //        redisTemplate.delete()
 
+        String ip = InternetUtils.getIp(request);
+
         // 更新登录信息
-        Object loginInfo = userService.loginSuccess(userDetails, token, InternetUtils.getIp(request));
+        Object loginInfo = userService.loginSuccess(userDetails, token, ip);
 
         // 日志记录 TODO 队列处理
-        String ip = InternetUtils.getIp(request);
         LoginLogCollection collection = new LoginLogCollection();
         collection.setClientId(securityUtils.getClientId(request))
+                .setUserId(userId)
                 .setUsername(username)
                 .setIp(ip)
                 .setIpAddress(locationService.getAddressByIp(ip))

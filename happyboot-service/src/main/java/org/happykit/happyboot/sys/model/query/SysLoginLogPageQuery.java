@@ -8,7 +8,7 @@ import org.happykit.happyboot.page.PageQuery;
 import javax.validation.constraints.NotBlank;
 
 /**
- * 用户登录日志分页查询对象
+ * 用户登录历史分页查询对象
  *
  * @author chen.xudong
  * @version 1.0

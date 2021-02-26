@@ -22,9 +22,13 @@ public class LoginLogCollection {
      */
     private String clientId;
     /**
-     * 登录平台（pc/app/wechat）
+     * 登录平台（pc/app）
      */
     private String platform;
+    /**
+     * 用户id
+     */
+    private String userId;
     /**
      * 用户名
      */
@@ -42,11 +46,11 @@ public class LoginLogCollection {
      */
     private Date tokenExpireTime;
     /**
-     * 登录IP
+     * 登录ip
      */
     private String ip;
     /**
-     * IP所在地址
+     * 登录ip所在地址
      */
     private String ipAddress;
     /**

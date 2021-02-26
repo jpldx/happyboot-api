@@ -446,8 +446,8 @@ public class SysUserController extends BaseController {
      * @return
      */
     @Log("用户-查询用户登录历史")
-    @GetMapping("/queryLoginLogs")
+    @GetMapping("/queryLoginHistory")
     public R queryLoginLogs(@Validated SysLoginLogPageQuery query) {
-        return null;
+        return R.ok(sysUserService.queryLoginLogPageList(query));
     }
 }
