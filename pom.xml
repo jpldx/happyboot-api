@@ -7,7 +7,7 @@
     <groupId>org.happykit</groupId>
     <artifactId>happyboot</artifactId>
     <packaging>pom</packaging>
-    <version>${happyboot.version}</version>
+    <version>1.0.0</version>
 
     <modules>
         <module>happyboot-common</module>
