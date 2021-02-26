@@ -6,12 +6,16 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.happykit.happyboot.constant.SysConstant;
 import org.happykit.happyboot.exception.SysException;
 import org.happykit.happyboot.page.PageUtils;
+import org.happykit.happyboot.security.constants.SecurityConstant;
+import org.happykit.happyboot.security.login.repository.LoginLogRepository;
+import org.happykit.happyboot.sys.collection.LoginLogCollection;
 import org.happykit.happyboot.sys.factory.SysUserFactory;
 import org.happykit.happyboot.sys.mapper.SysUserMapper;
 import org.happykit.happyboot.sys.model.entity.SysUserDO;
 import org.happykit.happyboot.sys.model.form.SysUserForm;
 import org.happykit.happyboot.sys.model.form.SysUserPwdForm;
 import org.happykit.happyboot.sys.model.form.SysUserStatusForm;
+import org.happykit.happyboot.sys.model.query.SysLoginLogPageQuery;
 import org.happykit.happyboot.sys.model.query.SysUserPageQueryParam;
 import org.happykit.happyboot.sys.service.SysUserRelService;
 import org.happykit.happyboot.sys.service.SysUserService;
@@ -39,13 +43,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
     private final PasswordEncoder passwordEncoder;
     private final SysSecurityUtils sysSecurityUtils;
     private final SysUserRelService sysUserRelService;
+    private final LoginLogRepository loginLogRepository;
 
     public SysUserServiceImpl(PasswordEncoder passwordEncoder,
                               SysSecurityUtils sysSecurityUtils,
-                              SysUserRelService sysUserRelService) {
+                              SysUserRelService sysUserRelService,
+                              LoginLogRepository loginLogRepository) {
         this.passwordEncoder = passwordEncoder;
         this.sysSecurityUtils = sysSecurityUtils;
         this.sysUserRelService = sysUserRelService;
+        this.loginLogRepository = loginLogRepository;
     }
 
     @Override
@@ -85,7 +92,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
         // 保存账号关联信息
         String userType = form.getUserType();
         List<String> userIdList = form.getUserIdList();
-        if (SysConstant.USER_TYPE_1.equals(userType) && null != userIdList && userIdList.size() > 0) {
+        if (SecurityConstant.USER_TYPE_1.equals(userType) && null != userIdList && userIdList.size() > 0) {
             sysUserRelService.addRel(userIdList.get(0), entity.getId());
         }
 //        if (!save(entity)) {
@@ -116,7 +123,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
         String userType = dbRecord.getUserType();
         List<String> userIdList = form.getUserIdList();
         sysUserRelService.delRel(userId, userType); // 删除关系
-        if (SysConstant.USER_TYPE_0.equals(userType)) {
+        if (SecurityConstant.USER_TYPE_0.equals(userType)) {
             if (null != userIdList && userIdList.size() > 0) {
                 for (String id : userIdList) {
                     sysUserRelService.addRel(userId, id);
@@ -124,7 +131,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
             }
         }
 
-        if (SysConstant.USER_TYPE_1.equals(userType)) {
+        if (SecurityConstant.USER_TYPE_1.equals(userType)) {
             if (null != userIdList && userIdList.size() > 0) {
                 sysUserRelService.addRel(userIdList.get(0), userId);
             }
@@ -206,5 +213,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
     @Override
     public String getNicknameById(String id) {
         return this.baseMapper.getNicknameById(id);
+    }
+
+    @Override
+    public Page<LoginLogCollection> queryLoginLogPageList(SysLoginLogPageQuery query) {
+//        loginLogRepository.find
+        return null;
     }
 }

@@ -1,11 +1,15 @@
 package org.happykit.happyboot.security.util;
 
 import org.happykit.happyboot.security.model.SecurityUserDetails;
+import org.happykit.happyboot.security.properties.TokenProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Security帮助类
@@ -15,6 +19,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SecurityUtils {
+
+    @Autowired
+    private TokenProperties tokenProperties;
+
+
     /**
      * 获取当前用户
      *
@@ -91,5 +100,14 @@ public class SecurityUtils {
         return null;
     }
 
+    /**
+     * 获取用户客户端id
+     *
+     * @param request
+     * @return
+     */
+    public String getClientId(HttpServletRequest request) {
+        return request.getHeader(tokenProperties.getClientId());
+    }
 
 }

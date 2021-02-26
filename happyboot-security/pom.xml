@@ -12,11 +12,18 @@
     <artifactId>happyboot-security</artifactId>
 
     <dependencies>
-        <!-- common module -->
+        <!-- common -->
         <dependency>
             <groupId>org.happykit</groupId>
             <artifactId>happyboot-common</artifactId>
-            <version>1.0.0</version>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- common-service -->
+        <dependency>
+            <groupId>org.happykit</groupId>
+            <artifactId>happyboot-common-service</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- spring security -->

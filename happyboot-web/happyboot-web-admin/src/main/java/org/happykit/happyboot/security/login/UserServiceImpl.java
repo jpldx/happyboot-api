@@ -1,6 +1,6 @@
 package org.happykit.happyboot.security.login;
 
-import org.happykit.happyboot.constant.SysConstant;
+import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.sys.model.entity.SysUserDO;
 import org.happykit.happyboot.sys.service.SysUserRelService;
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
         map.put("userinfo", sysUser);
         map.put("last_login_ip", ip);
         // 关联的账号数量
-        int userlistCount = SysConstant.USER_TYPE_1.equals(userType) ? 0 :
+        int userlistCount = SecurityConstant.USER_TYPE_1.equals(userType) ? 0 :
                 sysUserRelService.getUserRelListByUserId(userId, userType).size();
         map.put("userlist_count", userlistCount);
         return map;

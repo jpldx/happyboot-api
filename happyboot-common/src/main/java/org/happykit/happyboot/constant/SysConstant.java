@@ -33,10 +33,4 @@ public class SysConstant {
      */
     public static final String PERMISSION_KEY = "action";
 
-
-    /**
-     * 账号类型（0/主账号 1/子账号）
-     */
-    public static final String USER_TYPE_0 = "0";
-    public static final String USER_TYPE_1 = "1";
 }

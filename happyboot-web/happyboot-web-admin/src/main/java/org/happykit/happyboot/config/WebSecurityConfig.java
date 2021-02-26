@@ -1,7 +1,7 @@
 package org.happykit.happyboot.config;
 
-import org.happykit.happyboot.security.login.CustomAuthenticationFilter;
-import org.happykit.happyboot.security.login.JwtAuthenticationTokenFilter;
+import org.happykit.happyboot.security.login.JwtAuthenticationFilter;
+import org.happykit.happyboot.security.login.JwtLoginFilter;
 import org.happykit.happyboot.security.login.RestAuthenticationEntryPoint;
 import org.happykit.happyboot.security.login.SecurityClientIdFilter;
 import org.happykit.happyboot.security.permission.MyFilterSecurityInterceptor;
@@ -118,7 +118,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 添加过滤器 JWT 处理
 //				.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 // 添加JWT认证过滤器
-                .addFilter(new JwtAuthenticationTokenFilter(authenticationManager(), tokenProperties, redisTemplate))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), tokenProperties, redisTemplate))
                 // 添加自定义异常入口
                 .exceptionHandling()
                 // 认证配置当用户请求了一个受保护的资源，但是用户没有通过登录认证
@@ -138,9 +138,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @throws Exception
      */
     @Bean
-    CustomAuthenticationFilter customAuthenticationFilter() throws Exception {
+    JwtLoginFilter customAuthenticationFilter() throws Exception {
         // 自定义登录方式, 采用 json 异步请求, 前后端分离，默认为表单登录
-        CustomAuthenticationFilter filter = new CustomAuthenticationFilter();
+        JwtLoginFilter filter = new JwtLoginFilter();
         // 设置登陆接口名
 //		filter.setFilterProcessesUrl(SecurityConstants.DEFAULT_LOGIN_URL);
         //这句很关键，重用WebSecurityConfigurerAdapter配置的AuthenticationManager，不然要自己组装AuthenticationManager

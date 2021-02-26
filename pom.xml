@@ -7,12 +7,13 @@
     <groupId>org.happykit</groupId>
     <artifactId>happyboot</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>${project.version}</version>
 
     <modules>
         <module>happyboot-common</module>
 <!--        <module>happyboot-generator</module>-->
         <module>happyboot-service</module>
+        <module>happyboot-common-service</module>
         <module>happyboot-task</module>
         <module>happyboot-web</module>
         <module>happyboot-mq</module>
@@ -28,6 +29,8 @@
     </parent>
 
     <properties>
+        <!-- 项目版本 -->
+        <project.version>1.0.0</project.version>
         <java.version>1.8</java.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -58,6 +61,7 @@
     <!--    </dependencies>-->
 
     <dependencyManagement>
+
         <dependencies>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -74,6 +78,45 @@
                 <scope>import</scope>
             </dependency>
         </dependencies>
+
+        <!-- 模块依赖版本管理 -->
+        <!--            <dependency>-->
+        <!--                <groupId>org.happykit</groupId>-->
+        <!--                <artifactId>happyboot-common</artifactId>-->
+        <!--                <version>${project.version}</version>-->
+        <!--            </dependency>-->
+        <!--            <dependency>-->
+        <!--                <groupId>org.happykit</groupId>-->
+        <!--                <artifactId>happyboot-common-service</artifactId>-->
+        <!--                <version>${project.version}</version>-->
+        <!--            </dependency>-->
+        <!--            <dependency>-->
+        <!--                <groupId>org.happykit</groupId>-->
+        <!--                <artifactId>happyboot-task</artifactId>-->
+        <!--                <version>${project.version}</version>-->
+        <!--            </dependency>-->
+        <!--            <dependency>-->
+        <!--                <groupId>org.happykit</groupId>-->
+        <!--                <artifactId>happyboot-web</artifactId>-->
+        <!--                <version>${project.version}</version>-->
+        <!--            </dependency>-->
+        <!--            <dependency>-->
+        <!--                <groupId>org.happykit</groupId>-->
+        <!--                <artifactId>happyboot-mq</artifactId>-->
+        <!--                <version>${project.version}</version>-->
+        <!--            </dependency>-->
+        <!--            <dependency>-->
+        <!--                <groupId>org.happykit</groupId>-->
+        <!--                <artifactId>happyboot-mq-consumer</artifactId>-->
+        <!--                <version>${project.version}</version>-->
+        <!--            </dependency>-->
+        <!--            <dependency>-->
+        <!--                <groupId>org.happykit</groupId>-->
+        <!--                <artifactId>happyboot-security</artifactId>-->
+        <!--                <version>${project.version}</version>-->
+        <!--            </dependency>-->
+        <!--        </dependencies>-->
+
     </dependencyManagement>
 
 

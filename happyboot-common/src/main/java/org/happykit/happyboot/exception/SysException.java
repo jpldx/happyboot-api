@@ -7,6 +7,11 @@ package org.happykit.happyboot.exception;
  * @date 2020/6/16
  */
 public class SysException extends RuntimeException {
+
+    public SysException() {
+        super();
+    }
+
     public SysException(String message) {
         super(message);
     }

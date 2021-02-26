@@ -27,4 +27,10 @@ public class SecurityConstant {
      * 匿名用户（未认证用户）
      */
     public static final String ANONYMOUS_USER = "anonymous";
+
+    /**
+     * 账号类型（0/主账号 1/子账号）
+     */
+    public static final String USER_TYPE_0 = "0";
+    public static final String USER_TYPE_1 = "1";
 }

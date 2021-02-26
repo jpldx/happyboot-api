@@ -14,7 +14,7 @@ import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.util.SecurityUtils;
 import org.happykit.happyboot.sys.service.SysLogService;
 import org.happykit.happyboot.util.DateUtils;
-import org.happykit.happyboot.util.IpUtils;
+import org.happykit.happyboot.util.InternetUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -169,7 +169,7 @@ public class LogAspect {
 				.setRequestUri(requestUri)
 				.setRequestMethod(request.getMethod())
 				.setRequestClass(className + "." + methodName)
-				.setRequestIp(IpUtils.getIpAddress(request))
+				.setRequestIp(InternetUtils.getIp(request))
 				.setRequestArgs(om.writeValueAsString(requestArgs))
 //				.setResponseArgs(om.writeValueAsString(result)) // TODO 响应参数过大，暂不存
 				.setRequestUser(loginUser != null ? loginUser.getUsername() : SecurityConstant.ANONYMOUS_USER)

@@ -36,4 +36,10 @@ public interface CommonConstant {
      */
     String LEAD_DEPT_FLAG = "1";
 
+
+    /**
+     * 未知的
+     */
+    String UNKNOWN = "unknown";
+
 }

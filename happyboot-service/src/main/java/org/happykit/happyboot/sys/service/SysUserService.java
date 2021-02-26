@@ -1,11 +1,14 @@
 package org.happykit.happyboot.sys.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.happykit.happyboot.sys.collection.LoginLogCollection;
 import org.happykit.happyboot.sys.model.entity.SysUserDO;
 import org.happykit.happyboot.sys.model.form.SysUserForm;
 import org.happykit.happyboot.sys.model.form.SysUserPwdForm;
 import org.happykit.happyboot.sys.model.form.SysUserStatusForm;
+import org.happykit.happyboot.sys.model.query.SysLoginLogPageQuery;
 import org.happykit.happyboot.sys.model.query.SysUserPageQueryParam;
 
 import javax.validation.constraints.NotBlank;
@@ -107,4 +110,11 @@ public interface SysUserService extends IService<SysUserDO> {
      */
     String getNicknameById(String id);
 
+    /**
+     * 查询用户登录日志列表
+     *
+     * @param query
+     * @return
+     */
+    Page<LoginLogCollection> queryLoginLogPageList(SysLoginLogPageQuery query);
 }

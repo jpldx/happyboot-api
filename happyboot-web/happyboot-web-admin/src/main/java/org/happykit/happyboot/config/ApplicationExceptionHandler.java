@@ -27,7 +27,7 @@ public class ApplicationExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public R handleRuntimeException(RuntimeException e) {
-        log.error("服务器异常", e);
+        log.error("服务器异常", e.getMessage());
         return R.failed("服务器异常");
     }
 

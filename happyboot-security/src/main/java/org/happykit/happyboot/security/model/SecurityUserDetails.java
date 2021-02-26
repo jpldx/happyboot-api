@@ -1,8 +1,8 @@
 package org.happykit.happyboot.security.model;
 
-import org.happykit.happyboot.constant.SysConstant;
-import org.happykit.happyboot.enums.UserStatusEnum;
 import org.apache.commons.collections4.CollectionUtils;
+import org.happykit.happyboot.enums.UserStatusEnum;
+import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -78,7 +78,7 @@ public class SecurityUserDetails implements UserDetails {
         this.roles = roles;
         this.token = token;
         // 如果是主账号登录，则设置主账号id
-        if (SysConstant.USER_TYPE_0.equals(userType)) {
+        if (SecurityConstant.USER_TYPE_0.equals(userType)) {
             this.mainAccountId = id;
         }
     }

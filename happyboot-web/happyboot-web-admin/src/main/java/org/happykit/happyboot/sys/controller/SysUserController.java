@@ -16,6 +16,7 @@ import org.happykit.happyboot.sys.facade.SysUserFacade;
 import org.happykit.happyboot.sys.model.entity.SysUserDO;
 import org.happykit.happyboot.sys.model.excel.SysUserData;
 import org.happykit.happyboot.sys.model.excel.listener.SysUserDataListener;
+import org.happykit.happyboot.sys.model.query.SysLoginLogPageQuery;
 import org.happykit.happyboot.sys.model.query.SysUserPageQueryParam;
 import org.happykit.happyboot.sys.service.*;
 import org.happykit.happyboot.sys.util.SysSecurityUtils;
@@ -437,5 +438,16 @@ public class SysUserController extends BaseController {
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         return R.ok(selectedUser);
+    }
+
+    /**
+     * 查询用户登录历史
+     *
+     * @return
+     */
+    @Log("用户-查询用户登录历史")
+    @GetMapping("/queryLoginLogs")
+    public R queryLoginLogs(@Validated SysLoginLogPageQuery query) {
+        return null;
     }
 }
