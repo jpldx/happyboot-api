@@ -51,7 +51,6 @@ spring:
 
 mybatis-plus:
   configuration:
-    # 配置sql打印日志
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 token:
@@ -59,8 +58,8 @@ token:
   redis: true
   # 是否开启单设备登陆 仅当token交互方式为redis时生效
   sdl: false
-  # token过期时间 redis模式有请求自动刷新（分钟）
-  tokenExpireTime: 1440
+  # token过期时间（分钟）
+  tokenExpireTime: 60
   # 用户选择 保存登录状态/记住我 对应token过期时间（天）
   saveLoginTime: 7
   # 客户端登录失败限制（次）

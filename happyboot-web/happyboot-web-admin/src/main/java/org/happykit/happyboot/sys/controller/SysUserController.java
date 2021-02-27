@@ -2,14 +2,16 @@ package org.happykit.happyboot.sys.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.extension.api.R;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.gson.Gson;
 import org.happykit.happyboot.base.BaseController;
+import org.happykit.happyboot.base.R;
 import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.properties.TokenProperties;
+import org.happykit.happyboot.sys.collection.LoginLogCollection;
 import org.happykit.happyboot.sys.enums.AuthTypeEnum;
 import org.happykit.happyboot.sys.facade.SysAuthFacade;
 import org.happykit.happyboot.sys.facade.SysUserFacade;
@@ -55,7 +57,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping("/sys/user")
-public class SysUserController extends BaseController {
+public class SysUserController {
 
     private final SysUserService sysUserService;
     private final SysUserRelService sysUserRelService;
@@ -99,7 +101,7 @@ public class SysUserController extends BaseController {
     @GetMapping({"/list"})
     @JsonView({View.SecurityView.class})
     public R list() {
-        return success(sysUserService.list());
+        return R.ok(sysUserService.list());
     }
 
     /**
@@ -112,7 +114,7 @@ public class SysUserController extends BaseController {
     @GetMapping("/page")
     @JsonView({View.SimpleView.class})
     public R page(@Validated SysUserPageQueryParam param) {
-        return success(sysUserService.listSysUsersByPage(param));
+        return R.ok(sysUserService.listSysUsersByPage(param));
     }
 
     /**
@@ -148,7 +150,7 @@ public class SysUserController extends BaseController {
         json.put("headPic", userinfo.getHeadPic());
         // 关联账号信息
         json.put("userlist", userlist);
-        return success(json);
+        return R.ok(json);
     }
 
     /**
@@ -161,7 +163,7 @@ public class SysUserController extends BaseController {
     @PostMapping("/add")
     @JsonView({View.SimpleView.class})
     public R add(@RequestBody @Validated SysUserForm form) {
-        return success(sysUserFacade.saveSysUser(form));
+        return R.ok(sysUserFacade.saveSysUser(form));
     }
 
     /**
@@ -174,7 +176,7 @@ public class SysUserController extends BaseController {
     @PostMapping("/update")
     @JsonView({View.SimpleView.class})
     public R update(@RequestBody @Validated(Update.class) SysUserForm form) {
-        return success(sysUserFacade.updateSysUser(form));
+        return R.ok(sysUserFacade.updateSysUser(form));
     }
 
     /**
@@ -186,7 +188,7 @@ public class SysUserController extends BaseController {
     @Log("用户-更新状态")
     @PostMapping("/updateStatus")
     public R updateStatus(@RequestBody @Validated SysUserStatusForm form) {
-        return success(sysUserService.updateSysUserStatus(form));
+        return R.ok(sysUserService.updateSysUserStatus(form));
     }
 
     /**
@@ -198,7 +200,7 @@ public class SysUserController extends BaseController {
     @Log("用户-更新密码")
     @PostMapping(value = "/updatePwd")
     public R updatePwd(@RequestBody @Validated SysUserPwdForm form) {
-        return success(sysUserService.updateSysUserPwd(form));
+        return R.ok(sysUserService.updateSysUserPwd(form));
     }
 
     /**
@@ -210,7 +212,7 @@ public class SysUserController extends BaseController {
     @Log("用户-删除")
     @DeleteMapping("/delete")
     public R delete(@NotEmpty String[] ids) {
-        return success(sysUserFacade.deleteSysUser(ids));
+        return R.ok(sysUserFacade.deleteSysUser(ids));
     }
 
     /**
@@ -221,7 +223,7 @@ public class SysUserController extends BaseController {
      */
     @PostMapping("/importData")
     public R importData(@RequestBody @Validated SysUserImportForm form) {
-        return success(sysUserFacade.importData(form));
+        return R.ok(sysUserFacade.importData(form));
     }
 
     /**
@@ -234,7 +236,7 @@ public class SysUserController extends BaseController {
     public R importExcel(MultipartFile file) throws IOException {
         EasyExcel.read(file.getInputStream(), SysUserData.class, new SysUserDataListener(sysUserService)).sheet()
                 .doRead();
-        return success("");
+        return R.ok("");
     }
 
     /**
@@ -269,7 +271,7 @@ public class SysUserController extends BaseController {
     @Log("用户-新增角色关联")
     @PostMapping("/saveUserRole")
     public R saveUserRole(@RequestBody @Validated SysRefUserRoleForm form) {
-        return success(sysUserFacade.saveUserRole(form));
+        return R.ok(sysUserFacade.saveUserRole(form));
     }
 
     /**
@@ -281,7 +283,7 @@ public class SysUserController extends BaseController {
     @Log("用户-新增区域关联")
     @PostMapping("/saveUserDeptRegion")
     public R saveUserDeptRegion(@RequestBody @Validated SysRefUserDeptRegionForm form) {
-        return success(sysUserFacade.saveUserDeptRegion(form));
+        return R.ok(sysUserFacade.saveUserDeptRegion(form));
     }
 
     /**
@@ -293,7 +295,7 @@ public class SysUserController extends BaseController {
     @Log("用户-新增部门关联")
     @PostMapping("/saveUserDeptObj")
     public R saveUserDeptObj(@RequestBody @Validated SysRefUserDeptObjForm form) {
-        return success(sysUserFacade.saveUserDeptObj(form));
+        return R.ok(sysUserFacade.saveUserDeptObj(form));
     }
 
     /**
@@ -305,7 +307,7 @@ public class SysUserController extends BaseController {
     @Log("用户-新增功能组关联")
     @PostMapping("/saveUserFacilityGroupRel")
     public R saveUserFacilityGroupRel(@RequestBody @Validated SysFacilityUserGroupRelForm form) {
-        return success(sysUserFacade.saveUserFacilityGroupRel(form));
+        return R.ok(sysUserFacade.saveUserFacilityGroupRel(form));
     }
 
     /**
@@ -326,7 +328,7 @@ public class SysUserController extends BaseController {
             user.put("avatar", v.getHeadPic());
             return user;
         }).collect(Collectors.toList());
-        return success(list);
+        return R.ok(list);
     }
 
 
@@ -392,7 +394,7 @@ public class SysUserController extends BaseController {
     public R queryDeptId(@NotBlank String userId) {
         SysUserDO dbRecord = sysUserService.getById(userId);
         Assert.isNotFound(dbRecord);
-        return success(dbRecord.getDeptId());
+        return R.ok(dbRecord.getDeptId());
     }
 
     /**
@@ -447,7 +449,7 @@ public class SysUserController extends BaseController {
      */
     @Log("用户-查询用户登录历史")
     @GetMapping("/queryLoginHistory")
-    public R queryLoginLogs(@Validated SysLoginLogPageQuery query) {
+    public R<Page<LoginLogCollection>> queryLoginLogs(@Validated SysLoginLogPageQuery query) {
         return R.ok(sysUserService.queryLoginLogPageList(query));
     }
 }
