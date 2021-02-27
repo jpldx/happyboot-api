@@ -8,7 +8,7 @@ import org.happykit.happyboot.page.PageQuery;
 import javax.validation.constraints.NotBlank;
 
 /**
- * 用户登录历史分页查询对象
+ * 用户安全日志分页查询对象
  *
  * @author chen.xudong
  * @version 1.0
@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SysLoginLogPageQuery extends PageQuery {
+public class SysSecurityLogPageQuery extends PageQuery {
     /**
      * 用户id
      */

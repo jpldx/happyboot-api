@@ -11,8 +11,8 @@ public interface SysExceptionConstant {
     /**
      * 未找到异常
      */
-    String NOT_FOUND_USER = "用户信息不存在";
-    String NOT_FOUND_DEPT = "部门信息不存在";
+    String NOT_FOUND_USER = "用户不存在";
+    String NOT_FOUND_DEPT = "部门不存在";
     String NOT_FOUND_RECORD = "未找到相关记录";
     String NOT_FOUND_CONFIG = "未找到相关配置";
     /**

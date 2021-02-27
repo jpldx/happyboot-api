@@ -1,4 +1,4 @@
-package org.happykit.happyboot.sys.collection;
+package org.happykit.happyboot.security.model.collections;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 
 /**
- * 用户登录日志
+ * 用户安全日志
  *
  * @author chen.xudong
  * @version 1.0
@@ -15,16 +15,12 @@ import java.util.Date;
  */
 @Data
 @Accessors(chain = true)
-@Document(collection = "login_logs")
-public class LoginLogCollection {
+@Document(collection = "security_logs")
+public class SecurityLogCollection {
     /**
      * 客户端id
      */
     private String clientId;
-    /**
-     * 登录平台（pc/app）
-     */
-    private String platform;
     /**
      * 用户id
      */
@@ -34,11 +30,21 @@ public class LoginLogCollection {
      */
     private String username;
     /**
-     * 登录时间
+     * 操作类型
+     * {@link org.happykit.happyboot.security.constants.SecurityConstant.SecurityOperationEnum}
      */
-    private String loginTime;
+    private String operationType;
     /**
-     * 登录令牌
+     * 操作平台（PC/APP）
+     * ${@link org.happykit.happyboot.enums.AppPlatformEnum}
+     */
+    private String operationPlatform;
+    /**
+     * 操作时间
+     */
+    private String operationTime;
+    /**
+     * 令牌
      */
     private String token;
     /**
@@ -46,11 +52,11 @@ public class LoginLogCollection {
      */
     private Date tokenExpireTime;
     /**
-     * 登录ip
+     * ip
      */
     private String ip;
     /**
-     * 登录ip所在地址
+     * ip所在地址
      */
     private String ipAddress;
     /**

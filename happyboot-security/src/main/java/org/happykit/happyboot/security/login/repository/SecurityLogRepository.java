@@ -1,6 +1,7 @@
 package org.happykit.happyboot.security.login.repository;
 
-import org.happykit.happyboot.sys.collection.LoginLogCollection;
+
+import org.happykit.happyboot.security.model.collections.SecurityLogCollection;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
@@ -8,6 +9,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @version 1.0
  * @since 2021/2/26
  */
-public interface LoginLogRepository extends MongoRepository<LoginLogCollection, String> {
+public interface SecurityLogRepository extends MongoRepository<SecurityLogCollection, String> {
 
 }

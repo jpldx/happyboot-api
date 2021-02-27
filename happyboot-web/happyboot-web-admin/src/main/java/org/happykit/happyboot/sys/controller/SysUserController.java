@@ -8,17 +8,18 @@ import com.google.gson.Gson;
 import org.happykit.happyboot.base.R;
 import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.security.constants.SecurityConstant;
+import org.happykit.happyboot.security.login.service.SecurityCacheService;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
+import org.happykit.happyboot.security.model.collections.SecurityLogCollection;
 import org.happykit.happyboot.security.properties.TokenProperties;
 import org.happykit.happyboot.security.util.JwtUtils;
-import org.happykit.happyboot.sys.collection.LoginLogCollection;
 import org.happykit.happyboot.sys.enums.AuthTypeEnum;
 import org.happykit.happyboot.sys.facade.SysAuthFacade;
 import org.happykit.happyboot.sys.facade.SysUserFacade;
 import org.happykit.happyboot.sys.model.entity.SysUserDO;
 import org.happykit.happyboot.sys.model.excel.SysUserData;
 import org.happykit.happyboot.sys.model.excel.listener.SysUserDataListener;
-import org.happykit.happyboot.sys.model.query.SysLoginLogPageQuery;
+import org.happykit.happyboot.sys.model.query.SysSecurityLogPageQuery;
 import org.happykit.happyboot.sys.model.query.SysUserPageQueryParam;
 import org.happykit.happyboot.sys.service.*;
 import org.happykit.happyboot.sys.util.SysSecurityUtils;
@@ -27,6 +28,7 @@ import org.happykit.happyboot.validation.Update;
 import org.happykit.happyboot.view.View;
 import lombok.extern.slf4j.Slf4j;
 import org.happykit.happyboot.sys.model.form.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -61,41 +63,31 @@ import java.util.stream.Collectors;
 @RequestMapping("/sys/user")
 public class SysUserController {
 
-    private final SysUserService sysUserService;
-    private final SysUserRelService sysUserRelService;
-    private final SysUserFacade sysUserFacade;
-    private final SysSecurityUtils sysSecurityUtils;
-    private final SysDeptObjService sysDeptObjService;
-    private final StringRedisTemplate redisTemplate;
-    private final TokenProperties tokenProperties;
-    private final SysRoleService sysRoleService;
-    private final SysAuthFacade sysAuthFacade;
-    private final SysSubjectService sysSubjectService;
-    private final JwtUtils jwtUtils;
+    @Autowired
+    private SysUserService sysUserService;
+    @Autowired
+    private SysUserRelService sysUserRelService;
+    @Autowired
+    private SysUserFacade sysUserFacade;
+    @Autowired
+    private SysSecurityUtils sysSecurityUtils;
+    @Autowired
+    private SysDeptObjService sysDeptObjService;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+    @Autowired
+    private TokenProperties tokenProperties;
+    @Autowired
+    private SysRoleService sysRoleService;
+    @Autowired
+    private SysAuthFacade sysAuthFacade;
+    @Autowired
+    private SysSubjectService sysSubjectService;
+    @Autowired
+    private JwtUtils jwtUtils;
+    @Autowired
+    private SecurityCacheService securityCacheService;
 
-    public SysUserController(SysUserService sysUserService,
-                             SysUserFacade sysUserFacade,
-                             SysUserRelService sysUserRelService,
-                             SysSecurityUtils sysSecurityUtils,
-                             SysDeptObjService sysDeptObjService,
-                             StringRedisTemplate redisTemplate,
-                             TokenProperties tokenProperties,
-                             SysRoleService sysRoleService,
-                             SysAuthFacade sysAuthFacade,
-                             SysSubjectService sysSubjectService,
-                             JwtUtils jwtUtils) {
-        this.sysUserService = sysUserService;
-        this.sysUserFacade = sysUserFacade;
-        this.sysUserRelService = sysUserRelService;
-        this.sysSecurityUtils = sysSecurityUtils;
-        this.sysDeptObjService = sysDeptObjService;
-        this.redisTemplate = redisTemplate;
-        this.tokenProperties = tokenProperties;
-        this.sysRoleService = sysRoleService;
-        this.sysAuthFacade = sysAuthFacade;
-        this.sysSubjectService = sysSubjectService;
-        this.jwtUtils = jwtUtils;
-    }
 
     /**
      * 列表
@@ -360,7 +352,7 @@ public class SysUserController {
         SecurityUserDetails loginUser = sysSecurityUtils.getCurrentUserDetails();
         String mainAccountId = loginUser.getMainAccountId();
         // 子账号登录返回空集合
-        if (null == mainAccountId) {
+        if (mainAccountId == null) {
             return R.ok(new ArrayList<>());
         }
         SysUserDO mainAccount = sysUserService.getById(mainAccountId);
@@ -403,12 +395,12 @@ public class SysUserController {
     }
 
     /**
-     * 用户选择账号登录
+     * 用户切换账号登录
      *
      * @param form
      * @return
      */
-    @Log("用户登录-选择账号登录")
+    @Log("用户登录-切换账号登录")
     @PostMapping("/selectLogin")
     public R selectLogin(HttpServletRequest request, @RequestBody @Validated SysUserIdForm form) {
 
@@ -422,6 +414,7 @@ public class SysUserController {
         String selectUsername = selectUser.getUsername();
         String selectUserType = selectUser.getUserType();
         String loginUserId = loginUser.getId();
+        String mainAccountId = loginUser.getMainAccountId();
         if (loginUserId.equals(selectUserId)) {
             return R.ok(selectUser);
         }
@@ -437,16 +430,16 @@ public class SysUserController {
         }
 
         Map<String, String> payload = new HashMap<>(2);
-        payload.put("user_id", selectUserId);
-        payload.put("user_name", selectUsername);
-        payload.put("user_type", selectUserType);
-        payload.put("main_account_id", loginUserId);
-
+        payload.put(JwtUtils.CLAIM_USER_ID, selectUserId);
+        payload.put(JwtUtils.CLAIM_USER_NAME, selectUsername);
+        payload.put(JwtUtils.CLAIM_USER_TYPE, selectUserType);
+        payload.put(JwtUtils.CLAIM_MAIN_ACCOUNT_ID, mainAccountId);
+        // 重新颁发token
         String newToken = jwtUtils.create(payload);
 
         SecurityUserDetails userDetails = new SecurityUserDetails(
                 selectUserId,
-                loginUser.getMainAccountId(),
+                mainAccountId,
                 selectUserType,
                 selectUsername,
                 selectUser.getPassword(),
@@ -455,8 +448,12 @@ public class SysUserController {
                 permissions,
                 roles,
                 newToken);
+        securityCacheService.setUserDetails(userDetails);
 
-        redisTemplate.opsForValue().set(SecurityConstant.USER_TOKEN + newToken, new Gson().toJson(userDetails), tokenProperties.getTokenExpireTime(), TimeUnit.MINUTES);
+        // old token 拉入黑名单
+        String oldToken = loginUser.getToken();
+        securityCacheService.removeUserDetails(oldToken);
+        securityCacheService.setTokenToBlackList(oldToken);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -469,13 +466,13 @@ public class SysUserController {
     }
 
     /**
-     * 查询用户登录历史
+     * 查询用户安全日志
      *
      * @return
      */
-    @Log("用户-查询用户登录历史")
-    @GetMapping("/queryLoginHistory")
-    public R<Page<LoginLogCollection>> queryLoginLogs(@Validated SysLoginLogPageQuery query) {
-        return R.ok(sysUserService.queryLoginLogPageList(query));
+    @Log("用户-查询用户安全日志")
+    @GetMapping("/querySecurityLog")
+    public R<Page<SecurityLogCollection>> querySecurityLog(@Validated SysSecurityLogPageQuery query) {
+        return R.ok(sysUserService.querySecurityLogPageList(query));
     }
 }

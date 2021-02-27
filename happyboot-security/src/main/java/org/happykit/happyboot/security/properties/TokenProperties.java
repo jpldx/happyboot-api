@@ -28,7 +28,7 @@ public class TokenProperties {
 //	private Boolean storePerms = true;
 
     /**
-     * token默认过期时间
+     * token默认过期时间（分钟）
      */
     private Integer tokenExpireTime = 30;
 

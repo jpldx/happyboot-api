@@ -45,31 +45,31 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
         if (StringUtils.isBlank(username)) {
             throw new UsernameNotFoundException("用户名密码不符");
         }
-
         SysUserDO user = sysUserService.getByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("用户名密码不符");
         }
-        List<String> roles =
-                sysRoleService.listAuthorityNamesByUserIdAndAuthType(user.getId(), AuthTypeEnum.VISIBLE.getCode());
-        List<String> permissions;
-        if (sysAuthFacade.checkAdminByUsername(user.getUsername())) {
-            permissions = sysAuthFacade.listAdminApis();
-            roles = sysAuthFacade.listAdminRoles();
-        } else {
-            permissions = sysAuthFacade.listVisibleApisByUserId(user.getId());
-        }
 
-        // 生成JWT
         String userId = user.getId();
         String userType = user.getUserType();
         String mainAccountId = SecurityConstant.USER_TYPE_0.equals(userType) ? userId : null;
 
-        Map<String, String> payload = new HashMap<>(2);
-        payload.put("user_id", user.getId());
-        payload.put("user_name", user.getUsername());
-        payload.put("user_type", userType);
-        payload.put("main_account_id", mainAccountId);
+        List<String> roles =
+                sysRoleService.listAuthorityNamesByUserIdAndAuthType(userId, AuthTypeEnum.VISIBLE.getCode());
+        List<String> permissions;
+        if (sysAuthFacade.checkAdminByUsername(username)) {
+            permissions = sysAuthFacade.listAdminApis();
+            roles = sysAuthFacade.listAdminRoles();
+        } else {
+            permissions = sysAuthFacade.listVisibleApisByUserId(userId);
+        }
+
+        // 生成JWT
+        Map<String, String> payload = new HashMap<>();
+        payload.put(JwtUtils.CLAIM_USER_ID, userId);
+        payload.put(JwtUtils.CLAIM_USER_NAME, username);
+        payload.put(JwtUtils.CLAIM_USER_TYPE, userType);
+        payload.put(JwtUtils.CLAIM_MAIN_ACCOUNT_ID, mainAccountId);
 
         String token = jwtUtils.create(payload);
 
@@ -77,7 +77,7 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
                 userId,
                 mainAccountId,
                 userType,
-                user.getUsername(),
+                username,
                 user.getPassword(),
                 user.getDeptId(),
                 user.getStatus(),

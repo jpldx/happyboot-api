@@ -3,19 +3,19 @@ package org.happykit.happyboot.security.login;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import org.apache.commons.lang3.StringUtils;
 import org.happykit.happyboot.common.service.openapi.baidu.map.service.ILocationService;
 import org.happykit.happyboot.enums.AppPlatformEnum;
 import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.exceptions.LoginFailedLimitException;
-import org.happykit.happyboot.security.login.repository.LoginLogRepository;
+import org.happykit.happyboot.security.login.repository.SecurityLogRepository;
+import org.happykit.happyboot.security.login.service.SecurityCacheService;
+import org.happykit.happyboot.security.login.service.UserService;
 import org.happykit.happyboot.security.model.AuthenticationBean;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
+import org.happykit.happyboot.security.model.collections.SecurityLogCollection;
 import org.happykit.happyboot.security.properties.TokenProperties;
 import org.happykit.happyboot.security.util.JwtUtils;
 import org.happykit.happyboot.security.util.SecurityUtils;
-import org.happykit.happyboot.sys.collection.LoginLogCollection;
 import org.happykit.happyboot.util.DateUtils;
 import org.happykit.happyboot.util.InternetUtils;
 import org.happykit.happyboot.util.RSAUtils;
@@ -41,7 +41,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -68,7 +67,9 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Autowired
     private ILocationService locationService;
     @Autowired
-    private LoginLogRepository loginLogRepository;
+    private SecurityLogRepository securityLogRepository;
+    @Autowired
+    private SecurityCacheService securityCacheService;
 
     public JwtLoginFilter() {
         super(new AntPathRequestMatcher("/login", "POST"));
@@ -145,37 +146,29 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
         String username = userDetails.getUsername();
         String token = userDetails.getToken();
 
-        // 单设备登录 之前的token失效
-//        if (tokenProperties.getSdl()) {
-//            String oldToken = redisTemplate.opsForValue().get(SecurityConstant.USER_TOKEN + username);
-//            if (StringUtils.isNotBlank(oldToken)) {
-//                redisTemplate.delete(SecurityConstant.TOKEN_USER + oldToken);
-//            }
-//        }
-        // 将用户信息和token存入redis
-//        redisTemplate.opsForValue().set(SecurityConstant.USER_TOKEN + username, token, tokenProperties.getTokenExpireTime(), TimeUnit.MINUTES);
-        redisTemplate.opsForValue().set(SecurityConstant.USER_TOKEN + token, new Gson().toJson(userDetails), tokenProperties.getTokenExpireTime(), TimeUnit.MINUTES);
+        // 缓存用户信息
+        securityCacheService.setUserDetails(userDetails);
 
         // TODO 删除登录失败缓存计数
         String ip = InternetUtils.getIp(request);
 
-        // 更新登录信息
-        Object loginInfo = userService.loginSuccess(userDetails, token, ip);
-
-        // 日志记录 TODO 队列处理
-        LoginLogCollection collection = new LoginLogCollection();
-        collection.setClientId(securityUtils.getClientId(request))
+        // 安全日志记录 TODO 队列处理
+        SecurityLogCollection securityLog = new SecurityLogCollection();
+        securityLog.setClientId(securityUtils.getClientId(request))
                 .setUserId(userId)
                 .setUsername(username)
                 .setIp(ip)
                 .setIpAddress(locationService.getAddressByIp(ip))
-                .setLoginTime(DateUtils.now())
-                .setPlatform(AppPlatformEnum.PC.name())
+                .setOperationType(SecurityConstant.SecurityOperationEnum.LOGIN.name())
+                .setOperationPlatform(AppPlatformEnum.PC.name())
+                .setOperationTime(DateUtils.now())
                 .setToken(token)
                 .setTokenExpireTime(JwtUtils.decode(token).getExpiresAt())
                 .setUa(InternetUtils.getUserAgent(request));
-        loginLogRepository.insert(collection);
+        securityLogRepository.insert(securityLog);
 
+        // 返回认证信息
+        Object loginInfo = userService.loginSuccess(userDetails, token, ip);
         ResponseUtils.out(response, R.ok(loginInfo));
     }
 

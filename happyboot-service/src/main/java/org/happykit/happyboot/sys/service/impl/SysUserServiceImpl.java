@@ -3,27 +3,24 @@ package org.happykit.happyboot.sys.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.commons.lang3.StringUtils;
 import org.happykit.happyboot.constant.SysConstant;
 import org.happykit.happyboot.exception.SysException;
-import org.happykit.happyboot.log.model.Log;
 import org.happykit.happyboot.page.PageUtils;
 import org.happykit.happyboot.security.constants.SecurityConstant;
-import org.happykit.happyboot.security.login.repository.LoginLogRepository;
-import org.happykit.happyboot.sys.collection.LoginLogCollection;
+import org.happykit.happyboot.security.login.repository.SecurityLogRepository;
+import org.happykit.happyboot.security.model.collections.SecurityLogCollection;
 import org.happykit.happyboot.sys.factory.SysUserFactory;
 import org.happykit.happyboot.sys.mapper.SysUserMapper;
 import org.happykit.happyboot.sys.model.entity.SysUserDO;
 import org.happykit.happyboot.sys.model.form.SysUserForm;
 import org.happykit.happyboot.sys.model.form.SysUserPwdForm;
 import org.happykit.happyboot.sys.model.form.SysUserStatusForm;
-import org.happykit.happyboot.sys.model.query.SysLoginLogPageQuery;
+import org.happykit.happyboot.sys.model.query.SysSecurityLogPageQuery;
 import org.happykit.happyboot.sys.model.query.SysUserPageQueryParam;
 import org.happykit.happyboot.sys.service.SysUserRelService;
 import org.happykit.happyboot.sys.service.SysUserService;
 import org.happykit.happyboot.sys.util.SysSecurityUtils;
 import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -52,18 +49,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
     private final PasswordEncoder passwordEncoder;
     private final SysSecurityUtils sysSecurityUtils;
     private final SysUserRelService sysUserRelService;
-    private final LoginLogRepository loginLogRepository;
+    private final SecurityLogRepository securityLogRepository;
     private final MongoTemplate mongoTemplate;
 
     public SysUserServiceImpl(PasswordEncoder passwordEncoder,
                               SysSecurityUtils sysSecurityUtils,
                               SysUserRelService sysUserRelService,
-                              LoginLogRepository loginLogRepository,
+                              SecurityLogRepository securityLogRepository,
                               MongoTemplate mongoTemplate) {
         this.passwordEncoder = passwordEncoder;
         this.sysSecurityUtils = sysSecurityUtils;
         this.sysUserRelService = sysUserRelService;
-        this.loginLogRepository = loginLogRepository;
+        this.securityLogRepository = securityLogRepository;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -228,19 +225,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
     }
 
     @Override
-    public Page<LoginLogCollection> queryLoginLogPageList(SysLoginLogPageQuery query) {
+    public Page<SecurityLogCollection> querySecurityLogPageList(SysSecurityLogPageQuery query) {
         Long pageNo = query.getPageNo();
         Long pageSize = query.getPageSize();
 
         Query q = new Query();
         q.addCriteria(Criteria.where("userId").is(query.getUserId()));
 
-        long total = mongoTemplate.count(q, LoginLogCollection.class);
+        long total = mongoTemplate.count(q, SecurityLogCollection.class);
 
         Pageable pageable = PageRequest.of(pageNo.intValue() - 1, query.getPageSize().intValue(), Sort.by(Sort.Order.desc("loginTime")));
-        List<LoginLogCollection> list = mongoTemplate.find(q.with(pageable), LoginLogCollection.class);
+        List<SecurityLogCollection> list = mongoTemplate.find(q.with(pageable), SecurityLogCollection.class);
 
-        Page<LoginLogCollection> page = new Page<>();
+        Page<SecurityLogCollection> page = new Page<>();
         page.setCurrent(pageNo);
         page.setSize(pageSize);
         page.setTotal(total);

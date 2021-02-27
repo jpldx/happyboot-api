@@ -32,6 +32,12 @@ public class JwtUtils {
     private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET);
     private static final String ISSUER = "979309838@qq.com";
 
+    public static String CLAIM_USER_ID = "user_id";
+    public static String CLAIM_USER_NAME = "user_name";
+    public static String CLAIM_USER_TYPE = "user_type";
+    public static String CLAIM_MAIN_ACCOUNT_ID = "main_account_id";
+
+
     /**
      * 生成 token
      *

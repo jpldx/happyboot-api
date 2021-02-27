@@ -109,5 +109,4 @@ public class SecurityUtils {
     public String getClientId(HttpServletRequest request) {
         return request.getHeader(tokenProperties.getClientId());
     }
-
 }

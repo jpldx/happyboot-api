@@ -1,4 +1,4 @@
-package org.happykit.happyboot.security.login;
+package org.happykit.happyboot.security.login.service;
 
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 

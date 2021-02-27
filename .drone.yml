@@ -107,20 +107,20 @@ steps:
         - docker-compose down
         - docker-compose --env-file .env up -d
 
-  - name: dingtalk
-    pull: if-not-exists
-    image: guoxudongdocker/drone-dingtalk
-    settings:
-      token:
-        from_secret: dingtalk_token
-      type: markdown
-      message_color: true
-      message_pic: true
-      sha_link: true
-    when:
-      status:
-        - failure
-        - success
+        #  - name: dingtalk
+        #    pull: if-not-exists
+        #    image: guoxudongdocker/drone-dingtalk
+        #    settings:
+        #      token:
+        #        from_secret: dingtalk_token
+        #      type: markdown
+        #      message_color: true
+        #      message_pic: true
+        #      sha_link: true
+        #    when:
+        #      status:
+        #        - failure
+        #        - success
 
         # 可以关闭代码分析，提高构建效率
         #  - name: code-analysis

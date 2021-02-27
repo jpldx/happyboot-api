@@ -1,6 +1,7 @@
 package org.happykit.happyboot.security.login;
 
 import org.happykit.happyboot.security.constants.SecurityConstant;
+import org.happykit.happyboot.security.login.service.UserService;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.sys.model.entity.SysUserDO;
 import org.happykit.happyboot.sys.service.SysUserRelService;

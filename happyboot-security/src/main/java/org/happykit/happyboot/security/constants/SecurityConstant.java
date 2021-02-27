@@ -11,17 +11,12 @@ public class SecurityConstant {
     /**
      * token
      */
-    public static final String TOKEN_USER = "TOKEN_USER:";
-
-    /**
-     * token
-     */
     public static final String USER_TOKEN = "USER_TOKEN:";
 
     /**
      * token 黑名单
      */
-    public static final String USER_TOKEN_BLACKLIST = "USER_TOKEN_BLACKLIST";
+    public static final String USER_TOKEN_BLACKLIST = "USER_TOKEN_BLACKLIST:";
 
     /**
      * 登录失败限制
@@ -44,4 +39,23 @@ public class SecurityConstant {
      */
     public static final int ENABLE = 1;
     public static final int DISABLE = 0;
+
+
+    /**
+     * 安全操作枚举
+     */
+    public enum SecurityOperationEnum {
+        /**
+         * 登录
+         */
+        LOGIN,
+        /**
+         * 登出
+         */
+        LOGOUT,
+        /**
+         * 修改密码
+         */
+        CHANGE_PASSWORD
+    }
 }

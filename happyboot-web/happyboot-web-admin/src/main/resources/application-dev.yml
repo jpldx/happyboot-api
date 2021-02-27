@@ -27,7 +27,7 @@ spring:
   data:
     mongodb:
       port: 27017
-      database: logs
+      database: happyboot
       host: 101.132.132.97
   #     username:
   #     password:

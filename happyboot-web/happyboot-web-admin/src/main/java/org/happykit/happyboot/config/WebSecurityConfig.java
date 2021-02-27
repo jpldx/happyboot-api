@@ -4,6 +4,7 @@ import org.happykit.happyboot.security.login.JwtAuthenticationFilter;
 import org.happykit.happyboot.security.login.JwtLoginFilter;
 import org.happykit.happyboot.security.login.RestAuthenticationEntryPoint;
 import org.happykit.happyboot.security.login.SecurityClientIdFilter;
+import org.happykit.happyboot.security.login.service.SecurityCacheService;
 import org.happykit.happyboot.security.permission.MyFilterSecurityInterceptor;
 import org.happykit.happyboot.security.permission.RestAccessDeniedHandler;
 import org.happykit.happyboot.security.properties.IgnoredUrlsProperties;
@@ -47,31 +48,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Qualifier("jwtUserDetailsServiceImpl")
     @Autowired
     private UserDetailsService userDetailsService;
-
     @Autowired
     private RestAccessDeniedHandler restAccessDeniedHandler;
-
     @Autowired
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
-
     @Autowired
     private IgnoredUrlsProperties ignoredUrlsProperties;
-
     @Autowired
     private MyFilterSecurityInterceptor myFilterSecurityInterceptor;
-
     @Autowired
     private CaptchaValidateFilter captchaValidateFilter;
-
     @Autowired
     private SecurityClientIdFilter securityClientIdFilter;
-
     @Autowired
     private TokenProperties tokenProperties;
-
     @Autowired
-    private StringRedisTemplate redisTemplate;
-
+    private SecurityCacheService securityService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -118,7 +110,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 添加过滤器 JWT 处理
 //				.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 // 添加JWT认证过滤器
-                .addFilter(new JwtAuthenticationFilter(authenticationManager(), tokenProperties, redisTemplate))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), tokenProperties, securityService))
                 // 添加自定义异常入口
                 .exceptionHandling()
                 // 认证配置当用户请求了一个受保护的资源，但是用户没有通过登录认证
