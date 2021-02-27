@@ -6,6 +6,9 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
+import org.happykit.happyboot.security.properties.TokenProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -19,14 +22,15 @@ import java.util.Map;
  * @since 2021/1/30
  */
 @Slf4j
+@Component
 public class JwtUtils {
 
+    @Autowired
+    private TokenProperties tokenProperties;
 
     private static final String SECRET = "#e*!71&Sf@j#aA";
     private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET);
     private static final String ISSUER = "979309838@qq.com";
-    // 过期时间(h)
-    private static final int EXPIRE_TIME = 24;
 
     /**
      * 生成 token
@@ -34,12 +38,12 @@ public class JwtUtils {
      * @param payload 负载信息
      * @return
      */
-    public static String create(Map<String, String> payload) {
+    public String create(Map<String, String> payload) {
         JWTCreator.Builder builder = JWT.create();
         payload.forEach(builder::withClaim);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR, EXPIRE_TIME);
+        calendar.add(Calendar.MINUTE, tokenProperties.getTokenExpireTime());
 
         return builder.withIssuer(ISSUER)
                 .withExpiresAt(calendar.getTime())
@@ -68,5 +72,8 @@ public class JwtUtils {
         return JWT.decode(token);
     }
 
+//    public static String getUsername(DecodedJWT decodedJWT){
+//        return decodedJWT.getClaim("")
+//    }
 
 }

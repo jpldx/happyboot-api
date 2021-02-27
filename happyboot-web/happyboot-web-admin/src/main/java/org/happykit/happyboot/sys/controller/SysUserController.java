@@ -5,12 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.gson.Gson;
-import org.happykit.happyboot.base.BaseController;
 import org.happykit.happyboot.base.R;
 import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.properties.TokenProperties;
+import org.happykit.happyboot.security.util.JwtUtils;
 import org.happykit.happyboot.sys.collection.LoginLogCollection;
 import org.happykit.happyboot.sys.enums.AuthTypeEnum;
 import org.happykit.happyboot.sys.facade.SysAuthFacade;
@@ -43,7 +43,9 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -69,6 +71,7 @@ public class SysUserController {
     private final SysRoleService sysRoleService;
     private final SysAuthFacade sysAuthFacade;
     private final SysSubjectService sysSubjectService;
+    private final JwtUtils jwtUtils;
 
     public SysUserController(SysUserService sysUserService,
                              SysUserFacade sysUserFacade,
@@ -79,7 +82,8 @@ public class SysUserController {
                              TokenProperties tokenProperties,
                              SysRoleService sysRoleService,
                              SysAuthFacade sysAuthFacade,
-                             SysSubjectService sysSubjectService) {
+                             SysSubjectService sysSubjectService,
+                             JwtUtils jwtUtils) {
         this.sysUserService = sysUserService;
         this.sysUserFacade = sysUserFacade;
         this.sysUserRelService = sysUserRelService;
@@ -90,6 +94,7 @@ public class SysUserController {
         this.sysRoleService = sysRoleService;
         this.sysAuthFacade = sysAuthFacade;
         this.sysSubjectService = sysSubjectService;
+        this.jwtUtils = jwtUtils;
     }
 
     /**
@@ -406,40 +411,61 @@ public class SysUserController {
     @Log("用户登录-选择账号登录")
     @PostMapping("/selectLogin")
     public R selectLogin(HttpServletRequest request, @RequestBody @Validated SysUserIdForm form) {
-        SysUserDO selectedUser = sysUserService.getById(form.getUserId());
-        Assert.isNotFoundUser(selectedUser);
+
+        SysUserDO selectUser = sysUserService.getById(form.getUserId());
+        Assert.isNotFoundUser(selectUser);
 
         SecurityUserDetails loginUser = sysSecurityUtils.getCurrentUserDetails();
         // TODO 校验是否有权限使用选择的账号进行登录
 //        sysUserRelService.getUserRelListByUserId(loginUser.getMainAccountId(),loginUser.)
+        String selectUserId = selectUser.getId();
+        String selectUsername = selectUser.getUsername();
+        String selectUserType = selectUser.getUserType();
+        String loginUserId = loginUser.getId();
+        if (loginUserId.equals(selectUserId)) {
+            return R.ok(selectUser);
+        }
 
         List<String> roles;
         List<String> permissions;
-        if (sysAuthFacade.checkAdminByUsername(selectedUser.getUsername())) {
+        if (sysAuthFacade.checkAdminByUsername(selectUsername)) {
             permissions = sysAuthFacade.listAdminApis();
             roles = sysAuthFacade.listAdminRoles();
         } else {
-            permissions = sysAuthFacade.listVisibleApisByUserId(selectedUser.getId());
-            roles = sysRoleService.listAuthorityNamesByUserIdAndAuthType(selectedUser.getId(), AuthTypeEnum.VISIBLE.getCode());
+            permissions = sysAuthFacade.listVisibleApisByUserId(selectUserId);
+            roles = sysRoleService.listAuthorityNamesByUserIdAndAuthType(selectUserId, AuthTypeEnum.VISIBLE.getCode());
         }
 
-        SecurityUserDetails userDetails = new SecurityUserDetails(selectedUser.getId(),
+        Map<String, String> payload = new HashMap<>(2);
+        payload.put("user_id", selectUserId);
+        payload.put("user_name", selectUsername);
+        payload.put("user_type", selectUserType);
+        payload.put("main_account_id", loginUserId);
+
+        String newToken = jwtUtils.create(payload);
+
+        SecurityUserDetails userDetails = new SecurityUserDetails(
+                selectUserId,
                 loginUser.getMainAccountId(),
-                selectedUser.getUsername(),
-                selectedUser.getPassword(),
-                selectedUser.getDeptId(),
-                selectedUser.getUserType(),
-                selectedUser.getStatus(),
+                selectUserType,
+                selectUsername,
+                selectUser.getPassword(),
+                selectUser.getDeptId(),
+                selectUser.getStatus(),
                 permissions,
                 roles,
-                loginUser.getToken());
+                newToken);
 
-        redisTemplate.opsForValue().set(SecurityConstant.TOKEN_PRE + loginUser.getToken(), new Gson().toJson(userDetails), tokenProperties.getTokenExpireTime(), TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(SecurityConstant.USER_TOKEN + newToken, new Gson().toJson(userDetails), tokenProperties.getTokenExpireTime(), TimeUnit.MINUTES);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        return R.ok(selectedUser);
+
+        JSONObject json = new JSONObject();
+        json.put("userinfo", selectUser);
+        json.put("token", newToken);
+        return R.ok(json);
     }
 
     /**

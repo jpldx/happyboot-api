@@ -1,6 +1,7 @@
 package org.happykit.happyboot.security.login;
 
 import org.apache.commons.lang3.StringUtils;
+import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.util.JwtUtils;
 import org.happykit.happyboot.sys.enums.AuthTypeEnum;
@@ -36,6 +37,8 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
     private SysRoleService sysRoleService;
     @Autowired
     private SysAuthFacade sysAuthFacade;
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -58,16 +61,25 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
         }
 
         // 生成JWT
-        Map<String, String> payload = new HashMap<>(2);
-        payload.put("userid", user.getId());
-        payload.put("username", user.getUsername());
-        String token = JwtUtils.create(payload);
+        String userId = user.getId();
+        String userType = user.getUserType();
+        String mainAccountId = SecurityConstant.USER_TYPE_0.equals(userType) ? userId : null;
 
-        return new SecurityUserDetails(user.getId(),
+        Map<String, String> payload = new HashMap<>(2);
+        payload.put("user_id", user.getId());
+        payload.put("user_name", user.getUsername());
+        payload.put("user_type", userType);
+        payload.put("main_account_id", mainAccountId);
+
+        String token = jwtUtils.create(payload);
+
+        return new SecurityUserDetails(
+                userId,
+                mainAccountId,
+                userType,
                 user.getUsername(),
                 user.getPassword(),
                 user.getDeptId(),
-                user.getUserType(),
                 user.getStatus(),
                 permissions,
                 roles,

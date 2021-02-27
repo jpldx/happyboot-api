@@ -1,7 +1,6 @@
 package org.happykit.happyboot.security.model;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.happykit.happyboot.enums.UserStatusEnum;
 import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -67,33 +66,33 @@ public class SecurityUserDetails implements UserDetails {
     public SecurityUserDetails() {
     }
 
-    public SecurityUserDetails(String id, String username, String password, String deptId, String userType, Integer status, List<String> permissions, List<String> roles, String token) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.deptId = deptId;
-        this.userType = userType;
-        this.status = status;
-        this.permissions = permissions;
-        this.roles = roles;
-        this.token = token;
-        // 如果是主账号登录，则设置主账号id
-        if (SecurityConstant.USER_TYPE_0.equals(userType)) {
-            this.mainAccountId = id;
-        }
-    }
+//    public SecurityUserDetails(String id, String username, String password, String deptId, String userType, Integer status, List<String> permissions, List<String> roles, String token) {
+//        this.id = id;
+//        this.username = username;
+//        this.password = password;
+//        this.deptId = deptId;
+//        this.userType = userType;
+//        this.status = status;
+//        this.permissions = permissions;
+//        this.roles = roles;
+//        this.token = token;
+//        // 如果是主账号登录，则设置主账号id
+//        if (SecurityConstant.USER_TYPE_0.equals(userType)) {
+//            this.mainAccountId = id;
+//        }
+//    }
 
-    public SecurityUserDetails(String id, String mainAccountId, String username, String password, String deptId, String userType, Integer status, List<String> permissions, List<String> roles, String token) {
+    public SecurityUserDetails(String id, String mainAccountId, String userType, String username, String password, String deptId, Integer status, List<String> permissions, List<String> roles, String token) {
         this.id = id;
+        this.mainAccountId = mainAccountId;
+        this.userType = userType;
         this.username = username;
         this.password = password;
         this.deptId = deptId;
-        this.userType = userType;
         this.status = status;
         this.permissions = permissions;
         this.roles = roles;
         this.token = token;
-        this.mainAccountId = mainAccountId;
     }
 
 
@@ -143,14 +142,16 @@ public class SecurityUserDetails implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
+
     /**
      * 是否启用
      *
      * @return
+     * @see org.springframework.security.authentication.DisabledException
      */
     @Override
     public boolean isEnabled() {
-        return UserStatusEnum.ENABLE.getCode().equals(this.status);
+        return this.status == SecurityConstant.ENABLE;
     }
 
     public String getId() {

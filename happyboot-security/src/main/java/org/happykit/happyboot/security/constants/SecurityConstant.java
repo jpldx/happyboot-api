@@ -11,12 +11,17 @@ public class SecurityConstant {
     /**
      * token
      */
-    public static final String TOKEN_PRE = "TOKEN_PRE:";
+    public static final String TOKEN_USER = "TOKEN_USER:";
 
     /**
-     * token（单点登录使用）
+     * token
      */
     public static final String USER_TOKEN = "USER_TOKEN:";
+
+    /**
+     * token 黑名单
+     */
+    public static final String USER_TOKEN_BLACKLIST = "USER_TOKEN_BLACKLIST";
 
     /**
      * 登录失败限制
@@ -33,4 +38,10 @@ public class SecurityConstant {
      */
     public static final String USER_TYPE_0 = "0";
     public static final String USER_TYPE_1 = "1";
+
+    /**
+     * 账号状态（1/启用 0/禁用）
+     */
+    public static final int ENABLE = 1;
+    public static final int DISABLE = 0;
 }

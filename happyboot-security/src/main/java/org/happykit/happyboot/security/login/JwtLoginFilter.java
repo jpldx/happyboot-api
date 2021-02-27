@@ -141,26 +141,22 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         SecurityUserDetails userDetails = (SecurityUserDetails) authResult.getPrincipal();
 
-        String username = userDetails.getUsername();
         String userId = userDetails.getId();
-        // 登陆成功生成token
+        String username = userDetails.getUsername();
         String token = userDetails.getToken();
-        // 使用redis存储token
 
         // 单设备登录 之前的token失效
-        if (tokenProperties.getSdl()) {
-            String oldToken = redisTemplate.opsForValue().get(SecurityConstant.USER_TOKEN + username);
-            if (StringUtils.isNotBlank(oldToken)) {
-                redisTemplate.delete(SecurityConstant.TOKEN_PRE + oldToken);
-            }
-        }
+//        if (tokenProperties.getSdl()) {
+//            String oldToken = redisTemplate.opsForValue().get(SecurityConstant.USER_TOKEN + username);
+//            if (StringUtils.isNotBlank(oldToken)) {
+//                redisTemplate.delete(SecurityConstant.TOKEN_USER + oldToken);
+//            }
+//        }
         // 将用户信息和token存入redis
-        redisTemplate.opsForValue().set(SecurityConstant.USER_TOKEN + username, token, tokenProperties.getTokenExpireTime(), TimeUnit.MINUTES);
-        redisTemplate.opsForValue().set(SecurityConstant.TOKEN_PRE + token, new Gson().toJson(userDetails), tokenProperties.getTokenExpireTime(), TimeUnit.MINUTES);
+//        redisTemplate.opsForValue().set(SecurityConstant.USER_TOKEN + username, token, tokenProperties.getTokenExpireTime(), TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(SecurityConstant.USER_TOKEN + token, new Gson().toJson(userDetails), tokenProperties.getTokenExpireTime(), TimeUnit.MINUTES);
 
         // TODO 删除登录失败缓存计数
-//        redisTemplate.delete()
-
         String ip = InternetUtils.getIp(request);
 
         // 更新登录信息
@@ -178,7 +174,6 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
                 .setToken(token)
                 .setTokenExpireTime(JwtUtils.decode(token).getExpiresAt())
                 .setUa(InternetUtils.getUserAgent(request));
-
         loginLogRepository.insert(collection);
 
         ResponseUtils.out(response, R.ok(loginInfo));
