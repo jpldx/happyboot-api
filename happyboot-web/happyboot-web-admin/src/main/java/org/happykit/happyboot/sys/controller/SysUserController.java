@@ -452,7 +452,7 @@ public class SysUserController {
 
         // old token 拉入黑名单
         String oldToken = loginUser.getToken();
-        securityCacheService.removeUserDetails(oldToken);
+//        securityCacheService.removeUserDetails(oldToken);
         securityCacheService.setTokenToBlackList(oldToken);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
