@@ -34,6 +34,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import sun.tools.jstat.Token;
 
 import java.util.Date;
 import java.util.List;
@@ -255,7 +256,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
         query.addCriteria(Criteria.where("tokenExpireTime").gt(new Date()));
 
         List<SecurityLogCollection> list = mongoTemplate.find(query, SecurityLogCollection.class);
-        Set<String> blackList = securityCacheService.getTokenBlackList();
-        return list.stream().filter(v -> !blackList.contains(v.getToken())).collect(Collectors.toList());
+        return list.stream().filter(v -> !securityCacheService.isTokenInBlackList(v.getToken())).collect(Collectors.toList());
     }
 }
