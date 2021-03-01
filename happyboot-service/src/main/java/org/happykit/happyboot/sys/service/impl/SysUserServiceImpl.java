@@ -249,6 +249,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
         query.addCriteria(Criteria.where("operationType").is(SecurityConstant.SecurityOperationEnum.LOGIN.name()));
         query.addCriteria(Criteria.where("tokenExpireTime").gt(new Date()));
 
+        query.with(Sort.by(Sort.Order.desc("operationTime")));
+
         List<SecurityLogCollection> list = mongoTemplate.find(query, SecurityLogCollection.class);
         return list.stream().filter(v -> !securityCacheService.isTokenInBlackList(v.getToken())).collect(Collectors.toList());
     }

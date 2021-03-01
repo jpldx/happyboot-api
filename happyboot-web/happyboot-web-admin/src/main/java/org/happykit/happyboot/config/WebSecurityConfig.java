@@ -1,9 +1,6 @@
 package org.happykit.happyboot.config;
 
-import org.happykit.happyboot.security.login.JwtAuthenticationFilter;
-import org.happykit.happyboot.security.login.JwtLoginFilter;
-import org.happykit.happyboot.security.login.RestAuthenticationEntryPoint;
-import org.happykit.happyboot.security.login.SecurityClientIdFilter;
+import org.happykit.happyboot.security.login.*;
 import org.happykit.happyboot.security.login.service.SecurityCacheService;
 import org.happykit.happyboot.security.permission.MyFilterSecurityInterceptor;
 import org.happykit.happyboot.security.permission.RestAccessDeniedHandler;
@@ -23,12 +20,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.cors.CorsUtils;
 
 
@@ -64,6 +63,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private TokenProperties tokenProperties;
     @Autowired
     private SecurityCacheService securityService;
+    @Autowired
+    private JwtLogoutHandler jwtLogoutHandler;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -106,11 +107,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //				.addFilterAt(myFilterSecurityInterceptor, FilterSecurityInterceptor.class)
                 // json登录，用重写的Filter替换掉原有的UsernamePasswordAuthenticationFilter
                 // 自定义过滤器认证用户名密码
-                .addFilterAt(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 // 添加过滤器 JWT 处理
 //				.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 // 添加JWT认证过滤器
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), tokenProperties, securityService))
+                // 用户注销处理器
+                .logout()
+                .addLogoutHandler(jwtLogoutHandler)
+                .and()
                 // 添加自定义异常入口
                 .exceptionHandling()
                 // 认证配置当用户请求了一个受保护的资源，但是用户没有通过登录认证
@@ -130,8 +135,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @throws Exception
      */
     @Bean
-    JwtLoginFilter customAuthenticationFilter() throws Exception {
-        // 自定义登录方式, 采用 json 异步请求, 前后端分离，默认为表单登录
+    JwtLoginFilter jwtLoginFilter() throws Exception {
         JwtLoginFilter filter = new JwtLoginFilter();
         // 设置登陆接口名
 //		filter.setFilterProcessesUrl(SecurityConstants.DEFAULT_LOGIN_URL);
@@ -144,6 +148,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
-
 
 }
