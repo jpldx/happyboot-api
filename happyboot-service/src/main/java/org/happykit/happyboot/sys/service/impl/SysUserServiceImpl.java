@@ -3,12 +3,10 @@ package org.happykit.happyboot.sys.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.happykit.happyboot.constant.CommonConstant;
 import org.happykit.happyboot.constant.SysConstant;
 import org.happykit.happyboot.exception.SysException;
 import org.happykit.happyboot.page.PageUtils;
 import org.happykit.happyboot.security.constants.SecurityConstant;
-import org.happykit.happyboot.security.login.repository.SecurityLogRepository;
 import org.happykit.happyboot.security.login.service.SecurityCacheService;
 import org.happykit.happyboot.security.model.collections.SecurityLogCollection;
 import org.happykit.happyboot.sys.factory.SysUserFactory;
@@ -21,8 +19,6 @@ import org.happykit.happyboot.sys.model.query.SysSecurityLogPageQuery;
 import org.happykit.happyboot.sys.model.query.SysUserPageQueryParam;
 import org.happykit.happyboot.sys.service.SysUserRelService;
 import org.happykit.happyboot.sys.service.SysUserService;
-import org.happykit.happyboot.sys.util.SysSecurityUtils;
-import org.happykit.happyboot.util.DateUtils;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,11 +30,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import sun.tools.jstat.Token;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
