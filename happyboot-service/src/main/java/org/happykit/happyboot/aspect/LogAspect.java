@@ -166,6 +166,7 @@ public class LogAspect {
 		ObjectMapper om = new ObjectMapper();
 		Log entity = new Log()
 				.setDescription(log.value())
+				.setRequestClientId(securityUtils.getClientId(request))
 				.setRequestUri(requestUri)
 				.setRequestMethod(request.getMethod())
 				.setRequestClass(className + "." + methodName)

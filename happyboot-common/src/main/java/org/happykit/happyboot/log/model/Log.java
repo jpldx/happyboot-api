@@ -20,6 +20,10 @@ public class Log implements Serializable {
 
     private static final long serialVersionUID = 1L;
     /**
+     * 请求客户端id
+     */
+    private String requestClientId;
+    /**
      * 请求资源路径
      */
     private String requestUri;
