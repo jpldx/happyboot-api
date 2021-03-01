@@ -36,7 +36,7 @@ public class SecurityLogCollection {
     private String operationType;
     /**
      * 操作平台（PC/APP）
-     * ${@link org.happykit.happyboot.enums.AppPlatformEnum}
+     * {@link org.happykit.happyboot.enums.AppPlatformEnum}
      */
     private String operationPlatform;
     /**

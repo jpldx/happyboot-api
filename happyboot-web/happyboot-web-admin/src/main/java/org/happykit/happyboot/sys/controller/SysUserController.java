@@ -475,4 +475,27 @@ public class SysUserController {
     public R<Page<SecurityLogCollection>> querySecurityLog(@Validated SysSecurityLogPageQuery query) {
         return R.ok(sysUserService.querySecurityLogPageList(query));
     }
+
+    /**
+     * 查询用户在线列表
+     *
+     * @return
+     */
+    @Log("用户-查询用户在线列表")
+    @GetMapping("/queryOnlineList")
+    public R<List<SecurityLogCollection>> queryOnlineList(@Validated SysUserIdForm query) {
+        return R.ok(sysUserService.queryUserOnlineList(query.getUserId()));
+    }
+
+    /**
+     * 强制下线用户
+     *
+     * @return
+     */
+    @Log("用户-强制下线用户")
+    @PostMapping("/offline")
+    public R offline(@Validated @RequestBody SysTokenForm form) {
+        securityCacheService.setTokenToBlackList(form.getToken());
+        return R.ok();
+    }
 }

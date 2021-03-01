@@ -117,4 +117,12 @@ public interface SysUserService extends IService<SysUserDO> {
      * @return
      */
     Page<SecurityLogCollection> querySecurityLogPageList(SysSecurityLogPageQuery query);
+
+    /**
+     * 查询用户在线列表
+     *
+     * @param userId
+     * @return
+     */
+    List<SecurityLogCollection> queryUserOnlineList(String userId);
 }

@@ -46,7 +46,6 @@ public class SecurityCacheServiceImpl implements SecurityCacheService {
     public void removeUserDetails(String token) {
         redisTemplate.delete(SecurityConstant.USER_TOKEN + token);
     }
-
     @Override
     public void setTokenToBlackList(String token) {
         redisTemplate.opsForValue().set(SecurityConstant.USER_TOKEN_BLACKLIST + token,

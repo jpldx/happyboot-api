@@ -20,6 +20,7 @@ import org.happykit.happyboot.sys.model.query.SysUserPageQueryParam;
 import org.happykit.happyboot.sys.service.SysUserRelService;
 import org.happykit.happyboot.sys.service.SysUserService;
 import org.happykit.happyboot.sys.util.SysSecurityUtils;
+import org.happykit.happyboot.util.DateUtils;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -243,5 +245,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
         page.setTotal(total);
         page.setRecords(list);
         return page;
+    }
+
+    @Override
+    public List<SecurityLogCollection> queryUserOnlineList(String userId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userId").is(userId));
+        query.addCriteria(Criteria.where("operationType").is(SecurityConstant.SecurityOperationEnum.LOGIN.name()));
+        query.addCriteria(Criteria.where("tokenExpireTime").gt(new Date()));
+        return mongoTemplate.find(query, SecurityLogCollection.class);
     }
 }
