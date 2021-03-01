@@ -9,6 +9,7 @@ import org.happykit.happyboot.exception.SysException;
 import org.happykit.happyboot.page.PageUtils;
 import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.login.repository.SecurityLogRepository;
+import org.happykit.happyboot.security.login.service.SecurityCacheService;
 import org.happykit.happyboot.security.model.collections.SecurityLogCollection;
 import org.happykit.happyboot.sys.factory.SysUserFactory;
 import org.happykit.happyboot.sys.mapper.SysUserMapper;
@@ -36,6 +37,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -50,21 +52,18 @@ import java.util.stream.Collectors;
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> implements SysUserService {
 
     private final PasswordEncoder passwordEncoder;
-    private final SysSecurityUtils sysSecurityUtils;
     private final SysUserRelService sysUserRelService;
-    private final SecurityLogRepository securityLogRepository;
     private final MongoTemplate mongoTemplate;
+    private final SecurityCacheService securityCacheService;
 
     public SysUserServiceImpl(PasswordEncoder passwordEncoder,
-                              SysSecurityUtils sysSecurityUtils,
                               SysUserRelService sysUserRelService,
-                              SecurityLogRepository securityLogRepository,
-                              MongoTemplate mongoTemplate) {
+                              MongoTemplate mongoTemplate,
+                              SecurityCacheService securityCacheService) {
         this.passwordEncoder = passwordEncoder;
-        this.sysSecurityUtils = sysSecurityUtils;
         this.sysUserRelService = sysUserRelService;
-        this.securityLogRepository = securityLogRepository;
         this.mongoTemplate = mongoTemplate;
+        this.securityCacheService = securityCacheService;
     }
 
     @Override
@@ -253,8 +252,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
         Query query = new Query();
         query.addCriteria(Criteria.where("userId").is(userId));
         query.addCriteria(Criteria.where("operationType").is(SecurityConstant.SecurityOperationEnum.LOGIN.name()));
-        query.addCriteria(Criteria.where("tokenForceExpire").is(CommonConstant.NO));
         query.addCriteria(Criteria.where("tokenExpireTime").gt(new Date()));
-        return mongoTemplate.find(query, SecurityLogCollection.class);
+
+        List<SecurityLogCollection> list = mongoTemplate.find(query, SecurityLogCollection.class);
+        Set<String> blackList = securityCacheService.getTokenBlackList();
+        return list.stream().filter(v -> !blackList.contains(v.getToken())).collect(Collectors.toList());
     }
 }

@@ -489,13 +489,6 @@ public class SysUserController {
     @Log("用户-强制下线用户")
     @PostMapping("/offline")
     public R offline(@Validated @RequestBody SysTokenForm form) {
-        String token = form.getToken();
-        Query query = new Query();
-        query.addCriteria(Criteria.where("token").is(token));
-        query.addCriteria(Criteria.where("operationType").is(SecurityConstant.SecurityOperationEnum.LOGIN.name()));
-        Update update = new Update().set("tokenForceExpire", CommonConstant.YES);
-
-        mongoTemplate.updateFirst(query, update, SecurityLogCollection.class);
         securityCacheService.setTokenToBlackList(form.getToken());
         return R.ok();
     }

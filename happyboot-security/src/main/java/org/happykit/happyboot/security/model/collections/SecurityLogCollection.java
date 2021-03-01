@@ -53,10 +53,6 @@ public class SecurityLogCollection {
      */
     private Date tokenExpireTime;
     /**
-     * 令牌是否强制过期
-     */
-    private String tokenForceExpire = CommonConstant.NO;
-    /**
      * ip
      */
     private String ip;
