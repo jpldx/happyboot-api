@@ -4,14 +4,12 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.google.gson.Gson;
+import lombok.extern.slf4j.Slf4j;
 import org.happykit.happyboot.base.R;
 import org.happykit.happyboot.log.annotation.Log;
-import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.login.service.SecurityCacheService;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.model.collections.SecurityLogCollection;
-import org.happykit.happyboot.security.properties.TokenProperties;
 import org.happykit.happyboot.security.util.JwtUtils;
 import org.happykit.happyboot.sys.enums.AuthTypeEnum;
 import org.happykit.happyboot.sys.facade.SysAuthFacade;
@@ -19,6 +17,7 @@ import org.happykit.happyboot.sys.facade.SysUserFacade;
 import org.happykit.happyboot.sys.model.entity.SysUserDO;
 import org.happykit.happyboot.sys.model.excel.SysUserData;
 import org.happykit.happyboot.sys.model.excel.listener.SysUserDataListener;
+import org.happykit.happyboot.sys.model.form.*;
 import org.happykit.happyboot.sys.model.query.SysSecurityLogPageQuery;
 import org.happykit.happyboot.sys.model.query.SysUserPageQueryParam;
 import org.happykit.happyboot.sys.service.*;
@@ -26,10 +25,7 @@ import org.happykit.happyboot.sys.util.SysSecurityUtils;
 import org.happykit.happyboot.util.Assert;
 import org.happykit.happyboot.validation.Update;
 import org.happykit.happyboot.view.View;
-import lombok.extern.slf4j.Slf4j;
-import org.happykit.happyboot.sys.model.form.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -48,7 +44,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -73,10 +68,6 @@ public class SysUserController {
     private SysSecurityUtils sysSecurityUtils;
     @Autowired
     private SysDeptObjService sysDeptObjService;
-    @Autowired
-    private StringRedisTemplate redisTemplate;
-    @Autowired
-    private TokenProperties tokenProperties;
     @Autowired
     private SysRoleService sysRoleService;
     @Autowired
