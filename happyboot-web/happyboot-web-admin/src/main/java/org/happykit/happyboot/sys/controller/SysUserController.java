@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.extern.slf4j.Slf4j;
 import org.happykit.happyboot.base.R;
+import org.happykit.happyboot.constant.CommonConstant;
 import org.happykit.happyboot.log.annotation.Log;
+import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.login.service.SecurityCacheService;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.model.collections.SecurityLogCollection;
@@ -23,9 +25,12 @@ import org.happykit.happyboot.sys.model.query.SysUserPageQueryParam;
 import org.happykit.happyboot.sys.service.*;
 import org.happykit.happyboot.sys.util.SysSecurityUtils;
 import org.happykit.happyboot.util.Assert;
-import org.happykit.happyboot.validation.Update;
 import org.happykit.happyboot.view.View;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -40,10 +45,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -78,7 +80,8 @@ public class SysUserController {
     private JwtUtils jwtUtils;
     @Autowired
     private SecurityCacheService securityCacheService;
-
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     /**
      * 列表
@@ -486,6 +489,13 @@ public class SysUserController {
     @Log("用户-强制下线用户")
     @PostMapping("/offline")
     public R offline(@Validated @RequestBody SysTokenForm form) {
+        String token = form.getToken();
+        Query query = new Query();
+        query.addCriteria(Criteria.where("token").is(token));
+        query.addCriteria(Criteria.where("operationType").is(SecurityConstant.SecurityOperationEnum.LOGIN.name()));
+        Update update = new Update().set("tokenForceExpire", CommonConstant.YES);
+
+        mongoTemplate.updateFirst(query, update, SecurityLogCollection.class);
         securityCacheService.setTokenToBlackList(form.getToken());
         return R.ok();
     }

@@ -3,6 +3,7 @@ package org.happykit.happyboot.sys.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.happykit.happyboot.constant.CommonConstant;
 import org.happykit.happyboot.constant.SysConstant;
 import org.happykit.happyboot.exception.SysException;
 import org.happykit.happyboot.page.PageUtils;
@@ -252,6 +253,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
         Query query = new Query();
         query.addCriteria(Criteria.where("userId").is(userId));
         query.addCriteria(Criteria.where("operationType").is(SecurityConstant.SecurityOperationEnum.LOGIN.name()));
+        query.addCriteria(Criteria.where("tokenForceExpire").is(CommonConstant.NO));
         query.addCriteria(Criteria.where("tokenExpireTime").gt(new Date()));
         return mongoTemplate.find(query, SecurityLogCollection.class);
     }

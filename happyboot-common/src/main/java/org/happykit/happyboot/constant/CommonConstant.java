@@ -42,4 +42,10 @@ public interface CommonConstant {
      */
     String UNKNOWN = "unknown";
 
+    /**
+     * 是/否
+     */
+    String YES = "1";
+    String NO = "0";
+
 }

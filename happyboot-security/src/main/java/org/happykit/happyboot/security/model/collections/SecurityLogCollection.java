@@ -2,6 +2,7 @@ package org.happykit.happyboot.security.model.collections;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.happykit.happyboot.constant.CommonConstant;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -51,6 +52,10 @@ public class SecurityLogCollection {
      * 令牌过期时间
      */
     private Date tokenExpireTime;
+    /**
+     * 令牌是否强制过期
+     */
+    private String tokenForceExpire = CommonConstant.NO;
     /**
      * ip
      */
