@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonView;
 import lombok.extern.slf4j.Slf4j;
 import org.happykit.happyboot.base.R;
 import org.happykit.happyboot.constant.CommonConstant;
+import org.happykit.happyboot.enums.AppPlatformEnum;
 import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.login.service.SecurityCacheService;
+import org.happykit.happyboot.security.login.service.SecurityLogService;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.model.collections.SecurityLogCollection;
 import org.happykit.happyboot.security.util.JwtUtils;
@@ -81,7 +83,7 @@ public class SysUserController {
     @Autowired
     private SecurityCacheService securityCacheService;
     @Autowired
-    private MongoTemplate mongoTemplate;
+    private SecurityLogService securityLogService;
 
     /**
      * 列表
@@ -389,15 +391,14 @@ public class SysUserController {
     }
 
     /**
-     * 用户切换账号登录
+     * 用户切换账号
      *
      * @param form
      * @return
      */
-    @Log("用户登录-切换账号登录")
+    @Log("用户登录-切换账号")
     @PostMapping("/switchLogin")
     public R selectLogin(HttpServletRequest request, @RequestBody @Validated SysUserIdForm form) {
-
         SysUserDO selectUser = sysUserService.getById(form.getUserId());
         Assert.isNotFoundUser(selectUser);
 
@@ -443,6 +444,14 @@ public class SysUserController {
                 roles,
                 newToken);
         securityCacheService.setUserDetails(userDetails);
+
+        // 记录安全日志
+        securityLogService.saveSecurityLog(request,
+                selectUserId,
+                selectUsername,
+                SecurityConstant.SecurityOperationEnum.LOGIN,
+                AppPlatformEnum.PC,
+                newToken);
 
         // old token 拉入黑名单
         String oldToken = loginUser.getToken();
