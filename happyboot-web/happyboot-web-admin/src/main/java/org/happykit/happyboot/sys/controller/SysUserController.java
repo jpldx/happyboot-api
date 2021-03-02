@@ -15,6 +15,7 @@ import org.happykit.happyboot.security.login.service.SecurityLogService;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.model.collections.SecurityLogCollection;
 import org.happykit.happyboot.security.util.JwtUtils;
+import org.happykit.happyboot.security.util.SecurityUtils;
 import org.happykit.happyboot.sys.enums.AuthTypeEnum;
 import org.happykit.happyboot.sys.facade.SysAuthFacade;
 import org.happykit.happyboot.sys.facade.SysUserFacade;
@@ -84,6 +85,8 @@ public class SysUserController {
     private SecurityCacheService securityCacheService;
     @Autowired
     private SecurityLogService securityLogService;
+    @Autowired
+    private SecurityUtils securityUtils;
 
     /**
      * 列表
@@ -192,7 +195,17 @@ public class SysUserController {
      */
     @Log("用户-更新密码")
     @PostMapping(value = "/updatePwd")
-    public R updatePwd(@RequestBody @Validated SysUserPwdForm form) {
+    public R updatePwd(@RequestBody @Validated SysUserPwdForm form, HttpServletRequest request) {
+        // 记录安全日志
+        SecurityUserDetails loginUser = securityUtils.getCurrentUserDetails();
+        if (loginUser != null) {
+            securityLogService.saveSecurityLog(request,
+                    loginUser.getId(),
+                    loginUser.getUsername(),
+                    SecurityConstant.SecurityOperationEnum.CHANGE_PASSWORD,
+                    AppPlatformEnum.PC,
+                    null);
+        }
         return R.ok(sysUserService.updateSysUserPwd(form));
     }
 
