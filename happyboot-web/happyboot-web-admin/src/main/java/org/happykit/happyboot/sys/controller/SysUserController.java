@@ -196,7 +196,7 @@ public class SysUserController {
     @Log("用户-更新密码")
     @PostMapping(value = "/updatePwd")
     public R updatePwd(@RequestBody @Validated SysUserPwdForm form, HttpServletRequest request) {
-        // 记录安全日志
+        // 记录安全日志 TODO
         SecurityUserDetails loginUser = securityUtils.getCurrentUserDetails();
         if (loginUser != null) {
             securityLogService.saveSecurityLog(request,
