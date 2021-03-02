@@ -9,14 +9,12 @@ import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.exceptions.LoginFailedLimitException;
 import org.happykit.happyboot.security.login.repository.SecurityLogRepository;
 import org.happykit.happyboot.security.login.service.SecurityCacheService;
+import org.happykit.happyboot.security.login.service.SecurityLogService;
 import org.happykit.happyboot.security.login.service.UserService;
 import org.happykit.happyboot.security.model.AuthenticationBean;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
-import org.happykit.happyboot.security.model.collections.SecurityLogCollection;
 import org.happykit.happyboot.security.properties.TokenProperties;
-import org.happykit.happyboot.security.util.JwtUtils;
 import org.happykit.happyboot.security.util.SecurityUtils;
-import org.happykit.happyboot.util.DateUtils;
 import org.happykit.happyboot.util.InternetUtils;
 import org.happykit.happyboot.util.RSAUtils;
 import org.happykit.happyboot.util.ResponseUtils;
@@ -63,11 +61,7 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Autowired
     private TokenProperties tokenProperties;
     @Autowired
-    private SecurityUtils securityUtils;
-    @Autowired
-    private ILocationService locationService;
-    @Autowired
-    private SecurityLogRepository securityLogRepository;
+    private SecurityLogService securityLogService;
     @Autowired
     private SecurityCacheService securityCacheService;
 
@@ -150,25 +144,15 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
         securityCacheService.setUserDetails(userDetails);
 
         // TODO 删除登录失败缓存计数
-        String ip = InternetUtils.getIp(request);
 
-        // 安全日志记录 TODO 队列处理
-        SecurityLogCollection securityLog = new SecurityLogCollection();
-        securityLog.setClientId(securityUtils.getClientId(request))
-                .setUserId(userId)
-                .setUsername(username)
-                .setIp(ip)
-                .setIpAddress(locationService.getAddressByIp(ip))
-                .setOperationType(SecurityConstant.SecurityOperationEnum.LOGIN.name())
-                .setOperationPlatform(AppPlatformEnum.PC.name())
-                .setOperationTime(DateUtils.now())
-                .setToken(token)
-                .setTokenExpireTime(JwtUtils.decode(token).getExpiresAt())
-                .setUa(InternetUtils.getUserAgent(request));
-        securityLogRepository.insert(securityLog);
-
+        // 记录安全日志 TODO 队列处理
+        securityLogService.saveSecurityLog(request,
+                userId, username,
+                SecurityConstant.SecurityOperationEnum.LOGIN,
+                AppPlatformEnum.PC,
+                token);
         // 返回认证信息
-        Object loginInfo = userService.loginSuccess(userDetails, token, ip);
+        Object loginInfo = userService.loginSuccess(userDetails);
         ResponseUtils.out(response, R.ok(loginInfo));
     }
 

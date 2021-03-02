@@ -13,9 +13,7 @@ public interface UserService {
      * 登录成功
      *
      * @param userDetails
-     * @param token
-     * @param ip
      * @return
      */
-    Object loginSuccess(SecurityUserDetails userDetails, String token, String ip);
+    Object loginSuccess(SecurityUserDetails userDetails);
 }

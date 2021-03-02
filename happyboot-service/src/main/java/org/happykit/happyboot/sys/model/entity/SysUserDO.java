@@ -55,15 +55,6 @@ public class SysUserDO extends BaseEntity {
 	 */
 	private String headPic;
 	/**
-	 * 最后登录时间
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-	private LocalDateTime lastLoginTime;
-	/**
-	 * 最后登录ip
-	 */
-	private String lastIp;
-	/**
 	 * 0=禁用 1=启用
 	 */
 	private Integer status;

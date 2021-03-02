@@ -10,8 +10,6 @@
         <result column="user_type" property="userType"/>
         <result column="nickname" property="nickname"/>
         <result column="head_pic" property="headPic"/>
-        <result column="last_login_time" property="lastLoginTime"/>
-        <result column="last_ip" property="lastIp"/>
         <result column="status" property="status"/>
         <result column="subject_id" property="subjectId"/>
         <result column="dept_id" property="deptId"/>
@@ -32,8 +30,6 @@
         user_type,
         nickname,
         head_pic,
-        last_login_time,
-        last_ip,
         status,
         subject_id,
         dept_id,
@@ -54,8 +50,6 @@
         a.user_type,
         a.nickname,
         a.head_pic,
-        a.last_login_time,
-        a.last_ip,
         a.status,
         a.subject_id,
         a.dept_id,

@@ -395,7 +395,7 @@ public class SysUserController {
      * @return
      */
     @Log("用户登录-切换账号登录")
-    @PostMapping("/selectLogin")
+    @PostMapping("/switchLogin")
     public R selectLogin(HttpServletRequest request, @RequestBody @Validated SysUserIdForm form) {
 
         SysUserDO selectUser = sysUserService.getById(form.getUserId());
