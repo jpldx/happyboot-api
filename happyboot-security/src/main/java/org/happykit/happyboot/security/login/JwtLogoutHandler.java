@@ -1,6 +1,10 @@
 package org.happykit.happyboot.security.login;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.happykit.happyboot.base.R;
 import org.happykit.happyboot.enums.AppPlatformEnum;
 import org.happykit.happyboot.exception.SysException;
@@ -9,8 +13,8 @@ import org.happykit.happyboot.security.login.service.SecurityCacheService;
 import org.happykit.happyboot.security.login.service.SecurityLogService;
 import org.happykit.happyboot.security.model.SecurityUserDetails;
 import org.happykit.happyboot.security.properties.TokenProperties;
+import org.happykit.happyboot.security.util.JwtUtils;
 import org.happykit.happyboot.util.ResponseUtils;
-import org.happykit.happyboot.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -27,6 +31,7 @@ import java.io.IOException;
  * @version 1.0
  * @since 2021/3/1
  */
+@Slf4j
 @Component
 public class JwtLogoutHandler implements LogoutHandler {
 
@@ -37,23 +42,30 @@ public class JwtLogoutHandler implements LogoutHandler {
     @Autowired
     private TokenProperties tokenProperties;
 
-    //    @SneakyThrows
+    // 记录用户安全日志
+    // 清除用户信息上下文
+    // 删除用户信息缓存
+    // token 拉入黑名单
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         String token = request.getHeader(tokenProperties.getAuthorization());
-        SecurityUserDetails userDetails = (SecurityUserDetails) authentication.getPrincipal();
         if (StringUtils.isNotBlank(token)) {
-            securityLogService.saveSecurityLog(request,
-                    userDetails.getId(), userDetails.getUsername(),
-                    SecurityConstant.SecurityOperationEnum.LOGOUT,
-                    AppPlatformEnum.PC,
-                    token);
-            // 1. 清除用户信息上下文
-            // 2. 删除用户信息缓存
-            // 3. token 拉入黑名单
-//            SecurityContextHolder.setContext();
-//            securityCacheService.removeUserDetails(token);
-            securityCacheService.setTokenToBlackList(token);
+            DecodedJWT verify = null;
+            try {
+                verify = JwtUtils.verify(token);
+            } catch (JWTVerificationException e) {
+                log.error("用户注销JWT校验失败，未做任何处理：" + e.getMessage());
+            }
+            if (verify != null) {
+                securityLogService.saveSecurityLog(request,
+                        verify.getClaim(JwtUtils.CLAIM_USER_ID).asString(),
+                        verify.getClaim(JwtUtils.CLAIM_USER_NAME).asString(),
+                        SecurityConstant.SecurityOperationEnum.LOGOUT,
+                        AppPlatformEnum.PC,
+                        null);
+
+                securityCacheService.setTokenToBlackList(token);
+            }
         }
         try {
             ResponseUtils.out(response, R.ok(null, "注销成功"));

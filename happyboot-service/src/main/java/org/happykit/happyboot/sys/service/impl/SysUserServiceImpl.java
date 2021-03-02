@@ -231,7 +231,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
 
         long total = mongoTemplate.count(q, SecurityLogCollection.class);
 
-        Pageable pageable = PageRequest.of(pageNo.intValue() - 1, query.getPageSize().intValue(), Sort.by(Sort.Order.desc("loginTime")));
+        Pageable pageable = PageRequest.of(pageNo.intValue() - 1, query.getPageSize().intValue(), Sort.by(Sort.Order.desc("operationTime")));
         List<SecurityLogCollection> list = mongoTemplate.find(q.with(pageable), SecurityLogCollection.class);
 
         Page<SecurityLogCollection> page = new Page<>();
