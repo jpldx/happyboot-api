@@ -48,7 +48,7 @@ public class SecurityLogServiceImpl implements SecurityLogService {
                 .setOperationPlatform(appPlatform.name())
                 .setOperationTime(DateUtils.now())
                 .setToken(token)
-                .setTokenExpireTime(JwtUtils.decode(token).getExpiresAt())
+                .setTokenExpireTime(token == null ? null : JwtUtils.decode(token).getExpiresAt())
                 .setUa(InternetUtils.getUserAgent(request));
         securityLogRepository.insert(securityLog);
     }

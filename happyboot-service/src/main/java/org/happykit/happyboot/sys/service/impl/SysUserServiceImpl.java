@@ -8,6 +8,7 @@ import org.happykit.happyboot.exception.SysException;
 import org.happykit.happyboot.page.PageUtils;
 import org.happykit.happyboot.security.constants.SecurityConstant;
 import org.happykit.happyboot.security.login.service.SecurityCacheService;
+import org.happykit.happyboot.security.login.service.SecurityLogService;
 import org.happykit.happyboot.security.model.collections.SecurityLogCollection;
 import org.happykit.happyboot.sys.factory.SysUserFactory;
 import org.happykit.happyboot.sys.mapper.SysUserMapper;
@@ -50,15 +51,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
     private final SysUserRelService sysUserRelService;
     private final MongoTemplate mongoTemplate;
     private final SecurityCacheService securityCacheService;
+    private final SecurityLogService securityLogService;
 
     public SysUserServiceImpl(PasswordEncoder passwordEncoder,
                               SysUserRelService sysUserRelService,
                               MongoTemplate mongoTemplate,
-                              SecurityCacheService securityCacheService) {
+                              SecurityCacheService securityCacheService,
+                              SecurityLogService securityLogService) {
         this.passwordEncoder = passwordEncoder;
         this.sysUserRelService = sysUserRelService;
         this.mongoTemplate = mongoTemplate;
         this.securityCacheService = securityCacheService;
+        this.securityLogService = securityLogService;
     }
 
     @Override
@@ -154,6 +158,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> im
         }
         SysUserDO entity = SysUserFactory.INSTANCE.pwdForm2Do(form);
         entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+
+        // TODO 记录安全日志
         return this.retBool(this.baseMapper.updatePassword(entity));
     }
 
