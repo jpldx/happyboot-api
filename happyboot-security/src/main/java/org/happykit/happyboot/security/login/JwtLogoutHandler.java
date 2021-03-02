@@ -2,6 +2,7 @@ package org.happykit.happyboot.security.login;
 
 import lombok.SneakyThrows;
 import org.happykit.happyboot.base.R;
+import org.happykit.happyboot.exception.SysException;
 import org.happykit.happyboot.security.login.service.SecurityCacheService;
 import org.happykit.happyboot.security.properties.TokenProperties;
 import org.happykit.happyboot.util.ResponseUtils;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * 注销处理
@@ -29,18 +31,22 @@ public class JwtLogoutHandler implements LogoutHandler {
     @Autowired
     private TokenProperties tokenProperties;
 
-    @SneakyThrows
+    //    @SneakyThrows
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         String token = request.getHeader(tokenProperties.getAuthorization());
         if (StringUtils.isNotBlank(token)) {
-            //
+            // 1. 清除用户信息上下文
+            // 2. 删除用户信息缓存
+            // 3. token 拉入黑名单
 //            SecurityContextHolder.setContext();
-//            // 1. 删除缓存
 //            securityCacheService.removeUserDetails(token);
-            // 2. token 拉入黑名单
             securityCacheService.setTokenToBlackList(token);
         }
-        ResponseUtils.out(response, R.ok(null, "注销成功"));
+        try {
+            ResponseUtils.out(response, R.ok(null, "注销成功"));
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 }

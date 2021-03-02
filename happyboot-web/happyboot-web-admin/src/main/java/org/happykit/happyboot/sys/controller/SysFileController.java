@@ -3,7 +3,6 @@ package org.happykit.happyboot.sys.controller;
 import com.baomidou.mybatisplus.extension.api.R;
 import org.happykit.happyboot.base.BaseController;
 import org.happykit.happyboot.constant.FileConstant;
-import org.happykit.happyboot.exception.BusinessException;
 import org.happykit.happyboot.exception.SysException;
 import org.happykit.happyboot.log.annotation.Log;
 import org.happykit.happyboot.sys.model.entity.SysFileDO;
@@ -501,7 +500,7 @@ public class SysFileController extends BaseController {
             bytes = FileUtils.readFileToByteArray(file);
         } catch (IOException e) {
             log.error(e.getMessage());
-            throw new BusinessException("未找到相关文件");
+            throw new SysException("未找到相关文件");
         }
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG);
@@ -533,7 +532,7 @@ public class SysFileController extends BaseController {
             imageContent = fileToByte(buffImg);
         } catch (IOException e) {
             log.error(e.getMessage());
-            throw new BusinessException("未找到相关文件");
+            throw new SysException("未找到相关文件");
         }
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG);

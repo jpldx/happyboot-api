@@ -2,7 +2,6 @@ package org.happykit.happyboot.config;
 
 import com.baomidou.mybatisplus.extension.api.R;
 import org.happykit.happyboot.exception.SysException;
-import org.happykit.happyboot.exception.SysSecurityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
@@ -60,11 +59,5 @@ public class ApplicationExceptionHandler {
     public R handleBindException(BindException e) {
         String message = e.getAllErrors().iterator().next().getDefaultMessage();
         return R.failed(message);
-    }
-
-    @ExceptionHandler(SysSecurityException.class)
-    public R handleSysSecurityException(SysSecurityException e) {
-        log.error("系统安全性异常", e.getMessage());
-        return R.failed(e.getMessage());
     }
 }

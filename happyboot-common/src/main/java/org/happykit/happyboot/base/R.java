@@ -18,6 +18,7 @@ public class R<T> implements java.io.Serializable {
 
     /**
      * 返回状态码
+     * {@link RCode}
      */
     private int code;
     /**
